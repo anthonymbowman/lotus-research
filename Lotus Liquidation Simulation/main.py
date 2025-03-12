@@ -108,6 +108,7 @@ class LotusSimulator:
         active_borrowers = borrowers.copy()
         liquidation_events = []
         total_bad_debt = 0.0
+        total_lender_bonus = 0.0
         initial_total_loans = active_borrowers["loan_value"].sum()
 
         for day in range(1, len(price_path)):
@@ -155,17 +156,16 @@ class LotusSimulator:
                     liquidation_value = borrower["collateral_value"] * (1 - estimated_slippage)
                     
                     # Apply liquidation bonus as a percentage of debt (loan value) instead of collateral
-                    lender_bonus = borrower["loan_value"] * 0.05  # 5% of the loan value as bonus
+                    lender_bonus = borrower["loan_value"] * 0.01  # 1% of the loan value as bonus
                     
-                    # Calculate credit loss (can be negative if liquidation value exceeds loan)
-                    credit_loss = borrower["loan_value"] - liquidation_value
+                    # Calculate credit loss (ensure it's not negative)
+                    credit_loss = max(0, borrower["loan_value"] - liquidation_value)
                     
-                    # Update total bad debt based on credit loss and lender bonus separately
-                    if credit_loss > 0:
-                        total_bad_debt += credit_loss
+                    # Update total bad debt
+                    total_bad_debt += credit_loss
                     
-                    # Subtract lender bonus from total bad debt (if any)
-                    total_bad_debt -= lender_bonus
+                    # Track total lender bonus
+                    total_lender_bonus += lender_bonus
                     
                     # Record liquidation event
                     liquidation_events.append({
@@ -175,12 +175,9 @@ class LotusSimulator:
                         "loan_value": borrower["loan_value"],
                         "liquidation_value": liquidation_value,
                         "lender_bonus": lender_bonus,
-                        "credit_loss": max(0, credit_loss),
-                        "liquidation_bonus": lender_bonus,
-                        "net_impact": -credit_loss + lender_bonus,
+                        "credit_loss": credit_loss,
                         "health_factor": borrower["health_factor"],
-                        "slippage": estimated_slippage,
-                        "bad_debt": max(0, credit_loss)  # For backward compatibility
+                        "slippage": estimated_slippage
                     })
                     
                     # Remove liquidated borrower
@@ -189,14 +186,22 @@ class LotusSimulator:
         # Calculate bad debt as percentage of initial total loans
         bad_debt_percent = (total_bad_debt / initial_total_loans) * 100 if initial_total_loans > 0 else 0
         
-        # Annualize the bad debt percentage (convert from simulation period to annual rate)
+        # Calculate lender bonus as percentage of initial total loans
+        lender_bonus_percent = (total_lender_bonus / initial_total_loans) * 100 if initial_total_loans > 0 else 0
+        
+        # Annualize the percentages
         days_in_simulation = len(price_path) - 1
         annualized_bad_debt_percent = bad_debt_percent * (365 / days_in_simulation)
+        annualized_lender_bonus_percent = lender_bonus_percent * (365 / days_in_simulation)
         
         # Create dataframe of liquidation events
         liquidation_df = pd.DataFrame(liquidation_events) if liquidation_events else pd.DataFrame()
         
-        return annualized_bad_debt_percent, liquidation_df
+        # Add annualized lender bonus percentage to the dataframe
+        if not liquidation_df.empty:
+            liquidation_df['annualized_lender_bonus_percent'] = annualized_lender_bonus_percent
+        
+        return annualized_bad_debt_percent, liquidation_df, annualized_lender_bonus_percent
 
     def run_simulation(self, lltv_values: List[float]) -> pd.DataFrame:
         """
@@ -223,45 +228,43 @@ class LotusSimulator:
             # Generate borrower population
             borrowers = self._simulate_borrower_population(lltv)
             
-            # Track bad debt across all simulations
+            # Track metrics across all simulations
             bad_debt_percentages = []
+            lender_bonus_percentages = []
             liquidation_dfs = []
+            slippages = []
             
             # For each price path (Monte Carlo run)
             for i in range(self.monte_carlo_runs):
                 if i % 1000 == 0 and i > 0:
                     print(f"  Completed {i} of {self.monte_carlo_runs} runs")
                     
-                bad_debt_percent, liquidation_df = self._calculate_liquidations(
+                bad_debt_percent, liquidation_df, lender_bonus_percent = self._calculate_liquidations(
                     borrowers=borrowers,
                     price_path=price_paths[i, :],
                     lltv=lltv
                 )
                 
                 bad_debt_percentages.append(bad_debt_percent)
+                lender_bonus_percentages.append(lender_bonus_percent)
+                
                 if not liquidation_df.empty:
                     liquidation_dfs.append(liquidation_df)
+                    slippages.extend(liquidation_df['slippage'].tolist())
             
             # Calculate statistics
             mean_bad_debt = np.mean(bad_debt_percentages)
             median_bad_debt = np.median(bad_debt_percentages)
             p95_bad_debt = np.percentile(bad_debt_percentages, 95)
             p99_bad_debt = np.percentile(bad_debt_percentages, 99)
+            mean_lender_bonus = np.mean(lender_bonus_percentages)
+            mean_slippage = np.mean(slippages) if slippages else 0
             
             # Combine all liquidation events for this LLTV
             all_liquidations = pd.concat(liquidation_dfs) if liquidation_dfs else pd.DataFrame()
             
-            # Calculate other metrics if liquidations occurred
-            if not all_liquidations.empty:
-                liquidation_rate = len(all_liquidations) / (self.monte_carlo_runs * len(borrowers))
-                avg_slippage = all_liquidations['slippage'].mean() if 'slippage' in all_liquidations.columns else 0
-                avg_bad_debt_per_liquidation = all_liquidations['credit_loss'].mean() if 'credit_loss' in all_liquidations.columns else 0
-                avg_lender_bonus = all_liquidations['lender_bonus'].mean() if 'lender_bonus' in all_liquidations.columns else 0
-            else:
-                liquidation_rate = 0
-                avg_slippage = 0
-                avg_bad_debt_per_liquidation = 0
-                avg_lender_bonus = 0
+            # Calculate liquidation rate
+            liquidation_rate = len(all_liquidations) / (self.monte_carlo_runs * len(borrowers)) if not all_liquidations.empty else 0
             
             # Store results
             results.append({
@@ -270,10 +273,8 @@ class LotusSimulator:
                 'Credit_Loss_Median': median_bad_debt,
                 'Credit_Loss_P95': p95_bad_debt,
                 'Credit_Loss_P99': p99_bad_debt,
-                'Liquidation_Rate': liquidation_rate * 100,  # as percentage
-                'Avg_Slippage': avg_slippage * 100,  # as percentage
-                'Avg_Bad_Debt_Per_Liquidation': avg_bad_debt_per_liquidation,
-                'Avg_Lender_Bonus': avg_lender_bonus
+                'Slippage_Mean': mean_slippage * 100,  # as percentage
+                'Lender_Liquidation_Bonus_Mean': mean_lender_bonus
             })
         
         # Convert results to DataFrame
