@@ -1,5 +1,6 @@
 # Simulated Lotus market for wstETH/USDC
 
+
 """Toy Lotus market simulation with five liquidation ticks.
 
 This script demonstrates the adaptive-rate mechanism from the Lotus
@@ -15,6 +16,11 @@ import math
 import random
 import csv
 import argparse
+=======
+from dataclasses import dataclass, field
+from typing import List
+import math
+import random
 
 # Constants from Lotus Interest-Rate Model
 U_TARGET = 0.9
@@ -179,3 +185,19 @@ if __name__ == "__main__":
              supply_amount=args.supply,
              seed=args.seed,
              output_csv=args.output_csv if args.output_csv else None)
+=======
+def run_demo(days=10):
+    market = create_sample_market()
+    random.seed(42)
+    for day in range(days):
+        # Random small borrow each day
+        idx = random.randrange(len(market.ticks))
+        market.borrow(idx, 50_000.0)  # borrow 50k USDC at random tick
+        market.step()
+    print("Final Rates after", days, "days:")
+    for tick in market.ticks:
+        print(f"LT {int(tick.lt*100)}%: borrow_rate={tick.borrow_rate:.2%}, supply_rate={tick.supply_rate:.2%}, target_rate={tick.target_rate:.2%}")
+
+
+if __name__ == "__main__":
+    run_demo()
