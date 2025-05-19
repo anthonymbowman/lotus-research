@@ -1,5 +1,22 @@
 # Simulated Lotus market for wstETH/USDC
 
+
+"""Toy Lotus market simulation with five liquidation ticks.
+
+This script demonstrates the adaptive-rate mechanism from the Lotus
+interest-rate model.  It generates random daily borrow and supply
+activity then records the resulting rates for each tick.
+
+Run ``python3 lotus_market_simulation.py --help`` for command line options.
+"""
+
+from dataclasses import dataclass, field
+from typing import List, Dict
+import math
+import random
+import csv
+import argparse
+=======
 from dataclasses import dataclass, field
 from typing import List
 import math
@@ -108,6 +125,67 @@ def create_sample_market():
     return market
 
 
+def record_state(day: int, market: LotusMarket) -> List[Dict[str, float]]:
+    """Return a list of metric dictionaries for the current market state."""
+    rows = []
+    for idx, t in enumerate(market.ticks):
+        rows.append({
+            "day": day,
+            "tick": idx,
+            "lt": t.lt,
+            "supply": t.supply,
+            "borrow": t.borrow,
+            "borrow_rate": t.borrow_rate,
+            "supply_rate": t.supply_rate,
+            "target_rate": t.target_rate,
+        })
+    return rows
+
+
+def run_demo(days: int = 30,
+             borrow_amount: float = 50_000.0,
+             supply_amount: float = 10_000.0,
+             seed: int = 42,
+             output_csv: str = "market_history.csv") -> None:
+    """Run a random usage simulation and optionally write results to CSV."""
+    random.seed(seed)
+    market = create_sample_market()
+    history: List[Dict[str, float]] = []
+
+    for day in range(1, days + 1):
+        b_idx = random.randrange(len(market.ticks))
+        s_idx = random.randrange(len(market.ticks))
+        market.borrow(b_idx, borrow_amount)
+        market.supply(s_idx, supply_amount)
+        market.step()
+        history.extend(record_state(day, market))
+
+    if output_csv:
+        with open(output_csv, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=history[0].keys())
+            writer.writeheader()
+            writer.writerows(history)
+        print(f"Simulation complete. Results written to {output_csv}")
+    else:
+        for row in history:
+            print(row)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run a simple Lotus market simulation")
+    parser.add_argument("--days", type=int, default=30, help="number of simulated days")
+    parser.add_argument("--borrow", type=float, default=50_000.0, help="daily borrow amount")
+    parser.add_argument("--supply", type=float, default=10_000.0, help="daily supply deposit")
+    parser.add_argument("--seed", type=int, default=42, help="random seed")
+    parser.add_argument("--output-csv", default="market_history.csv", help="CSV file for results; set empty to print")
+    args = parser.parse_args()
+
+    run_demo(days=args.days,
+             borrow_amount=args.borrow,
+             supply_amount=args.supply,
+             seed=args.seed,
+             output_csv=args.output_csv if args.output_csv else None)
+=======
 def run_demo(days=10):
     market = create_sample_market()
     random.seed(42)
