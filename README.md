@@ -1,7 +1,11 @@
-# lotus-research
+![CI](https://github.com/example/lotus-research/actions/workflows/ci.yml/badge.svg)
+# Lotus IRM Simulation
 
-This repository collects experiments around the Lotus interest-rate model.
+This package provides a toy implementation of the Lotus interest rate model.
 
-## Simulations
+## Setup
 
-
+```bash
+pip install -r requirements.txt
+pytest
+```
