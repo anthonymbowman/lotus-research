@@ -108,7 +108,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
               <div className="px-2 py-1 bg-emerald-900/50 rounded text-emerald-400 text-xs font-medium">SENIOR</div>
               <div>
                 <p className="text-lotus-grey-300">Lower LLTV (75-80%)</p>
-                <p className="text-lotus-grey-500 text-xs mt-1">Safer, first to be repaid, lower yield</p>
+                <p className="text-lotus-grey-500 text-xs mt-1">Lower risk exposure, lower yield</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

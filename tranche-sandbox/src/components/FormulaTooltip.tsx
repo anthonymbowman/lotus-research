@@ -2,18 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 interface FormulaTooltipProps {
-  /** The content to display in the tooltip */
   formula: string;
-  /** Optional description text */
   description?: string;
-  /** Children elements that trigger the tooltip */
   children: React.ReactNode;
 }
 
-/**
- * Tooltip component that shows formula explanations on hover.
- * Uses a portal to render outside the table to avoid clipping issues.
- */
 export function FormulaTooltip({ formula, description, children }: FormulaTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
@@ -22,8 +15,6 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
   useEffect(() => {
     if (isVisible && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-
-      // Calculate position - prefer above, but below if too close to top
       const showBelow = rect.top < 120;
 
       setTooltipPosition({
@@ -35,7 +26,7 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
 
   const tooltip = isVisible && (
     <div
-      className="fixed z-[9999] px-3 py-2 text-sm bg-slate-800 text-white rounded-lg shadow-xl max-w-xs"
+      className="fixed z-[9999] px-3 py-2 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl max-w-xs border border-lotus-grey-700"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,
@@ -44,18 +35,17 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
           : 'translate(-50%, -100%)',
       }}
     >
-      <code className="font-mono text-xs text-blue-300 block">{formula}</code>
+      <code className="font-mono text-xs text-lotus-purple-300 block">{formula}</code>
       {description && (
-        <p className="mt-1 text-xs text-slate-300">
+        <p className="mt-1 text-xs text-lotus-grey-400">
           {description}
         </p>
       )}
-      {/* Arrow */}
       <div
         className="absolute left-1/2 -translate-x-1/2 border-8 border-transparent"
         style={tooltipPosition.top < 120
-          ? { bottom: '100%', borderBottomColor: 'rgb(30 41 59)' }
-          : { top: '100%', borderTopColor: 'rgb(30 41 59)' }
+          ? { bottom: '100%', borderBottomColor: '#0D0A14' }
+          : { top: '100%', borderTopColor: '#0D0A14' }
         }
       />
     </div>
@@ -71,7 +61,7 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
       >
         {children}
         <svg
-          className="ml-1 w-3.5 h-3.5 text-slate-400 hover:text-slate-600 transition-colors"
+          className="ml-1 w-3.5 h-3.5 text-lotus-grey-500 hover:text-lotus-purple-400 transition-colors"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -89,9 +79,6 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
   );
 }
 
-/**
- * Predefined formula tooltips for common calculations.
- */
 export const FORMULAS = {
   jrSupply: {
     formula: 'jrSupply[i] = Σ(supply[j]) for j ≥ i',

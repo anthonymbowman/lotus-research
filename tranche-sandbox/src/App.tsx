@@ -12,7 +12,6 @@ import { LotusUSDAllocation } from './components/LotusUSDAllocation';
 import { TrancheLiquidity } from './components/TrancheLiquidity';
 import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
-import { BadDebtSimulator } from './components/BadDebtSimulator';
 import { IsolatedComparison } from './components/IsolatedComparison';
 import { FundingMatrix } from './components/FundingMatrix';
 import { RateChart } from './components/RateChart';
@@ -193,17 +192,16 @@ function App() {
       learningPoints: [
         'What triggers liquidation',
         'Per-tranche liquidation thresholds',
-        'How liquidation protects lenders',
-        'Understanding and preventing bad debt',
+        'Health factor calculator for all tranches',
+        'Bad debt cascade and simulation',
       ],
       next: { id: 'advanced', label: 'Advanced Tools' },
     },
     advanced: {
       number: '8',
       title: 'Advanced Tools',
-      subtitle: 'Deep dives and simulations',
+      subtitle: 'Deep dives and comparisons',
       learningPoints: [
-        'Bad debt absorption simulation',
         'Lotus vs Isolated Markets comparison',
         'Funding matrix visualization',
       ],
@@ -236,7 +234,7 @@ function App() {
 
       {/* Main Content */}
       <main className="lg:ml-64 min-h-screen">
-        <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-12">
+        <div className="max-w-6xl mx-auto px-4 py-8 lg:px-8 lg:py-12">
           <SectionWrapper
             id={activeSection}
             number={currentMeta.number}
@@ -314,21 +312,15 @@ function App() {
 
             {/* Section 7: Liquidations */}
             {activeSection === 'liquidations' && (
-              <Liquidations tranches={computedTranches.map(t => ({ lltv: t.lltv }))} />
+              <Liquidations
+                tranches={computedTranches.map(t => ({ lltv: t.lltv }))}
+                computedTranches={computedTranches}
+              />
             )}
 
             {/* Section 8: Advanced Tools */}
             {activeSection === 'advanced' && (
               <div className="space-y-8">
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Bad Debt Simulation</h3>
-                  <p className="text-lotus-grey-400 mb-6">
-                    Explore how bad debt is absorbed by tranches. Enter bad debt amounts to see
-                    how losses cascade from senior to junior tranches.
-                  </p>
-                  <BadDebtSimulator tranches={computedTranches} />
-                </div>
-
                 <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
                   <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Lotus vs Isolated Markets</h3>
                   <p className="text-lotus-grey-400 mb-6">
@@ -351,7 +343,7 @@ function App() {
 
         {/* Footer */}
         <footer className="border-t border-lotus-grey-800 py-6 px-4 lg:px-8">
-          <div className="max-w-5xl mx-auto text-center text-sm text-lotus-grey-500">
+          <div className="max-w-6xl mx-auto text-center text-sm text-lotus-grey-500">
             <p>
               This is an interactive educational simulator.
               See the{' '}

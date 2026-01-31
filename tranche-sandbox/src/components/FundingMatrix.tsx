@@ -18,13 +18,13 @@ interface HoverInfo {
   borrowerLltv: number;
 }
 
-// Colors for pie chart slices (one per tranche)
+// Colors for pie chart slices (one per tranche) - Lotus theme
 const SLICE_COLORS = [
-  '#3b82f6', // blue-500
-  '#8b5cf6', // violet-500
-  '#ec4899', // pink-500
+  '#8E62FF', // lotus-purple-500
+  '#C4B2FF', // lotus-purple-300
+  '#10b981', // emerald-500
   '#f97316', // orange-500
-  '#14b8a6', // teal-500
+  '#3b82f6', // blue-500
 ];
 
 /**
@@ -112,13 +112,13 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
   }, [tranches, fundingData.matrix, selectedLender, fundingData.capitalAllocated]);
 
   const getCellColor = (percent: number): string => {
-    if (percent === 0) return 'bg-slate-50';
+    if (percent === 0) return 'bg-lotus-grey-800';
     const intensity = Math.sqrt(percent / Math.max(maxValue, 0.01));
-    if (intensity > 0.8) return 'bg-blue-600 text-white';
-    if (intensity > 0.6) return 'bg-blue-500 text-white';
-    if (intensity > 0.4) return 'bg-blue-400 text-white';
-    if (intensity > 0.2) return 'bg-blue-300';
-    return 'bg-blue-100';
+    if (intensity > 0.8) return 'bg-lotus-purple-500 text-white';
+    if (intensity > 0.6) return 'bg-lotus-purple-500/80 text-white';
+    if (intensity > 0.4) return 'bg-lotus-purple-500/60 text-white';
+    if (intensity > 0.2) return 'bg-lotus-purple-500/40 text-lotus-grey-100';
+    return 'bg-lotus-purple-500/20 text-lotus-grey-200';
   };
 
   const handleCellHover = (lenderIdx: number, borrowerIdx: number) => {
@@ -141,11 +141,11 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
   return (
     <div className="mt-6">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-slate-700">Dynamic Loan Mix</h3>
+        <h3 className="text-sm font-semibold text-lotus-grey-200">Dynamic Loan Mix</h3>
         <div className="flex gap-3">
           <button
             onClick={() => setShowExplanation(!showExplanation)}
-            className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            className="text-xs text-lotus-purple-400 hover:text-lotus-purple-300 flex items-center gap-1"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -155,7 +155,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
           </button>
           <button
             onClick={() => setShowDisclaimer(!showDisclaimer)}
-            className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
+            className="text-xs text-lotus-grey-500 hover:text-lotus-grey-300 flex items-center gap-1"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -167,40 +167,40 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
       </div>
 
       {showDisclaimer && (
-        <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
+        <div className="mb-4 p-3 bg-lotus-grey-700/50 border border-lotus-grey-600 rounded-lg text-xs text-lotus-grey-400">
           {FUNDING_MATRIX_DISCLAIMER}
         </div>
       )}
 
       {showExplanation && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-xs text-slate-700 space-y-3">
+        <div className="mb-4 p-4 bg-lotus-purple-900/20 border border-lotus-purple-700/50 rounded-lg text-xs text-lotus-grey-300 space-y-3">
           <div>
-            <strong className="text-blue-800">Matrix Calculation:</strong>
+            <strong className="text-lotus-purple-300">Matrix Calculation:</strong>
             <p className="mt-1">
               Each cell shows what percentage of a <em>lender tranche's supply</em> is allocated to fund a <em>borrower tranche</em>.
               The calculation cascades from junior to senior: each lender's supply first funds their own tranche's borrowers,
               then any remaining supply cascades to fund more senior tranches proportionally.
             </p>
-            <p className="mt-1 font-mono text-xs bg-white px-2 py-1 rounded border">
+            <p className="mt-1 font-mono text-xs bg-lotus-grey-800 px-2 py-1 rounded border border-lotus-grey-700">
               matrix[borrower][lender] = (lender's share of available supply) × (borrower's borrow) / (lender's supply)
             </p>
           </div>
           <div>
-            <strong className="text-blue-800">Borrower Perspective (left pie):</strong>
+            <strong className="text-lotus-purple-300">Borrower Perspective (left pie):</strong>
             <p className="mt-1">
               Shows where a borrower's funds come from. For each lender that can fund this borrower (same or more junior tranche):
             </p>
-            <p className="mt-1 font-mono text-xs bg-white px-2 py-1 rounded border">
+            <p className="mt-1 font-mono text-xs bg-lotus-grey-800 px-2 py-1 rounded border border-lotus-grey-700">
               % from lender = (matrix[borrower][lender] × lender's supply) / borrower's total borrow
             </p>
           </div>
           <div>
-            <strong className="text-blue-800">Lender Perspective (right pie):</strong>
+            <strong className="text-lotus-purple-300">Lender Perspective (right pie):</strong>
             <p className="mt-1">
               Shows where a lender's supply goes. This is simply the column values from the matrix for that lender.
               The "Allocated" row shows the total % of supply actively funding loans.
             </p>
-            <p className="mt-1 font-mono text-xs bg-white px-2 py-1 rounded border">
+            <p className="mt-1 font-mono text-xs bg-lotus-grey-800 px-2 py-1 rounded border border-lotus-grey-700">
               % to borrower = matrix[borrower][lender] (directly from matrix)
             </p>
           </div>
@@ -215,7 +215,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
               <tr>
                 <th className="w-6"></th>
                 <th className="p-2"></th>
-                <th colSpan={tranches.length} className="p-2 text-center text-slate-500 font-medium border-b border-slate-200">
+                <th colSpan={tranches.length} className="p-2 text-center text-lotus-grey-400 font-medium border-b border-lotus-grey-700">
                   Lender Tranche (supply source) →
                 </th>
               </tr>
@@ -226,7 +226,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   <th
                     key={i}
                     className={`px-4 py-2 text-center font-medium cursor-pointer transition-colors
-                      ${selectedLender === i ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}
+                      ${selectedLender === i ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-400 hover:bg-lotus-grey-700/50'}`}
                     onClick={() => setSelectedLender(i)}
                   >
                     {t.lltv}%
@@ -240,7 +240,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   {borrowerIdx === 0 && (
                     <th
                       rowSpan={tranches.length}
-                      className="pr-1 text-slate-500 font-medium text-xs"
+                      className="pr-1 text-lotus-grey-400 font-medium text-xs"
                       style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                     >
                       ← Borrower
@@ -248,7 +248,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   )}
                   <th
                     className={`px-3 py-2 text-right font-medium cursor-pointer transition-colors
-                      ${selectedBorrower === borrowerIdx ? 'text-blue-700 bg-blue-50' : 'text-slate-600 hover:bg-slate-50'}`}
+                      ${selectedBorrower === borrowerIdx ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-400 hover:bg-lotus-grey-700/50'}`}
                     onClick={() => setSelectedBorrower(borrowerIdx)}
                   >
                     {borrower.lltv}%
@@ -263,8 +263,8 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                       <td
                         key={lenderIdx}
                         className={`px-4 py-2 text-center transition-all duration-150 cursor-pointer
-                          ${isValidRelation ? getCellColor(percent) : 'bg-slate-100 text-slate-300 cursor-not-allowed'}
-                          ${isHovered || isSelected ? 'ring-2 ring-blue-600 ring-inset' : ''}`}
+                          ${isValidRelation ? getCellColor(percent) : 'bg-lotus-grey-900 text-lotus-grey-600 cursor-not-allowed'}
+                          ${isHovered || isSelected ? 'ring-2 ring-lotus-purple-500 ring-inset' : ''}`}
                         onMouseEnter={() => isValidRelation && handleCellHover(lenderIdx, borrowerIdx)}
                         onMouseLeave={() => setHoverInfo(null)}
                         onClick={() => {
@@ -278,7 +278,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                         {isValidRelation ? (
                           percent > 0 ? formatPercent(percent) : '-'
                         ) : (
-                          <span className="text-slate-300">×</span>
+                          <span className="text-lotus-grey-600">×</span>
                         )}
                       </td>
                     );
@@ -286,15 +286,15 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 </tr>
               ))}
               {/* Capital Allocated row */}
-              <tr className="border-t-2 border-slate-300">
+              <tr className="border-t-2 border-lotus-grey-600">
                 <td></td>
-                <th className="px-3 py-2 text-right font-medium text-emerald-700 whitespace-nowrap">
+                <th className="px-3 py-2 text-right font-medium text-emerald-400 whitespace-nowrap">
                   Allocated
                 </th>
                 {fundingData.capitalAllocated?.map((percent, lenderIdx) => (
                   <td
                     key={lenderIdx}
-                    className="px-4 py-2 text-center font-mono text-emerald-600 bg-emerald-50"
+                    className="px-4 py-2 text-center font-mono text-emerald-400 bg-emerald-900/20"
                   >
                     {formatPercent(percent)}
                   </td>
@@ -305,14 +305,14 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
 
           {/* Color Scale */}
           <div className="mt-3 flex items-center gap-2 text-xs">
-            <span className="text-slate-500">Color scale:</span>
+            <span className="text-lotus-grey-500">Color scale:</span>
             <div className="flex items-center gap-1">
-              <div className="w-4 h-3 bg-blue-100 rounded"></div>
-              <div className="w-4 h-3 bg-blue-300 rounded"></div>
-              <div className="w-4 h-3 bg-blue-500 rounded"></div>
-              <div className="w-4 h-3 bg-blue-600 rounded"></div>
+              <div className="w-4 h-3 bg-lotus-purple-500/20 rounded"></div>
+              <div className="w-4 h-3 bg-lotus-purple-500/40 rounded"></div>
+              <div className="w-4 h-3 bg-lotus-purple-500/70 rounded"></div>
+              <div className="w-4 h-3 bg-lotus-purple-500 rounded"></div>
             </div>
-            <span className="text-slate-400">Low → High</span>
+            <span className="text-lotus-grey-500">Low → High</span>
           </div>
         </div>
 
@@ -320,10 +320,10 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
         <div className="flex gap-6">
           {/* Borrower Perspective */}
           <div className="flex-shrink-0">
-            <div className="text-xs font-semibold text-slate-700 mb-1">
+            <div className="text-xs font-semibold text-lotus-grey-200 mb-1">
               Borrower Perspective
             </div>
-            <div className="text-xs text-slate-500 mb-2">
+            <div className="text-xs text-lotus-grey-500 mb-2">
               Where does {tranches[selectedBorrower]?.lltv}% borrow come from?
             </div>
 
@@ -333,7 +333,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 <PieLegend slices={borrowerPieSlices} />
               </div>
             ) : (
-              <div className="text-xs text-slate-400 italic py-8">
+              <div className="text-xs text-lotus-grey-500 italic py-8">
                 No borrows in {tranches[selectedBorrower]?.lltv}% tranche
               </div>
             )}
@@ -341,10 +341,10 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
 
           {/* Lender Perspective */}
           <div className="flex-shrink-0">
-            <div className="text-xs font-semibold text-slate-700 mb-1">
+            <div className="text-xs font-semibold text-lotus-grey-200 mb-1">
               Lender Perspective
             </div>
-            <div className="text-xs text-slate-500 mb-2">
+            <div className="text-xs text-lotus-grey-500 mb-2">
               Where does {tranches[selectedLender]?.lltv}% supply go?
             </div>
 
@@ -354,13 +354,13 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 <PieLegend slices={lenderPieSlices} />
               </div>
             ) : (
-              <div className="text-xs text-slate-400 italic py-8">
+              <div className="text-xs text-lotus-grey-500 italic py-8">
                 No supply allocated from {tranches[selectedLender]?.lltv}% tranche
               </div>
             )}
 
-            <div className="mt-2 text-xs text-slate-500">
-              Total allocated: <span className="font-mono font-medium text-emerald-600">
+            <div className="mt-2 text-xs text-lotus-grey-500">
+              Total allocated: <span className="font-mono font-medium text-emerald-400">
                 {formatPercent(fundingData.capitalAllocated?.[selectedLender] || 0)}
               </span>
             </div>
@@ -405,7 +405,7 @@ function buildPieSlices(data: { trancheIdx: number; lltv: number; percent: numbe
     return {
       ...item,
       path,
-      color: item.isUnallocated ? '#e2e8f0' : SLICE_COLORS[item.trancheIdx % SLICE_COLORS.length],
+      color: item.isUnallocated ? '#27232F' : SLICE_COLORS[item.trancheIdx % SLICE_COLORS.length],
       isUnallocated: item.isUnallocated,
     };
   });
@@ -417,8 +417,8 @@ function PieChart({ slices, size }: { slices: PieSlice[]; size: number }) {
       {/* Define stripe pattern for unallocated */}
       <defs>
         <pattern id="stripes" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-          <rect width="3" height="6" fill="#e2e8f0" />
-          <rect x="3" width="3" height="6" fill="#cbd5e1" />
+          <rect width="3" height="6" fill="#27232F" />
+          <rect x="3" width="3" height="6" fill="#191621" />
         </pattern>
       </defs>
       {slices.map((slice, idx) => (
@@ -426,7 +426,7 @@ function PieChart({ slices, size }: { slices: PieSlice[]; size: number }) {
           key={idx}
           d={slice.path}
           fill={slice.isUnallocated ? 'url(#stripes)' : slice.color}
-          stroke={slice.isUnallocated ? '#94a3b8' : 'none'}
+          stroke={slice.isUnallocated ? '#736D7F' : 'none'}
           strokeWidth={slice.isUnallocated ? 1 : 0}
           className="transition-opacity hover:opacity-80"
         >
@@ -446,11 +446,11 @@ function PieLegend({ slices }: { slices: PieSlice[] }) {
             <svg width="10" height="10" className="flex-shrink-0">
               <defs>
                 <pattern id={`legend-stripes-${idx}`} patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)">
-                  <rect width="2" height="4" fill="#e2e8f0" />
-                  <rect x="2" width="2" height="4" fill="#cbd5e1" />
+                  <rect width="2" height="4" fill="#27232F" />
+                  <rect x="2" width="2" height="4" fill="#191621" />
                 </pattern>
               </defs>
-              <rect width="10" height="10" rx="2" fill={`url(#legend-stripes-${idx})`} stroke="#94a3b8" strokeWidth="0.5" />
+              <rect width="10" height="10" rx="2" fill={`url(#legend-stripes-${idx})`} stroke="#736D7F" strokeWidth="0.5" />
             </svg>
           ) : (
             <div
@@ -458,12 +458,12 @@ function PieLegend({ slices }: { slices: PieSlice[] }) {
               style={{ backgroundColor: slice.color }}
             />
           )}
-          <span className="text-slate-500">{slice.isUnallocated ? 'Unallocated' : `${slice.lltv}%`}:</span>
-          <span className="font-mono text-slate-700">{formatPercent(slice.percent)}</span>
+          <span className="text-lotus-grey-500">{slice.isUnallocated ? 'Unallocated' : `${slice.lltv}%`}:</span>
+          <span className="font-mono text-lotus-grey-300">{formatPercent(slice.percent)}</span>
         </div>
       ))}
       {slices.length === 0 && (
-        <div className="text-slate-400 italic">None</div>
+        <div className="text-lotus-grey-500 italic">None</div>
       )}
     </div>
   );
