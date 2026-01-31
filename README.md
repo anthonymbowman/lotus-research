@@ -1,11 +1,28 @@
-![CI](https://github.com/example/lotus-research/actions/workflows/ci.yml/badge.svg)
-# Lotus IRM Simulation
+# Lotus Protocol Simulators
 
-This package provides a toy implementation of the Lotus interest rate model.
+Interactive educational tools for understanding Lotus Protocol's lending mechanics.
 
-## Setup
+## Live Demo
+
+**[View the simulators](https://anthonymbowman.github.io/lotus-research/)**
+
+## Features
+
+- **Productive Debt**: Explore how LotusUSD backing creates a base rate, enabling spread compression and reduced rate volatility
+- **Tranche Liquidity**: Understand the connected-liquidity model with cascading interest and bad debt allocation
+
+## Development
 
 ```bash
-pip install -r requirements.txt
-pytest
+cd tranche-sandbox
+npm install
+npm run dev
 ```
+
+## Deployment
+
+```bash
+npm run deploy
+```
+
+Deploys to GitHub Pages via the `gh-pages` branch.

@@ -356,22 +356,17 @@ export function TrancheLiquidity({
                 <span>Junior (95%)</span>
               </div>
 
-              {/* Fixed example data */}
+              {/* Use actual tranche supply utilization values */}
               {(() => {
-                const exampleData = [
-                  { lltv: 75, supplyUtil: 0.60, intGen: 100 },
-                  { lltv: 80, supplyUtil: 0.70, intGen: 100 },
-                  { lltv: 85, supplyUtil: 0.80, intGen: 100 },
-                  { lltv: 90, supplyUtil: 0.90, intGen: 100 },
-                  { lltv: 95, supplyUtil: 1.00, intGen: 100 },
-                ];
+                const intGenPerTranche = 100;
 
                 let cascadeIn = 0;
-                const results = exampleData.map((d) => {
-                  const total = cascadeIn + d.intGen;
-                  const keeps = total * d.supplyUtil;
-                  const cascadeOut = total * (1 - d.supplyUtil);
-                  const result = { ...d, cascadeIn, total, keeps, cascadeOut };
+                const results = tranches.map((t) => {
+                  const supplyUtil = t.supplyUtilization ?? 1;
+                  const total = cascadeIn + intGenPerTranche;
+                  const keeps = total * supplyUtil;
+                  const cascadeOut = total * (1 - supplyUtil);
+                  const result = { lltv: t.lltv, supplyUtil, intGen: intGenPerTranche, cascadeIn, total, keeps, cascadeOut };
                   cascadeIn = cascadeOut;
                   return result;
                 });
@@ -414,7 +409,7 @@ export function TrancheLiquidity({
                       {/* Total row */}
                       <tr className="border-t border-slate-300 font-medium">
                         <td className="py-1 pr-2 text-slate-600">Total</td>
-                        <td className="py-1 px-1 text-right font-mono text-emerald-700">$500</td>
+                        <td className="py-1 px-1 text-right font-mono text-emerald-700">${tranches.length * 100}</td>
                         <td className="py-1 px-1"></td>
                         <td className="py-1 px-1"></td>
                         <td className="py-1 px-1"></td>

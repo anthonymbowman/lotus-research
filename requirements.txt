@@ -1,7 +1,0 @@
-numpy
-pandas
-matplotlib
-scipy
-pytest
-hypothesis
-pytest-cov
