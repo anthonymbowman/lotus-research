@@ -1,25 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar for better UX */
+/* Lotus Protocol Brand Styles */
+:root {
+  /* Background */
+  --dark-grey: #0D0A14;
+  --dark-grey-2: #191621;
+  --dark-grey-3: #27232F;
+
+  /* Text */
+  --grey-100: #FBFAFC;
+  --grey-300: #D4D0DD;
+  --grey-500: #736D7F;
+
+  /* Accent (Purple) */
+  --purple-primary: #8E62FF;
+  --purple-dark: #280B55;
+  --purple-light: #C4B2FF;
+  --purple-bg: #3F1C85;
+}
+
+/* Base dark theme */
+html {
+  background-color: var(--dark-grey);
+  color: var(--grey-300);
+}
+
+body {
+  font-family: 'Roboto', system-ui, sans-serif;
+  line-height: 130%;
+  background-color: var(--dark-grey);
+  color: var(--grey-300);
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--grey-100);
+  font-weight: 500;
+}
+
+/* Custom scrollbar for dark theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--dark-grey-2);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--dark-grey-3);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--purple-primary);
 }
 
 /* Input number spinners - hide default arrows */
@@ -31,4 +72,126 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Form elements dark theme */
+input, select, textarea {
+  background-color: var(--dark-grey-2);
+  border-color: var(--dark-grey-3);
+  color: var(--grey-100);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--purple-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(142, 98, 255, 0.2);
+}
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 6px;
+  background: #454052;
+  border: 1px solid #736D7F;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--purple-primary);
+  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 4px rgba(142, 98, 255, 0.25);
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 6px rgba(142, 98, 255, 0.35);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: #454052;
+  border: 1px solid #736D7F;
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--purple-primary);
+  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 4px rgba(142, 98, 255, 0.25);
+  cursor: pointer;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 6px rgba(142, 98, 255, 0.35);
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-lotus-purple-500 hover:bg-lotus-purple-600 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-lotus-grey-700 hover:bg-lotus-grey-600 text-lotus-grey-100 font-medium py-2 px-4 rounded-lg transition-colors border border-lotus-grey-600;
+}
+
+/* Card styles */
+.card {
+  @apply bg-lotus-grey-800 border border-lotus-grey-700 rounded-lg;
+}
+
+.card-hover {
+  @apply card hover:border-lotus-purple-500 transition-colors;
+}
+
+/* Utility classes for Lotus brand */
+.text-heading {
+  @apply text-lotus-grey-100 font-medium;
+}
+
+.text-body {
+  @apply text-lotus-grey-300;
+}
+
+.text-muted {
+  @apply text-lotus-grey-400;
+}
+
+.accent-purple {
+  @apply text-lotus-purple-500;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
 }

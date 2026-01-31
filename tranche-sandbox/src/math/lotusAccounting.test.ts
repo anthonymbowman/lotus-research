@@ -357,10 +357,15 @@ describe('formatNumber', () => {
 });
 
 describe('formatPercent', () => {
-  it('formats percentages', () => {
-    expect(formatPercent(0.5)).toBe('50.0%');
-    expect(formatPercent(1)).toBe('100.0%');
-    expect(formatPercent(0.123)).toBe('12.3%');
+  it('formats percentages with 2 decimal places by default', () => {
+    expect(formatPercent(0.5)).toBe('50.00%');
+    expect(formatPercent(1)).toBe('100.00%');
+    expect(formatPercent(0.123)).toBe('12.30%');
+  });
+
+  it('handles custom decimal places', () => {
+    expect(formatPercent(0.5, 1)).toBe('50.0%');
+    expect(formatPercent(0.123, 0)).toBe('12%');
   });
 
   it('handles null', () => {

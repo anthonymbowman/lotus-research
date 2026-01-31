@@ -1,491 +1,252 @@
-import type { TrancheInput, TrancheData } from '../types';
-import { formatNumber, formatPercent } from '../math/lotusAccounting';
+import { useMemo } from 'react';
+import type { TrancheData, TrancheInput } from '../types';
 import { TrancheTable } from './TrancheTable';
-import { FundingMatrix } from './FundingMatrix';
-import { RateChart } from './RateChart';
-import { CollapsibleSection, StackedBar } from './ConceptExplainer';
-import { InterestSimulator } from './InterestSimulator';
-import { BadDebtSimulator } from './BadDebtSimulator';
-import { IsolatedComparison } from './IsolatedComparison';
+import { CollapsibleSection } from './ConceptExplainer';
+import { RoleDiagramCompact } from './RoleDiagram';
 
 interface TrancheLiquidityProps {
-  /** Computed tranche data */
   tranches: TrancheData[];
-  /** Productive debt rate (base rate) */
   productiveDebtRate: number;
-  /** Callback when tranche input changes */
   onTrancheChange: (id: number, field: keyof TrancheInput, value: number) => void;
 }
 
-/**
- * Main wrapper component for the Tranche Liquidity educational flow.
- */
 export function TrancheLiquidity({
   tranches,
   productiveDebtRate,
   onTrancheChange,
 }: TrancheLiquidityProps) {
-  // Compute max values for visualizations
-  const maxJrSupply = Math.max(...tranches.map((t) => t.jrSupply));
-  const maxJrBorrow = Math.max(...tranches.map((t) => t.jrBorrow));
-  const maxJrNetSupply = Math.max(...tranches.map((t) => t.jrNetSupply));
+  const maxJrSupply = useMemo(() => Math.max(...tranches.map(t => t.jrSupply)), [tranches]);
+  const maxJrBorrow = useMemo(() => Math.max(...tranches.map(t => t.jrBorrow)), [tranches]);
+  const maxJrNetSupply = useMemo(() => Math.max(...tranches.map(t => Math.abs(t.jrNetSupply))), [tranches]);
 
   return (
-    <div className="space-y-4">
-      {/* Main Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+    <div className="space-y-6">
+      <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
+        <p className="text-sm text-lotus-purple-200">
+          Tranches allow lenders to choose their risk/reward profile. Lower LLTV = more senior (safer),
+          higher LLTV = more junior (higher yield). Liquidity flows between tranches, creating connected markets.
+        </p>
+      </div>
+
+      {/* Role Cards */}
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">How Lenders & Borrowers Use Tranches</h3>
+        <RoleDiagramCompact />
+      </div>
+
+      {/* Liquidity Cascade Explanation */}
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">The Liquidity Cascade</h3>
+        <p className="text-lotus-grey-400 mb-4">
+          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism:
+        </p>
+
+        {/* Cascade Flow Diagram */}
+        <div className="bg-lotus-grey-900/50 rounded-lg p-4 border border-lotus-grey-700 mb-4">
+          <div className="space-y-4">
+            {/* Supply flows UP */}
+            <div className="flex items-center gap-3">
+              <div className="w-24 text-right">
+                <span className="text-sm text-emerald-400 font-medium">Supply</span>
+              </div>
+              <div className="flex-1 flex items-center gap-2">
+                <div className="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-400 text-xs">Junior 95%</div>
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-orange-900/30 border border-orange-700 rounded text-orange-400 text-xs">Junior 90%</div>
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-amber-900/30 border border-amber-700 rounded text-amber-400 text-xs">Mid 85%</div>
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-emerald-900/30 border border-emerald-700 rounded text-emerald-400 text-xs">Senior</div>
+              </div>
+              <div className="w-24">
+                <span className="text-xs text-emerald-500">cascades UP</span>
+              </div>
+            </div>
+
+            {/* Interest flows DOWN */}
+            <div className="flex items-center gap-3">
+              <div className="w-24 text-right">
+                <span className="text-sm text-blue-400 font-medium">Interest</span>
+              </div>
+              <div className="flex-1 flex items-center gap-2">
+                <div className="px-3 py-1 bg-emerald-900/30 border border-emerald-700 rounded text-emerald-400 text-xs">Senior</div>
+                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-amber-900/30 border border-amber-700 rounded text-amber-400 text-xs">Mid 85%</div>
+                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-orange-900/30 border border-orange-700 rounded text-orange-400 text-xs">Junior 90%</div>
+                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+                <div className="px-3 py-1 bg-red-900/30 border border-red-700 rounded text-red-400 text-xs">Junior 95%</div>
+              </div>
+              <div className="w-24">
+                <span className="text-xs text-blue-500">flows DOWN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Insight Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50">
+            <div className="text-xs text-emerald-400 font-medium mb-1">Unused Junior Supply</div>
+            <p className="text-xs text-emerald-300">
+              Automatically supports senior borrowers, maximizing capital efficiency.
+            </p>
+          </div>
+          <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-700/50">
+            <div className="text-xs text-blue-400 font-medium mb-1">Interest Distribution</div>
+            <p className="text-xs text-blue-300">
+              Interest flows to all suppliers whose liquidity was used, proportionally.
+            </p>
+          </div>
+          <div className="bg-lotus-purple-900/20 rounded-lg p-3 border border-lotus-purple-700/50">
+            <div className="text-xs text-lotus-purple-400 font-medium mb-1">Junior Lender Benefit</div>
+            <p className="text-xs text-lotus-purple-300">
+              Junior lenders can earn from multiple tranches when their liquidity cascades up.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 overflow-x-auto">
         <TrancheTable
           tranches={tranches}
-          onTrancheChange={onTrancheChange}
           productiveDebtRate={productiveDebtRate}
+          onTrancheChange={onTrancheChange}
         />
       </div>
 
-      {/* Section 1: Understanding the Metrics */}
       <CollapsibleSection
-        title="Understanding the Metrics"
+        title="Understanding Junior Metrics"
         icon="📊"
-        description="Learn what each computed value means and how it's calculated"
-        defaultExpanded={false}
-      >
-        <div className="space-y-6">
-          {/* 1a: Junior Metrics */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-slate-700 border-b border-slate-200 pb-2">
-              Junior Metrics (Jr Supply, Jr Borrow, Jr Net)
-            </h4>
-
-            {/* Jr Supply Explanation */}
-            <div className="bg-blue-50/50 rounded-lg p-4 border border-blue-100">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h5 className="font-medium text-blue-800">Jr Supply</h5>
-                  <p className="text-sm text-blue-600 mt-1">
-                    Total supply from this tranche and all junior tranches combined.
-                  </p>
-                </div>
-                <div className="bg-blue-800 rounded px-3 py-1">
-                  <code className="text-xs font-mono text-blue-200">
-                    jrSupply[i] = Σ supply[j] for j ≥ i
-                  </code>
-                </div>
-              </div>
-              <div className="space-y-1">
-                {tranches.map((t) => (
-                  <StackedBar
-                    key={t.id}
-                    label={`${t.lltv}%`}
-                    value={t.supplyAssets}
-                    cumulativeValue={t.jrSupply}
-                    maxValue={maxJrSupply}
-                    color="#3b82f6"
-                  />
-                ))}
-              </div>
-              <p className="text-xs text-blue-500 mt-2">
-                Dark bar = this tranche's supply. Light extension = junior tranches' supply.
-              </p>
-            </div>
-
-            {/* Jr Borrow Explanation */}
-            <div className="bg-orange-50/50 rounded-lg p-4 border border-orange-100">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h5 className="font-medium text-orange-800">Jr Borrow</h5>
-                  <p className="text-sm text-orange-600 mt-1">
-                    Total borrows from this tranche and all junior tranches combined.
-                  </p>
-                </div>
-                <div className="bg-orange-800 rounded px-3 py-1">
-                  <code className="text-xs font-mono text-orange-200">
-                    jrBorrow[i] = Σ borrow[j] for j ≥ i
-                  </code>
-                </div>
-              </div>
-              <div className="space-y-1">
-                {tranches.map((t) => (
-                  <StackedBar
-                    key={t.id}
-                    label={`${t.lltv}%`}
-                    value={t.borrowAssets}
-                    cumulativeValue={t.jrBorrow}
-                    maxValue={maxJrBorrow || 1}
-                    color="#f97316"
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Jr Net Supply Explanation */}
-            <div className="bg-emerald-50/50 rounded-lg p-4 border border-emerald-100">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h5 className="font-medium text-emerald-800">Jr Net Supply</h5>
-                  <p className="text-sm text-emerald-600 mt-1">
-                    Available supply after accounting for all junior borrowing.
-                  </p>
-                </div>
-                <div className="bg-emerald-800 rounded px-3 py-1">
-                  <code className="text-xs font-mono text-emerald-200">
-                    jrNetSupply[i] = max(0, jrSupply[i] - jrBorrow[i])
-                  </code>
-                </div>
-              </div>
-              <div className="space-y-1">
-                {tranches.map((t) => (
-                  <StackedBar
-                    key={t.id}
-                    label={`${t.lltv}%`}
-                    value={t.jrNetSupply}
-                    cumulativeValue={t.jrNetSupply}
-                    maxValue={maxJrNetSupply || 1}
-                    color="#10b981"
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 1b: Free Supply & Available Supply - Side by Side */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-slate-700 border-b border-slate-200 pb-2">
-              Free Supply & Available Supply
-            </h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Free Supply Explanation */}
-              <div className="bg-purple-50/50 rounded-lg p-4 border border-purple-100">
-                <div className="mb-3">
-                  <h5 className="font-medium text-purple-800">Free Supply</h5>
-                  <p className="text-sm text-purple-600 mt-1">
-                    Running minimum of Jr Net Supply from senior to junior.
-                  </p>
-                  <div className="bg-purple-800 rounded px-3 py-1 mt-2 inline-block">
-                    <code className="text-xs font-mono text-purple-200">
-                      freeSupply = min(jrNetSupply[0..i])
-                    </code>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="text-sm">
-                    <thead>
-                      <tr className="border-b border-purple-200">
-                        <th className="text-left py-1 pr-2 text-purple-700">Tranche</th>
-                        <th className="text-right py-1 px-1 text-purple-700">Jr Net Supply</th>
-                        <th className="py-1 px-1 text-purple-400">→</th>
-                        <th className="text-right py-1 pl-1 text-purple-700">Free Supply</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tranches.map((t) => (
-                        <tr key={t.id} className="border-b border-purple-100">
-                          <td className="py-1 pr-2 font-medium text-slate-600">{t.lltv}%</td>
-                          <td className="py-1 px-1 text-right font-mono text-blue-600">{formatNumber(t.jrNetSupply, 0)}</td>
-                          <td className="py-1 px-1 text-purple-400">→</td>
-                          <td className="py-1 pl-1 text-right font-mono font-medium text-purple-700">{formatNumber(t.freeSupply, 0)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Available Supply Explanation */}
-              <div className="bg-teal-50/50 rounded-lg p-4 border border-teal-100">
-                <div className="mb-3">
-                  <h5 className="font-medium text-teal-800">Available Supply</h5>
-                  <p className="text-sm text-teal-600 mt-1">
-                    Supply available to borrowers before they borrowed.
-                  </p>
-                  <div className="bg-teal-800 rounded px-3 py-1 mt-2 inline-block">
-                    <code className="text-xs font-mono text-teal-200">
-                      available = jrNetSupply + borrow
-                    </code>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="text-sm">
-                    <thead>
-                      <tr className="border-b border-teal-200">
-                        <th className="text-left py-1 pr-2 text-teal-700">Tranche</th>
-                        <th className="text-right py-1 px-1 text-teal-700">Jr Net</th>
-                        <th className="py-1 px-1 text-teal-400">+</th>
-                        <th className="text-right py-1 px-1 text-teal-700">Borrow</th>
-                        <th className="py-1 px-1 text-teal-400">=</th>
-                        <th className="text-right py-1 pl-1 text-teal-700">Available</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tranches.map((t) => (
-                        <tr key={t.id} className="border-b border-teal-100">
-                          <td className="py-1 pr-2 font-medium text-slate-600">{t.lltv}%</td>
-                          <td className="py-1 px-1 text-right font-mono text-blue-600">{formatNumber(t.jrNetSupply, 0)}</td>
-                          <td className="py-1 px-1 text-slate-400">+</td>
-                          <td className="py-1 px-1 text-right font-mono text-orange-600">{formatNumber(t.borrowAssets, 0)}</td>
-                          <td className="py-1 px-1 text-slate-400">=</td>
-                          <td className="py-1 pl-1 text-right font-mono font-medium text-teal-700">{formatNumber(t.availableSupply, 0)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 1c: Utilization Metrics */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-slate-700 border-b border-slate-200 pb-2">
-              Utilization Metrics
-            </h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Supply Utilization */}
-              <div className="bg-indigo-50/50 rounded-lg p-4 border border-indigo-100">
-                <div className="mb-3">
-                  <h5 className="font-medium text-indigo-800">Supply Utilization</h5>
-                  <p className="text-sm text-indigo-600 mt-1">
-                    Fraction of available supply from this tranche's lenders.
-                  </p>
-                  <div className="bg-indigo-800 rounded px-3 py-1 mt-2 inline-block">
-                    <code className="text-xs font-mono text-indigo-200">
-                      supplyUtil = supply ÷ availableSupply
-                    </code>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="text-sm">
-                    <thead>
-                      <tr className="border-b border-indigo-200">
-                        <th className="text-left py-1 pr-2 text-indigo-700">Tranche</th>
-                        <th className="text-right py-1 px-1 text-indigo-700">Supply</th>
-                        <th className="py-1 px-1 text-indigo-400">÷</th>
-                        <th className="text-right py-1 px-1 text-indigo-700">Available</th>
-                        <th className="py-1 px-1 text-indigo-400">=</th>
-                        <th className="text-right py-1 pl-1 text-indigo-700">Supply Util</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tranches.map((t) => (
-                        <tr key={t.id} className="border-b border-indigo-100">
-                          <td className="py-1 pr-2 font-medium text-slate-600">{t.lltv}%</td>
-                          <td className="py-1 px-1 text-right font-mono text-blue-600">{formatNumber(t.supplyAssets, 0)}</td>
-                          <td className="py-1 px-1 text-indigo-400">÷</td>
-                          <td className="py-1 px-1 text-right font-mono text-teal-600">{formatNumber(t.availableSupply, 0)}</td>
-                          <td className="py-1 px-1 text-indigo-400">=</td>
-                          <td className="py-1 pl-1 text-right font-mono font-medium text-indigo-700">{formatPercent(t.supplyUtilization, 0)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-indigo-500 mt-3">
-                  Used to allocate interest and bad debt between local lenders and cascading flow.
-                </p>
-              </div>
-
-              {/* Borrow Utilization */}
-              <div className="bg-pink-50/50 rounded-lg p-4 border border-pink-100">
-                <div className="mb-3">
-                  <h5 className="font-medium text-pink-800">Borrow Utilization</h5>
-                  <p className="text-sm text-pink-600 mt-1">
-                    How much of junior supply is committed (borrowed or locked).
-                  </p>
-                  <div className="bg-pink-800 rounded px-3 py-1 mt-2 inline-block">
-                    <code className="text-xs font-mono text-pink-200">
-                      borrowUtil = 1 − (freeSupply ÷ jrSupply)
-                    </code>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="text-sm">
-                    <thead>
-                      <tr className="border-b border-pink-200">
-                        <th className="text-left py-1 pr-2 text-pink-700">Tranche</th>
-                        <th className="text-right py-1 px-1 text-pink-700">Jr Supply</th>
-                        <th className="py-1 px-1 text-pink-400">−</th>
-                        <th className="text-right py-1 px-1 text-pink-700">Free Supply</th>
-                        <th className="py-1 px-1 text-pink-400">=</th>
-                        <th className="text-right py-1 pl-1 text-pink-700">Borrow Util</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tranches.map((t) => (
-                        <tr key={t.id} className="border-b border-pink-100">
-                          <td className="py-1 pr-2 font-medium text-slate-600">{t.lltv}%</td>
-                          <td className="py-1 px-1 text-right font-mono text-blue-600">{formatNumber(t.jrSupply, 0)}</td>
-                          <td className="py-1 px-1 text-pink-400">−</td>
-                          <td className="py-1 px-1 text-right font-mono text-purple-600">{formatNumber(t.freeSupply, 0)}</td>
-                          <td className="py-1 px-1 text-pink-400">=</td>
-                          <td className="py-1 pl-1 text-right font-mono font-medium text-pink-700">{formatPercent(t.borrowUtilization, 0)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-pink-500 mt-3">
-                  Used by interest rate models to determine borrow rates.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CollapsibleSection>
-
-      {/* Section 2: How Supply Rates Work */}
-      <CollapsibleSection
-        title="How Supply Rates Work"
-        icon="💰"
-        description="Understand the cascading interest allocation model"
-        defaultExpanded={false}
+        description="How supply and borrow cascade across tranches"
       >
         <div className="space-y-4">
-          {/* Cascade Mechanism */}
-          <div className="bg-emerald-50/50 rounded-lg p-4 border border-emerald-100">
-            <h4 className="font-medium text-emerald-800 mb-3">The Cascade Mechanism</h4>
-            <p className="text-sm text-emerald-600 mb-4">
-              Interest flows from senior to junior tranches, allocated based on supply utilization at each level.
-              Here's a simplified example with <strong>$100 interest generated per tranche</strong>:
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Supply</h4>
+            <p className="text-sm text-lotus-grey-400 mb-3">
+              Junior Supply at tranche i = Sum of all supply from this tranche and more junior tranches.
             </p>
-
-            {/* Simplified $100 example */}
-            <div className="bg-white rounded border border-emerald-200 p-4 overflow-x-auto">
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
-                <span>Senior (75%)</span>
-                <span>→ Unallocated interest cascades to junior →</span>
-                <span>Junior (95%)</span>
-              </div>
-
-              {/* Use actual tranche supply utilization values */}
-              {(() => {
-                const intGenPerTranche = 100;
-
-                let cascadeIn = 0;
-                const results = tranches.map((t) => {
-                  const supplyUtil = t.supplyUtilization ?? 1;
-                  const total = cascadeIn + intGenPerTranche;
-                  const keeps = total * supplyUtil;
-                  const cascadeOut = total * (1 - supplyUtil);
-                  const result = { lltv: t.lltv, supplyUtil, intGen: intGenPerTranche, cascadeIn, total, keeps, cascadeOut };
-                  cascadeIn = cascadeOut;
-                  return result;
-                });
-
-                return (
-                  <table className="text-sm w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="text-left py-1 pr-2 text-slate-600">Tranche</th>
-                        <th className="text-right py-1 px-1 text-slate-600">Interest Generated</th>
-                        <th className="py-1 px-1 text-slate-400">+</th>
-                        <th className="text-right py-1 px-1 text-slate-600">Interest Cascaded In</th>
-                        <th className="py-1 px-1 text-slate-400">=</th>
-                        <th className="text-right py-1 px-1 text-slate-600">Total Interest</th>
-                        <th className="py-1 px-1 text-slate-400">×</th>
-                        <th className="text-right py-1 px-1 text-slate-600">Supply Utilization</th>
-                        <th className="py-1 px-1 text-slate-400">=</th>
-                        <th className="text-right py-1 px-1 text-slate-600">Interest Kept</th>
-                        <th className="text-right py-1 pl-2 text-slate-600">Interest Cascaded</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {results.map((r, i) => (
-                        <tr key={r.lltv} className="border-b border-slate-100">
-                          <td className="py-1 pr-2 font-medium text-slate-700">{r.lltv}%</td>
-                          <td className="py-1 px-1 text-right font-mono text-emerald-600">${r.intGen}</td>
-                          <td className="py-1 px-1 text-slate-400">+</td>
-                          <td className="py-1 px-1 text-right font-mono text-blue-600">${r.cascadeIn.toFixed(0)}</td>
-                          <td className="py-1 px-1 text-slate-400">=</td>
-                          <td className="py-1 px-1 text-right font-mono text-slate-700">${r.total.toFixed(0)}</td>
-                          <td className="py-1 px-1 text-slate-400">×</td>
-                          <td className="py-1 px-1 text-right font-mono text-indigo-600">{formatPercent(r.supplyUtil, 0)}</td>
-                          <td className="py-1 px-1 text-slate-400">=</td>
-                          <td className="py-1 px-1 text-right font-mono font-medium text-emerald-700">${r.keeps.toFixed(0)}</td>
-                          <td className="py-1 pl-2 text-right font-mono text-orange-600">
-                            {i < results.length - 1 ? `$${r.cascadeOut.toFixed(0)}` : '-'}
-                          </td>
-                        </tr>
-                      ))}
-                      {/* Total row */}
-                      <tr className="border-t border-slate-300 font-medium">
-                        <td className="py-1 pr-2 text-slate-600">Total</td>
-                        <td className="py-1 px-1 text-right font-mono text-emerald-700">${tranches.length * 100}</td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1"></td>
-                        <td className="py-1 px-1 text-right font-mono text-emerald-700">${results.reduce((s, r) => s + r.keeps, 0).toFixed(0)}</td>
-                        <td className="py-1 pl-2"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                );
-              })()}
+            <div className="space-y-2">
+              {tranches.map((t) => (
+                <div key={t.id} className="flex items-center gap-2">
+                  <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                  <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 transition-all"
+                      style={{ width: `${maxJrSupply > 0 ? (t.jrSupply / maxJrSupply) * 100 : 0}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
+                    {t.jrSupply.toLocaleString()}
+                  </span>
+                </div>
+              ))}
             </div>
-
-            <p className="text-xs text-slate-500 mt-3 italic">
-              For a more realistic scenario based on current data, see the Interest Accrual Simulation below.
-            </p>
           </div>
 
-          {/* Rate Calculation */}
-          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-            <h4 className="font-medium text-slate-700 mb-2">Supply Rate Calculation</h4>
-            <div className="bg-slate-800 rounded px-4 py-2 mb-3">
-              <code className="text-sm font-mono text-blue-300">
-                supplyRate = interestAllocated / supplyAssets
-              </code>
-            </div>
-            <p className="text-sm text-slate-600">
-              Senior tranches can earn high rates through cascades because when junior tranches have
-              low supply utilization, most of the interest cascades up, concentrating on fewer lenders.
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Borrow</h4>
+            <p className="text-sm text-lotus-grey-400 mb-3">
+              Junior Borrow at tranche i = Sum of all borrows at or above this risk level.
             </p>
+            <div className="space-y-2">
+              {tranches.map((t) => (
+                <div key={t.id} className="flex items-center gap-2">
+                  <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                  <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
+                    <div
+                      className="h-full bg-orange-500 transition-all"
+                      style={{ width: `${maxJrBorrow > 0 ? (t.jrBorrow / maxJrBorrow) * 100 : 0}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
+                    {t.jrBorrow.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Net Supply</h4>
+            <p className="text-sm text-lotus-grey-400 mb-3">
+              Jr Net = Jr Supply - Jr Borrow. This shows the "excess" supply available at each level.
+            </p>
+            <div className="space-y-2">
+              {tranches.map((t) => {
+                const isPositive = t.jrNetSupply >= 0;
+                return (
+                  <div key={t.id} className="flex items-center gap-2">
+                    <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                    <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden relative">
+                      <div
+                        className={`h-full transition-all ${isPositive ? 'bg-emerald-500' : 'bg-red-500'}`}
+                        style={{ width: `${maxJrNetSupply > 0 ? (Math.abs(t.jrNetSupply) / maxJrNetSupply) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-mono w-16 text-right ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {t.jrNetSupply.toLocaleString()}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </CollapsibleSection>
 
-      {/* Section 3: Interest Accrual Simulation */}
       <CollapsibleSection
-        title="Interest Accrual Simulation"
-        icon="⏱️"
-        description="See what happens when time passes and interest accrues"
-        defaultExpanded={false}
+        title="Utilization Metrics"
+        icon="📈"
+        description="How supply and borrow utilization are calculated"
       >
-        <InterestSimulator tranches={tranches} productiveDebtRate={productiveDebtRate} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-purple-300 mb-2">Supply Utilization</h4>
+            <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
+              <code className="text-xs font-mono text-lotus-grey-300">
+                SupplyUtil = JrBorrow / JrSupply
+              </code>
+            </div>
+            <p className="text-sm text-lotus-grey-400">
+              How much of the available junior supply is being borrowed.
+              Higher = more of the supply is earning interest.
+            </p>
+          </div>
+
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-purple-300 mb-2">Borrow Utilization</h4>
+            <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
+              <code className="text-xs font-mono text-lotus-grey-300">
+                BorrowUtil = OwnBorrow / JrBorrow
+              </code>
+            </div>
+            <p className="text-sm text-lotus-grey-400">
+              This tranche's share of the total borrows.
+              Used to calculate what portion of interest stays at this level.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 p-3 bg-amber-900/20 border border-amber-700/50 rounded-lg">
+          <p className="text-sm text-amber-300">
+            <span className="font-medium">Key insight:</span> Supply utilization determines how much
+            interest stays at this tranche vs cascading to more junior tranches.
+          </p>
+        </div>
       </CollapsibleSection>
-
-      {/* Section 4: Bad Debt Simulation */}
-      <CollapsibleSection
-        title="Bad Debt Simulation"
-        icon="⚠️"
-        description="Explore how bad debt is absorbed by tranches"
-        defaultExpanded={false}
-      >
-        <BadDebtSimulator tranches={tranches} />
-      </CollapsibleSection>
-
-      {/* Section 5: Lotus vs Isolated Markets */}
-      <CollapsibleSection
-        title="Lotus vs Isolated Markets"
-        icon="⚖️"
-        description="Compare connected liquidity to traditional isolated lending pools"
-        defaultExpanded={false}
-      >
-        <IsolatedComparison tranches={tranches} productiveDebtRate={productiveDebtRate} />
-      </CollapsibleSection>
-
-      {/* Rate Chart */}
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-        <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
-      </div>
-
-      {/* Funding Matrix */}
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-        <FundingMatrix tranches={tranches} includePendingInterest={false} />
-      </div>
     </div>
   );
 }

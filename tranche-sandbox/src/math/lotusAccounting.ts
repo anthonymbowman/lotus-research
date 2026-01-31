@@ -315,7 +315,7 @@ export function formatNumber(value: number | null, decimals: number = 2): string
  * @param decimals - Number of decimal places (default 1)
  * @returns Formatted percentage string
  */
-export function formatPercent(value: number | null, decimals: number = 1): string {
+export function formatPercent(value: number | null, decimals: number = 2): string {
   if (value === null) return '-';
   if (!Number.isFinite(value)) return '-';
   return (value * 100).toFixed(decimals) + '%';
