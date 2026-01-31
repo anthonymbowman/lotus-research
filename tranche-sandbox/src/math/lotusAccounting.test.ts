@@ -10,6 +10,10 @@ import {
   computeAllTranches,
   formatNumber,
   formatPercent,
+  timePeriodToYears,
+  getTimePeriodLabel,
+  simulateInterestAccrual,
+  simulateBadDebt,
 } from './lotusAccounting';
 import type { TrancheInput } from '../types';
 
@@ -361,5 +365,216 @@ describe('formatPercent', () => {
 
   it('handles null', () => {
     expect(formatPercent(null)).toBe('-');
+  });
+});
+
+describe('timePeriodToYears', () => {
+  it('converts time periods to years correctly', () => {
+    expect(timePeriodToYears('1week')).toBeCloseTo(1 / 52);
+    expect(timePeriodToYears('1month')).toBeCloseTo(1 / 12);
+    expect(timePeriodToYears('3months')).toBeCloseTo(0.25);
+    expect(timePeriodToYears('1year')).toBe(1);
+  });
+});
+
+describe('getTimePeriodLabel', () => {
+  it('returns correct labels', () => {
+    expect(getTimePeriodLabel('1week')).toBe('1 Week');
+    expect(getTimePeriodLabel('1month')).toBe('1 Month');
+    expect(getTimePeriodLabel('3months')).toBe('3 Months');
+    expect(getTimePeriodLabel('1year')).toBe('1 Year');
+  });
+});
+
+describe('simulateInterestAccrual', () => {
+  it('calculates interest generated correctly', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const result = simulateInterestAccrual(tranches, '1year');
+
+    // Interest generated = borrow * rate
+    // T0: 100 * 0.03 = 3
+    // T1: 250 * 0.04 = 10
+    // T2: 200 * 0.05 = 10
+    // T3: 150 * 0.07 = 10.5
+    // T4: 100 * 0.10 = 10
+    expect(result.tranches[0].interestGenerated).toBeCloseTo(3);
+    expect(result.tranches[1].interestGenerated).toBeCloseTo(10);
+    expect(result.tranches[2].interestGenerated).toBeCloseTo(10);
+    expect(result.tranches[3].interestGenerated).toBeCloseTo(10.5);
+    expect(result.tranches[4].interestGenerated).toBeCloseTo(10);
+  });
+
+  it('total interest received equals total interest generated', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const result = simulateInterestAccrual(tranches, '1year');
+
+    // Total should be conserved (no interest lost in cascade)
+    expect(result.totalInterestReceived).toBeCloseTo(result.totalInterestGenerated);
+  });
+
+  it('scales with time period', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const yearResult = simulateInterestAccrual(tranches, '1year');
+    const monthResult = simulateInterestAccrual(tranches, '1month');
+
+    // 1 month should be ~1/12 of 1 year
+    expect(monthResult.totalInterestGenerated).toBeCloseTo(yearResult.totalInterestGenerated / 12);
+  });
+
+  it('cascades interest from senior to junior', () => {
+    // Simple 2-tranche case
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 100, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.10 },
+      { id: 1, lltv: 95, supplyAssets: 100, borrowAssets: 0, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+    const result = simulateInterestAccrual(tranches, '1year');
+
+    // T0 generates 10, T1 generates 0
+    expect(result.tranches[0].interestGenerated).toBeCloseTo(10);
+    expect(result.tranches[1].interestGenerated).toBeCloseTo(0);
+
+    // With 50% supply utilization at T0, half cascades to T1
+    // T0 receives 5, T1 receives 5
+    expect(result.tranches[0].interestReceived).toBeCloseTo(5);
+    expect(result.tranches[1].interestReceived).toBeCloseTo(5);
+  });
+
+  it('handles zero borrow (no interest generated)', () => {
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 1000, borrowAssets: 0, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+    const result = simulateInterestAccrual(tranches, '1year');
+
+    expect(result.totalInterestGenerated).toBe(0);
+    expect(result.totalInterestReceived).toBe(0);
+  });
+});
+
+describe('simulateBadDebt', () => {
+  it('cascades bad debt from senior to junior based on supply utilization', () => {
+    // Simple 2-tranche case with 50% supply util at senior tranche
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 100, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.10 },
+      { id: 1, lltv: 95, supplyAssets: 100, borrowAssets: 0, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+
+    // jrNetSupply: [100, 100], availableSupply: [200, 100]
+    // supplyUtil: [100/200=0.5, 100/100=1.0]
+
+    // Bad debt of 100 at 75% tranche
+    const result = simulateBadDebt(tranches, 0, 100);
+
+    // T0: absorbs 100 * 0.5 = 50, cascades 100 * 0.5 = 50
+    // T1: absorbs 50 * 1.0 = 50 (100% utilization at most junior)
+    expect(result.tranches[0].badDebtAbsorbed).toBeCloseTo(50);
+    expect(result.tranches[0].badDebtCascadedOut).toBeCloseTo(50);
+    expect(result.tranches[1].badDebtAbsorbed).toBeCloseTo(50);
+    expect(result.tranches[1].badDebtCascadedIn).toBeCloseTo(50);
+
+    expect(result.totalAbsorbed).toBeCloseTo(100);
+    expect(result.unabsorbedBadDebt).toBeCloseTo(0);
+  });
+
+  it('most junior tranche absorbs 100% of cascaded bad debt', () => {
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 0, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.10 },
+      { id: 1, lltv: 95, supplyAssets: 100, borrowAssets: 0, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+
+    // T0 has 0% supply utilization (no supply)
+    // All bad debt cascades to T1
+
+    const result = simulateBadDebt(tranches, 0, 100);
+
+    // T0: absorbs 0 (no supply), cascades 100
+    expect(result.tranches[0].badDebtAbsorbed).toBe(0);
+    expect(result.tranches[0].badDebtCascadedOut).toBeCloseTo(100);
+
+    // T1: absorbs 100 (100% utilization at most junior)
+    expect(result.tranches[1].badDebtAbsorbed).toBeCloseTo(100);
+
+    expect(result.totalAbsorbed).toBeCloseTo(100);
+  });
+
+  it('tracks cascade flow through multiple tranches', () => {
+    // 3 tranches with varying supply utilization
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 100, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.05 },
+      { id: 1, lltv: 85, supplyAssets: 100, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.07 },
+      { id: 2, lltv: 95, supplyAssets: 100, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+
+    // Bad debt of 100 at middle tranche
+    const result = simulateBadDebt(tranches, 1, 100);
+
+    // Bad debt starts at T1 but cascades from T0 (senior) onwards
+    // Since bad debt occurs at T1, T0 sees 0 bad debt in
+    expect(result.tranches[0].badDebtLocal).toBe(0);
+    expect(result.tranches[0].badDebtCascadedIn).toBe(0);
+
+    // T1 has the local bad debt
+    expect(result.tranches[1].badDebtLocal).toBe(100);
+
+    // All absorbed should equal total
+    expect(result.totalAbsorbed).toBeCloseTo(result.totalBadDebt);
+  });
+
+  it('handles zero bad debt', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const result = simulateBadDebt(tranches, 2, 0);
+
+    expect(result.totalAbsorbed).toBe(0);
+    expect(result.tranches.every(t => t.badDebtAbsorbed === 0)).toBe(true);
+    expect(result.tranches.every(t => t.remainingSupply === t.originalSupply)).toBe(true);
+  });
+
+  it('tracks source tranche correctly', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const result = simulateBadDebt(tranches, 3, 100);
+
+    expect(result.badDebtEvents).toHaveLength(1);
+    expect(result.badDebtEvents[0].trancheIndex).toBe(3);
+    expect(result.badDebtEvents[0].amount).toBe(100);
+    expect(result.totalBadDebt).toBe(100);
+    expect(result.tranches[3].badDebtLocal).toBe(100);
+  });
+
+  it('handles multiple bad debt events', () => {
+    const tranches = computeAllTranches(createDocExampleTranches(), false);
+    const events = [
+      { trancheIndex: 1, amount: 50 },
+      { trancheIndex: 3, amount: 100 },
+    ];
+    const result = simulateBadDebt(tranches, events);
+
+    expect(result.badDebtEvents).toHaveLength(2);
+    expect(result.totalBadDebt).toBe(150);
+    expect(result.tranches[1].badDebtLocal).toBe(50);
+    expect(result.tranches[3].badDebtLocal).toBe(100);
+  });
+
+  it('supply utilization determines absorption ratio', () => {
+    // Create scenario with specific supply utilization
+    const inputTranches: TrancheInput[] = [
+      { id: 0, lltv: 75, supplyAssets: 200, borrowAssets: 100, pendingInterest: 0, borrowRate: 0.03 },
+      { id: 1, lltv: 95, supplyAssets: 100, borrowAssets: 0, pendingInterest: 0, borrowRate: 0.10 },
+    ];
+    const tranches = computeAllTranches(inputTranches, false);
+
+    // jrNetSupply: [200, 100], availableSupply: [300, 100]
+    // supplyUtil T0: 200/300 = 66.67%
+    // supplyUtil T1: 100/100 = 100%
+
+    const result = simulateBadDebt(tranches, 0, 300);
+
+    // T0: absorbs 300 * 0.6667 ≈ 200 (capped by supply), cascades 100
+    // T1: absorbs remaining 100
+    expect(result.tranches[0].supplyUtilization).toBeCloseTo(200/300);
+    expect(result.tranches[1].supplyUtilization).toBe(1);
   });
 });

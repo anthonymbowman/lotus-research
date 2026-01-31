@@ -5,24 +5,28 @@ import { formatPercent } from '../math/lotusAccounting';
 interface RateChartProps {
   /** Computed tranche data */
   tranches: TrancheData[];
+  /** Productive debt rate (base rate from LotusUSD) */
+  productiveDebtRate: number;
 }
 
 /**
- * Line chart showing borrow and supply rates by LLTV.
+ * Line chart showing total borrow and supply rates by LLTV (inclusive of PD).
  */
-export function RateChart({ tranches }: RateChartProps) {
+export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
   const chartData = useMemo(() => {
-    // Find max rate for scaling
+    // Find max rate for scaling (using total rates with PD)
     let maxRate = 0;
     tranches.forEach(t => {
-      if (t.borrowRate > maxRate) maxRate = t.borrowRate;
-      if (t.supplyRate !== null && t.supplyRate > maxRate) maxRate = t.supplyRate;
+      const totalBorrowRate = productiveDebtRate + t.borrowRate;
+      const totalSupplyRate = t.supplyRate !== null ? productiveDebtRate + t.supplyRate : null;
+      if (totalBorrowRate > maxRate) maxRate = totalBorrowRate;
+      if (totalSupplyRate !== null && totalSupplyRate > maxRate) maxRate = totalSupplyRate;
     });
     // Add 20% padding, minimum 5%
     maxRate = Math.max(maxRate * 1.2, 0.05);
 
     return { maxRate };
-  }, [tranches]);
+  }, [tranches, productiveDebtRate]);
 
   if (tranches.length === 0) return null;
 
@@ -40,11 +44,19 @@ export function RateChart({ tranches }: RateChartProps) {
   const getX = (index: number) => paddingLeft + index * xStep;
   const getY = (rate: number) => paddingTop + graphHeight - (rate / chartData.maxRate) * graphHeight;
 
-  // Build path data for lines
-  const borrowPoints = tranches.map((t, i) => ({ x: getX(i), y: getY(t.borrowRate) }));
+  // Build path data for lines (using total rates with PD)
+  const borrowPoints = tranches.map((t, i) => ({
+    x: getX(i),
+    y: getY(productiveDebtRate + t.borrowRate),
+    totalRate: productiveDebtRate + t.borrowRate,
+  }));
   const supplyPoints = tranches
-    .map((t, i) => t.supplyRate !== null ? { x: getX(i), y: getY(t.supplyRate) } : null)
-    .filter((p): p is { x: number; y: number } => p !== null);
+    .map((t, i) => t.supplyRate !== null ? {
+      x: getX(i),
+      y: getY(productiveDebtRate + t.supplyRate),
+      totalRate: productiveDebtRate + t.supplyRate,
+    } : null)
+    .filter((p): p is { x: number; y: number; totalRate: number } => p !== null);
 
   const buildPath = (points: { x: number; y: number }[]) => {
     if (points.length === 0) return '';
@@ -128,7 +140,7 @@ export function RateChart({ tranches }: RateChartProps) {
             />
           )}
 
-          {/* Borrow rate points */}
+          {/* Total borrow rate points */}
           {borrowPoints.map((p, i) => (
             <g key={`borrow-${i}`}>
               <circle
@@ -138,21 +150,21 @@ export function RateChart({ tranches }: RateChartProps) {
                 fill="#f97316"
                 className="cursor-pointer"
               />
-              <title>Borrow Rate: {formatPercent(tranches[i].borrowRate)}</title>
+              <title>Total Borrow Rate: {formatPercent(p.totalRate)}</title>
             </g>
           ))}
 
-          {/* Supply rate points */}
-          {tranches.map((t, i) => t.supplyRate !== null && (
+          {/* Total supply rate points */}
+          {supplyPoints.map((p, i) => (
             <g key={`supply-${i}`}>
               <circle
-                cx={getX(i)}
-                cy={getY(t.supplyRate)}
+                cx={p.x}
+                cy={p.y}
                 r={5}
                 fill="#14b8a6"
                 className="cursor-pointer"
               />
-              <title>Supply Rate: {formatPercent(t.supplyRate)}</title>
+              <title>Total Supply Rate: {formatPercent(p.totalRate)}</title>
             </g>
           ))}
         </svg>
@@ -161,11 +173,14 @@ export function RateChart({ tranches }: RateChartProps) {
         <div className="flex flex-col gap-2 text-xs pt-2">
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
-            <span className="text-slate-600">Borrow Rate</span>
+            <span className="text-slate-600">Total Borrow Rate</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-teal-500 rounded"></div>
-            <span className="text-slate-600">Supply Rate</span>
+            <span className="text-slate-600">Total Supply Rate</span>
+          </div>
+          <div className="text-slate-400 mt-1 text-[10px]">
+            (includes {formatPercent(productiveDebtRate)} PD rate)
           </div>
         </div>
       </div>

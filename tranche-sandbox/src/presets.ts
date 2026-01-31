@@ -70,13 +70,14 @@ export const PRESETS: Record<string, Preset> = {
 /**
  * Default tranche configuration (used for reset).
  * 5 tranches with LLTVs: 75%, 80%, 85%, 90%, 95%
+ * ~90% total utilization with 85% LLTV tranche as bottleneck (borrow > supply)
  */
 export const DEFAULT_TRANCHES: Omit<TrancheInput, 'id' | 'lltv'>[] = [
-  { supplyAssets: 1000, borrowAssets: 500, pendingInterest: 0, borrowRate: 0.03 },
-  { supplyAssets: 1200, borrowAssets: 600, pendingInterest: 0, borrowRate: 0.04 },
-  { supplyAssets: 1500, borrowAssets: 800, pendingInterest: 0, borrowRate: 0.05 },
-  { supplyAssets: 1800, borrowAssets: 600, pendingInterest: 0, borrowRate: 0.07 },
-  { supplyAssets: 2000, borrowAssets: 400, pendingInterest: 0, borrowRate: 0.10 },
+  { supplyAssets: 2500, borrowAssets: 2000, pendingInterest: 0, borrowRate: 0.005 },
+  { supplyAssets: 2500, borrowAssets: 2200, pendingInterest: 0, borrowRate: 0.01 },
+  { supplyAssets: 1000, borrowAssets: 2000, pendingInterest: 0, borrowRate: 0.03 },
+  { supplyAssets: 2000, borrowAssets: 1600, pendingInterest: 0, borrowRate: 0.06 },
+  { supplyAssets: 2000, borrowAssets: 1200, pendingInterest: 0, borrowRate: 0.14 },
 ];
 
 /**
