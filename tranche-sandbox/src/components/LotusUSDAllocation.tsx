@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { RateInput } from './RateInput';
 import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
+import { ConceptPrimer } from './ConceptPrimer';
+import { TermDefinition } from './TermDefinition';
 
 interface LotusUSDAllocationProps {
   treasuryAllocation: number;
@@ -164,10 +166,13 @@ export function LotusUSDAllocation({
 
   return (
     <div className="space-y-6">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['lotususd', 'productive-debt']} />
+
       <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
         <p className="text-sm text-emerald-200">
-          LotusUSD is backed by USDC and US Treasuries. The treasury yield generates the base rate
-          for productive debt, allowing idle liquidity to earn yield even when not being borrowed.
+          <TermDefinition term="lotususd">LotusUSD</TermDefinition> is backed by USDC and US Treasuries. The treasury yield generates the base rate
+          for <TermDefinition term="productive-debt">productive debt</TermDefinition>, allowing idle liquidity to earn yield even when not being borrowed.
         </p>
       </div>
 

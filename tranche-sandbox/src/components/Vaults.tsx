@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { CollapsibleSection } from './ConceptExplainer';
 import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
+import { ConceptPrimer } from './ConceptPrimer';
+import { TermDefinition } from './TermDefinition';
 
 interface VaultsProps {
   tranches: { lltv: number; supplyRate: number | null; borrowRate: number }[];
@@ -127,11 +129,14 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
 
   return (
     <div className="space-y-8">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['vault-manager', 'tranche-seniority', 'lltv']} />
+
       {/* What are Vaults */}
       <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
         <p className="text-sm text-lotus-purple-200">
           Vaults are smart contracts that aggregate user deposits and deploy them across tranches
-          according to a strategy. Vault managers make allocation decisions so depositors can
+          according to a strategy. <TermDefinition term="vault-manager">Vault managers</TermDefinition> make allocation decisions so depositors can
           earn yield without actively managing positions.
         </p>
       </div>
@@ -239,7 +244,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             {/* Step 4: Tranches */}
             <div className="w-full">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-emerald-400">Senior (Lower Risk)</span>
+                <span className="text-sm font-medium text-emerald-400"><TermDefinition term="tranche-seniority">Senior</TermDefinition> (Lower Risk)</span>
                 <span className="text-sm font-medium text-red-400">Junior (Higher Yield)</span>
               </div>
               <div className="flex items-center gap-2">

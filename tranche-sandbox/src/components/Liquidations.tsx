@@ -3,6 +3,8 @@ import type { TrancheData } from '../types';
 import { BadDebtSimulator } from './BadDebtSimulator';
 import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
+import { ConceptPrimer } from './ConceptPrimer';
+import { TermDefinition } from './TermDefinition';
 
 interface LiquidationsProps {
   tranches: { lltv: number }[];
@@ -59,11 +61,14 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
 
   return (
     <div className="space-y-8">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['lltv', 'health-factor', 'liquidation', 'bad-debt']} />
+
       {/* What triggers liquidation - Simplified */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">What Triggers Liquidation?</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">What Triggers <TermDefinition term="liquidation">Liquidation</TermDefinition>?</h3>
         <p className="text-lotus-grey-300 mb-6">
-          Liquidation occurs when your position's Loan-to-Value (LTV) ratio exceeds the tranche's LLTV threshold.
+          Liquidation occurs when your position's Loan-to-Value (LTV) ratio exceeds the tranche's <TermDefinition term="lltv">LLTV</TermDefinition> threshold.
         </p>
 
         {/* Simple formula visualization */}
@@ -182,11 +187,16 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
         <p className="text-xs text-lotus-grey-500 mt-4">
           Liquidation buffer = 100% - LLTV. This is the maximum collateral price drop you can sustain if borrowing at max LTV.
         </p>
+
+        {/* Why This Matters */}
+        <DynamicInsight show={true} variant="info">
+          <strong>Why this matters:</strong> Higher LLTV gives you more leverage, but leaves less room for error. A 95% LLTV position can be liquidated by just a 5% price drop, while a 75% LLTV position can withstand a 25% drop.
+        </DynamicInsight>
       </div>
 
       {/* Health Factor Calculator - ALL TRANCHES */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Health Factor Calculator</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4"><TermDefinition term="health-factor">Health Factor</TermDefinition> Calculator</h3>
         <p className="text-lotus-grey-300 mb-4">
           Enter your position to see health metrics across <span className="text-lotus-purple-400 font-medium">all tranches simultaneously</span>.
         </p>
@@ -399,7 +409,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
 
       {/* Bad Debt Section */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Understanding Bad Debt</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Understanding <TermDefinition term="bad-debt">Bad Debt</TermDefinition></h3>
 
         {/* Definition */}
         <div className="bg-red-900/20 rounded-lg p-4 border border-red-700/50 mb-6">
@@ -457,10 +467,10 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
 
         {/* Bad Debt Cascade - CORRECT DIRECTION */}
         <div className="bg-lotus-grey-700/50 rounded-lg p-5 border border-lotus-grey-600">
-          <h4 className="font-medium text-lotus-grey-200 mb-4">How Bad Debt is Absorbed (Cascade)</h4>
+          <h4 className="font-medium text-lotus-grey-200 mb-4">How Bad Debt is Absorbed (<TermDefinition term="cascade">Cascade</TermDefinition>)</h4>
           <p className="text-sm text-lotus-grey-400 mb-4">
             Bad debt cascades <span className="text-lotus-purple-300 font-medium">from senior to junior</span> (same direction as interest).
-            At each tranche, bad debt is absorbed proportionally to supply utilization.
+            At each tranche, bad debt is absorbed proportionally to <TermDefinition term="supply-utilization">supply utilization</TermDefinition>.
           </p>
 
           {/* Vertical cascade diagram */}

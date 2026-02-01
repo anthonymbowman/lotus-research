@@ -6,6 +6,7 @@ import {
   formatPercent,
   getTimePeriodLabel,
 } from '../math/lotusAccounting';
+import { ConceptPrimer } from './ConceptPrimer';
 
 interface InterestSimulatorProps {
   tranches: TrancheData[];
@@ -24,6 +25,9 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
 
   return (
     <div className="space-y-4">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['cascade', 'supply-rate', 'supply-utilization']} />
+
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-lotus-grey-400">Time Period:</span>

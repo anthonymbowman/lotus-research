@@ -1,5 +1,7 @@
 import type { Section } from './Sidebar';
 import { RoleDiagramCompact } from './RoleDiagram';
+import { ConceptPrimer } from './ConceptPrimer';
+import { TermDefinition } from './TermDefinition';
 
 interface IntroductionProps {
   onNavigate: (section: Section) => void;
@@ -8,6 +10,9 @@ interface IntroductionProps {
 export function Introduction({ onNavigate }: IntroductionProps) {
   return (
     <div className="space-y-8">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['connected-liquidity', 'productive-debt', 'tranche-seniority']} />
+
       {/* Lender & Borrower Role Explainer */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">
@@ -29,7 +34,9 @@ export function Introduction({ onNavigate }: IntroductionProps) {
               </svg>
             </div>
             <div>
-              <span className="font-medium text-lotus-purple-300">Connected Liquidity</span>
+              <span className="font-medium text-lotus-purple-300">
+                <TermDefinition term="connected-liquidity">Connected Liquidity</TermDefinition>
+              </span>
               <span className="text-lotus-grey-400"> — Unlike isolated pools, liquidity flows between tranches creating deeper markets and more efficient rates.</span>
             </div>
           </li>
@@ -40,8 +47,10 @@ export function Introduction({ onNavigate }: IntroductionProps) {
               </svg>
             </div>
             <div>
-              <span className="font-medium text-lotus-purple-300">Productive Debt</span>
-              <span className="text-lotus-grey-400"> — Idle liquidity earns yield from treasury-backed assets, compressing spreads and reducing rate volatility.</span>
+              <span className="font-medium text-lotus-purple-300">
+                <TermDefinition term="productive-debt">Productive Debt</TermDefinition>
+              </span>
+              <span className="text-lotus-grey-400"> — Idle liquidity earns yield from treasury-backed assets, compressing <TermDefinition term="spread">spreads</TermDefinition> and reducing rate volatility.</span>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -52,7 +61,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
             </div>
             <div>
               <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
-              <span className="text-lotus-grey-400"> — Choose your risk exposure. Senior tranches offer safety, junior tranches offer higher yields.</span>
+              <span className="text-lotus-grey-400"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
             </div>
           </li>
         </ul>

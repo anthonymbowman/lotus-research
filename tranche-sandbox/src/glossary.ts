@@ -1,0 +1,152 @@
+export interface GlossaryEntry {
+  term: string;
+  shortDef: string;
+  fullDef: string;
+  formula?: string;
+  example?: string;
+  related?: string[];
+}
+
+export const GLOSSARY: Record<string, GlossaryEntry> = {
+  lltv: {
+    term: 'LLTV',
+    shortDef: 'Loan-to-Liquidation-Value — the maximum percentage you can borrow against your collateral before liquidation.',
+    fullDef: 'LLTV determines when a position becomes liquidatable. An 80% LLTV means if you deposit $10,000 collateral, you can borrow up to $8,000 before risking liquidation. Higher LLTVs offer more leverage but leave less buffer before liquidation.',
+    formula: 'LLTV = Max Borrow / Collateral Value',
+    example: 'At 80% LLTV with $10,000 collateral: max borrow = $8,000, liquidation buffer = 20%',
+    related: ['health-factor', 'liquidation', 'tranche-seniority'],
+  },
+
+  'health-factor': {
+    term: 'Health Factor',
+    shortDef: 'A measure of position safety. Above 1 = safe, below 1 = liquidatable.',
+    fullDef: 'Health Factor compares your current loan-to-value against the tranche\'s LLTV limit. A health factor of 1.5 means your collateral could drop 33% before liquidation. Below 1.0, your position can be liquidated.',
+    formula: 'Health Factor = LLTV / Current LTV',
+    example: 'Current LTV 60%, LLTV 80% → Health Factor = 0.80/0.60 = 1.33 (safe)',
+    related: ['lltv', 'liquidation'],
+  },
+
+  'tranche-seniority': {
+    term: 'Tranche Seniority',
+    shortDef: 'Senior tranches (lower LLTV) are safer and earn less. Junior tranches (higher LLTV) earn more but absorb losses first.',
+    fullDef: 'Think of tranches like floors in a building during a flood. Senior tranches are higher floors — water (losses) reaches them last. Junior tranches are ground floor — they absorb losses first, but earn higher yields to compensate for this risk.',
+    example: '75% LLTV = senior (safer, ~4% yield), 95% LLTV = junior (riskier, ~8% yield)',
+    related: ['lltv', 'cascade', 'bad-debt'],
+  },
+
+  liquidation: {
+    term: 'Liquidation',
+    shortDef: 'When your collateral is seized and sold to repay your debt because your position became too risky.',
+    fullDef: 'Liquidation protects lenders by ensuring debt is repaid before collateral value falls too far. When your LTV exceeds the tranche\'s LLTV, liquidators can repay your debt and receive your collateral at a discount. You lose your collateral but your debt is cleared.',
+    example: 'If collateral drops from $10,000 to $8,500 and you borrowed $8,000 at 95% LLTV, liquidators can seize your collateral.',
+    related: ['lltv', 'health-factor', 'bad-debt'],
+  },
+
+  'bad-debt': {
+    term: 'Bad Debt',
+    shortDef: 'Debt that cannot be fully recovered from liquidation — the shortfall is absorbed by lenders.',
+    fullDef: 'Bad debt occurs when collateral value drops so fast that even after liquidation, there\'s not enough to cover the debt. This shortfall cascades through tranches from senior to junior, with junior tranches absorbing whatever senior tranches couldn\'t.',
+    example: 'Borrower owes $10,000, collateral liquidates for $9,000 → $1,000 bad debt absorbed by tranches',
+    related: ['liquidation', 'cascade', 'tranche-seniority'],
+  },
+
+  cascade: {
+    term: 'Cascade',
+    shortDef: 'How interest and bad debt flow through tranches — from senior to junior.',
+    fullDef: 'The cascade mechanism distributes interest and absorbs bad debt proportionally based on supply utilization at each tranche level. Interest generated at each level cascades down to more junior tranches. Bad debt follows the same path, being absorbed proportionally at each level.',
+    formula: 'Absorbed = (Local Interest + Cascaded In) × Supply Utilization',
+    related: ['tranche-seniority', 'supply-utilization'],
+  },
+
+  'supply-utilization': {
+    term: 'Supply Utilization',
+    shortDef: 'The percentage of lender deposits that are currently being borrowed.',
+    fullDef: 'Supply utilization determines how much of each tranche\'s supply is actually being used. Higher utilization means more of your deposit is earning the full borrow rate. Lower utilization means more is earning only the productive debt base rate.',
+    formula: 'Supply Utilization = Borrowed Amount / Available Supply',
+    example: 'If $8M is borrowed from $10M supplied, utilization = 80%',
+    related: ['supply-rate', 'cascade'],
+  },
+
+  spread: {
+    term: 'Spread',
+    shortDef: 'The gap between what borrowers pay and what lenders earn — protocol overhead.',
+    fullDef: 'In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
+    formula: 'Spread = Borrow Rate - Supply Rate',
+    example: 'Borrowers pay 8%, lenders earn 6% → spread = 2%',
+    related: ['supply-rate', 'borrow-rate', 'productive-debt'],
+  },
+
+  'productive-debt': {
+    term: 'Productive Debt',
+    shortDef: 'Yield earned by idle supply from treasury-backed assets, even when not being borrowed.',
+    fullDef: 'Unlike traditional lending where unborrowed funds earn nothing, Lotus backs its stablecoin with US Treasuries. This treasury yield flows to all lenders as a base rate, meaning your deposits earn yield even when utilization is low.',
+    formula: 'Productive Debt Rate = Treasury Rate × Treasury Allocation',
+    example: 'Treasury rate 4%, allocation 80% → base rate = 3.2% for all lenders',
+    related: ['lotususd', 'spread', 'supply-rate'],
+  },
+
+  'connected-liquidity': {
+    term: 'Connected Liquidity',
+    shortDef: 'Liquidity shared across tranches, unlike isolated pools where each market is separate.',
+    fullDef: 'In isolated lending pools, each market has its own liquidity that can\'t be shared. Lotus connects tranches so unused junior supply can support senior borrowers, and interest flows back down. This creates deeper markets and more efficient rates.',
+    example: 'Unused 95% LLTV supply cascades up to support 75% LLTV borrowers if needed',
+    related: ['cascade', 'tranche-seniority'],
+  },
+
+  'vault-manager': {
+    term: 'Vault Manager',
+    shortDef: 'A strategist who allocates vault deposits across tranches to optimize risk and yield.',
+    fullDef: 'Vault managers make allocation decisions so depositors don\'t need to actively manage positions. They monitor market conditions, rebalance across tranches, and follow the vault\'s risk parameters. Depositors simply deposit and earn the blended yield.',
+    example: 'A "Balanced" vault manager might allocate 30% to senior, 40% to mid, 30% to junior tranches',
+    related: ['tranche-seniority'],
+  },
+
+  lotususd: {
+    term: 'LotusUSD',
+    shortDef: 'Lotus\'s stablecoin, backed by USDC and US Treasuries.',
+    fullDef: 'LotusUSD is the loan token used in Lotus Protocol. It\'s backed by a mix of USDC (for instant redemptions) and US Treasury bills (for yield generation). The treasury portion generates the productive debt base rate that benefits all lenders.',
+    example: '80% treasury allocation + 4% treasury rate = 3.2% base rate for all supply',
+    related: ['productive-debt'],
+  },
+
+  'supply-rate': {
+    term: 'Supply Rate',
+    shortDef: 'The yield lenders earn on their deposits.',
+    fullDef: 'Supply rate combines the productive debt base rate (from treasury yields) plus a share of borrow interest based on utilization. Higher utilization means more of your deposit earns the full borrow rate.',
+    formula: 'Supply Rate = Productive Debt Rate + (Spread × Utilization)',
+    related: ['borrow-rate', 'productive-debt', 'spread'],
+  },
+
+  'borrow-rate': {
+    term: 'Borrow Rate',
+    shortDef: 'The interest rate borrowers pay on their loans.',
+    fullDef: 'Borrow rate is determined by the Interest Rate Model (IRM) based on utilization. In Lotus, the borrow rate builds on top of the productive debt base rate, with the spread adjusting based on demand.',
+    formula: 'Borrow Rate = Productive Debt Rate + Spread',
+    related: ['supply-rate', 'productive-debt', 'spread'],
+  },
+
+  collateral: {
+    term: 'Collateral',
+    shortDef: 'Assets you deposit to secure a loan — seized if you can\'t repay.',
+    fullDef: 'Collateral is your security deposit when borrowing. You deposit valuable assets (like wstETH) and can borrow against a percentage of their value. If your collateral value drops too much relative to your debt, it can be liquidated.',
+    example: 'Deposit $10,000 wstETH as collateral to borrow up to $8,000 LotusUSD at 80% LLTV',
+    related: ['lltv', 'liquidation'],
+  },
+
+  leverage: {
+    term: 'Leverage',
+    shortDef: 'Borrowing to amplify your position — higher LLTV = more leverage.',
+    fullDef: 'Leverage lets you control a larger position than your capital alone would allow. At 80% LLTV, you can achieve 5x leverage (1 / (1 - 0.80) = 5). Higher leverage amplifies both gains and losses.',
+    formula: 'Max Leverage = 1 / (1 - LLTV)',
+    example: '75% LLTV = 4x max leverage, 95% LLTV = 20x max leverage',
+    related: ['lltv', 'liquidation'],
+  },
+};
+
+export function getGlossaryEntry(key: string): GlossaryEntry | undefined {
+  return GLOSSARY[key];
+}
+
+export function getGlossaryTerms(): string[] {
+  return Object.keys(GLOSSARY);
+}

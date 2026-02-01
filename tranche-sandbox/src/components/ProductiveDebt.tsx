@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { generateScenario2ChartData } from '../math/scenario2';
 import type { ChartPoint } from '../types';
+import { ConceptPrimer } from './ConceptPrimer';
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -31,7 +32,7 @@ function IntroSection() {
     },
     {
       title: 'Spread Compression',
-      description: 'The wedge between borrow and supply rates narrows, creating a more efficient market.',
+      description: 'The gap between borrow and supply rates narrows, creating a more efficient market.',
       icon: (
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -697,7 +698,10 @@ export function ProductiveDebt({
   onUtilizationChange,
 }: ProductiveDebtProps) {
   return (
-    <div>
+    <div className="space-y-8">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['productive-debt', 'spread', 'supply-rate', 'borrow-rate']} />
+
       <IntroSection />
       <RateCompositionSection
         baseRate={baseRate}

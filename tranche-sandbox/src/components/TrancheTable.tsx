@@ -1,6 +1,7 @@
 import type { TrancheInput, TrancheData } from '../types';
 import { formatNumber, formatPercent } from '../math/lotusAccounting';
 import { FormulaTooltip, FORMULAS } from './FormulaTooltip';
+import { TermDefinition } from './TermDefinition';
 
 interface TrancheTableProps {
   tranches: TrancheData[];
@@ -34,7 +35,7 @@ export function TrancheTable({
           <thead>
             <tr className="border-b border-lotus-grey-700">
               <th className="text-left py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800 border-r border-lotus-grey-700 sticky left-0 z-10">
-                LLTV
+                <TermDefinition term="lltv">LLTV</TermDefinition>
               </th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800">
                 Supply

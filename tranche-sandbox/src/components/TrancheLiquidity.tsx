@@ -3,6 +3,9 @@ import type { TrancheData, TrancheInput } from '../types';
 import { TrancheTable } from './TrancheTable';
 import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
+import { ConceptPrimer } from './ConceptPrimer';
+import { TermDefinition } from './TermDefinition';
+import { DynamicInsight } from './DynamicInsight';
 
 interface TrancheLiquidityProps {
   tranches: TrancheData[];
@@ -21,10 +24,13 @@ export function TrancheLiquidity({
 
   return (
     <div className="space-y-6">
+      {/* Key Concepts Primer */}
+      <ConceptPrimer concepts={['lltv', 'tranche-seniority', 'cascade', 'supply-utilization']} />
+
       <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
         <p className="text-sm text-lotus-purple-200">
-          Tranches allow lenders to choose their risk/reward profile. Lower LLTV = more senior (safer),
-          higher LLTV = more junior (higher yield). Liquidity flows between tranches, creating connected markets.
+          Tranches allow lenders to choose their risk/reward profile. Lower <TermDefinition term="lltv">LLTV</TermDefinition> = more <TermDefinition term="tranche-seniority">senior</TermDefinition> (safer),
+          higher LLTV = more junior (higher yield). Liquidity flows between tranches, creating <TermDefinition term="connected-liquidity">connected markets</TermDefinition>.
         </p>
       </div>
 
@@ -169,6 +175,11 @@ export function TrancheLiquidity({
             </p>
           </div>
         </div>
+
+        {/* Why This Matters */}
+        <DynamicInsight show={true} variant="info">
+          <strong>Why this matters:</strong> Unlike isolated pools where unused capital sits idle, connected liquidity means your supply can earn yield across multiple tranches. Junior tranches absorb losses first — that's why they earn higher yields to compensate for the risk.
+        </DynamicInsight>
       </div>
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 overflow-x-auto">
