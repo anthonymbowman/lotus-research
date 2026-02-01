@@ -275,39 +275,111 @@ export function TrancheLiquidity({
         icon="📈"
         description="How supply and borrow utilization are calculated"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-purple-300 mb-2">Supply Utilization</h4>
-            <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
-              <code className="text-xs font-mono text-lotus-grey-300">
-                SupplyUtil = JrBorrow / JrSupply
-              </code>
+        <div className="space-y-6">
+          {/* Formula explanations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+              <h4 className="font-medium text-lotus-purple-300 mb-2">Supply Utilization</h4>
+              <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
+                <code className="text-xs font-mono text-lotus-grey-300">
+                  SupplyUtil = JrBorrow / JrSupply
+                </code>
+              </div>
+              <p className="text-sm text-lotus-grey-400">
+                How much of the available junior supply is being borrowed.
+                Higher = more of the supply is earning interest.
+              </p>
             </div>
-            <p className="text-sm text-lotus-grey-400">
-              How much of the available junior supply is being borrowed.
-              Higher = more of the supply is earning interest.
-            </p>
+
+            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+              <h4 className="font-medium text-lotus-purple-300 mb-2">Borrow Utilization</h4>
+              <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
+                <code className="text-xs font-mono text-lotus-grey-300">
+                  BorrowUtil = OwnBorrow / JrBorrow
+                </code>
+              </div>
+              <p className="text-sm text-lotus-grey-400">
+                This tranche's share of the total borrows.
+                Used to calculate what portion of interest stays at this level.
+              </p>
+            </div>
           </div>
 
+          {/* Supply Utilization Table */}
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-purple-300 mb-2">Borrow Utilization</h4>
-            <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 mb-2">
-              <code className="text-xs font-mono text-lotus-grey-300">
-                BorrowUtil = OwnBorrow / JrBorrow
-              </code>
+            <h4 className="font-medium text-lotus-purple-300 mb-3">Supply Utilization by Tranche</h4>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-lotus-grey-600">
+                    <th className="text-left py-2 px-2 text-lotus-grey-400 font-medium">LLTV</th>
+                    <th className="text-right py-2 px-2 text-blue-400 font-medium">Jr Supply</th>
+                    <th className="text-right py-2 px-2 text-orange-400 font-medium">Jr Borrow</th>
+                    <th className="text-right py-2 px-2 text-lotus-purple-400 font-medium">Supply Util</th>
+                    <th className="text-left py-2 px-2 text-lotus-grey-400 font-medium">Calculation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tranches.map((t) => {
+                    const supplyUtil = t.jrSupply > 0 ? (t.jrBorrow / t.jrSupply) : 0;
+                    return (
+                      <tr key={t.id} className="border-b border-lotus-grey-700/50">
+                        <td className="py-2 px-2 font-medium text-lotus-grey-200">{t.lltv}%</td>
+                        <td className="py-2 px-2 text-right font-mono text-blue-300">{t.jrSupply.toLocaleString()}</td>
+                        <td className="py-2 px-2 text-right font-mono text-orange-300">{t.jrBorrow.toLocaleString()}</td>
+                        <td className="py-2 px-2 text-right font-mono text-lotus-purple-300">{(supplyUtil * 100).toFixed(1)}%</td>
+                        <td className="py-2 px-2 text-xs text-lotus-grey-500 font-mono">
+                          {t.jrBorrow.toLocaleString()} / {t.jrSupply.toLocaleString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-            <p className="text-sm text-lotus-grey-400">
-              This tranche's share of the total borrows.
-              Used to calculate what portion of interest stays at this level.
+          </div>
+
+          {/* Borrow Utilization Table */}
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-purple-300 mb-3">Borrow Utilization by Tranche</h4>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-lotus-grey-600">
+                    <th className="text-left py-2 px-2 text-lotus-grey-400 font-medium">LLTV</th>
+                    <th className="text-right py-2 px-2 text-orange-400 font-medium">Own Borrow</th>
+                    <th className="text-right py-2 px-2 text-orange-400 font-medium">Jr Borrow</th>
+                    <th className="text-right py-2 px-2 text-lotus-purple-400 font-medium">Borrow Util</th>
+                    <th className="text-left py-2 px-2 text-lotus-grey-400 font-medium">Calculation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tranches.map((t) => {
+                    const borrowUtil = t.jrBorrow > 0 ? (t.borrowAssets / t.jrBorrow) : 0;
+                    return (
+                      <tr key={t.id} className="border-b border-lotus-grey-700/50">
+                        <td className="py-2 px-2 font-medium text-lotus-grey-200">{t.lltv}%</td>
+                        <td className="py-2 px-2 text-right font-mono text-orange-300">{t.borrowAssets.toLocaleString()}</td>
+                        <td className="py-2 px-2 text-right font-mono text-orange-300">{t.jrBorrow.toLocaleString()}</td>
+                        <td className="py-2 px-2 text-right font-mono text-lotus-purple-300">{(borrowUtil * 100).toFixed(1)}%</td>
+                        <td className="py-2 px-2 text-xs text-lotus-grey-500 font-mono">
+                          {t.borrowAssets.toLocaleString()} / {t.jrBorrow.toLocaleString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="p-3 bg-amber-900/20 border border-amber-700/50 rounded-lg">
+            <p className="text-sm text-amber-300">
+              <span className="font-medium">Key insight:</span> Supply utilization determines how much
+              interest stays at this tranche vs cascading to more junior tranches. Higher supply utilization
+              means more of the interest is kept at this level.
             </p>
           </div>
-        </div>
-
-        <div className="mt-4 p-3 bg-amber-900/20 border border-amber-700/50 rounded-lg">
-          <p className="text-sm text-amber-300">
-            <span className="font-medium">Key insight:</span> Supply utilization determines how much
-            interest stays at this tranche vs cascading to more junior tranches.
-          </p>
         </div>
       </CollapsibleSection>
     </div>
