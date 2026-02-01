@@ -90,50 +90,66 @@ input:focus, select:focus, textarea:focus {
 /* Range input styling */
 input[type="range"] {
   -webkit-appearance: none;
+  appearance: none;
   background: transparent;
+  height: 24px;
+  cursor: pointer;
 }
 
-input[type="range"]::-webkit-slider-track {
-  height: 6px;
-  background: #454052;
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(to right, var(--purple-primary) 0%, #454052 0%);
+  background-color: #454052;
   border: 1px solid #736D7F;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 16px;
-  width: 16px;
+  appearance: none;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
   background: var(--purple-primary);
-  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 4px rgba(142, 98, 255, 0.25);
+  border: 3px solid var(--grey-100);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  margin-top: -6px;
+  margin-top: -7px;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 6px rgba(142, 98, 255, 0.35);
+  background: var(--purple-light);
+  box-shadow: 0 2px 8px rgba(142, 98, 255, 0.5);
 }
 
 input[type="range"]::-moz-range-track {
-  height: 6px;
+  height: 8px;
   background: #454052;
   border: 1px solid #736D7F;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
   background: var(--purple-primary);
-  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 4px rgba(142, 98, 255, 0.25);
+  border: 3px solid var(--grey-100);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  border: none;
 }
 
 input[type="range"]::-moz-range-thumb:hover {
-  box-shadow: 0 0 0 2px var(--dark-grey), 0 0 0 6px rgba(142, 98, 255, 0.35);
+  background: var(--purple-light);
+  box-shadow: 0 2px 8px rgba(142, 98, 255, 0.5);
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(142, 98, 255, 0.4);
 }
 
 /* Button styles */

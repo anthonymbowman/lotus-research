@@ -16,6 +16,8 @@ import { IsolatedComparison } from './components/IsolatedComparison';
 import { FundingMatrix } from './components/FundingMatrix';
 import { RateChart } from './components/RateChart';
 import { Vaults } from './components/Vaults';
+import { TrancheRisk } from './components/TrancheRisk';
+import { VolatilityReductionSection } from './components/ProductiveDebt';
 
 const STORAGE_KEY = 'lotus-docs-visited';
 const TOUR_KEY = 'lotus-docs-tour-completed';
@@ -85,7 +87,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1) as Section;
-      if (hash && ['intro', 'vaults', 'lotususd', 'productive-debt', 'tranches', 'interest-cascade', 'liquidations', 'advanced'].includes(hash)) {
+      if (hash && ['intro', 'lotususd', 'productive-debt', 'risk', 'tranches', 'interest-cascade', 'liquidations', 'vaults', 'advanced'].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -129,24 +131,11 @@ function App() {
         'Key concepts: tranches, connected liquidity, productive debt',
         'How to navigate this documentation',
       ],
-      transitionText: "Now let's see how Lotus organizes risk and reward...",
-      next: { id: 'vaults', label: 'Vaults' },
-    },
-    vaults: {
-      number: '2',
-      title: 'Vaults',
-      headline: 'Understanding Vaults',
-      subtitle: 'Aggregated yield strategies',
-      learningPoints: [
-        'How vaults aggregate user deposits',
-        'Vault manager allocation strategies',
-        'Risk/reward trade-offs across strategies',
-      ],
-      transitionText: 'Vaults allocate to tranches. But what powers the rates?',
+      transitionText: "Let's start with the foundation: LotusUSD and where base rates come from...",
       next: { id: 'lotususd', label: 'LotusUSD' },
     },
     lotususd: {
-      number: '3',
+      number: '2',
       title: 'LotusUSD',
       headline: 'The LotusUSD Base Rate',
       subtitle: 'Understanding treasury backing and base rates',
@@ -159,16 +148,29 @@ function App() {
       next: { id: 'productive-debt', label: 'Productive Debt' },
     },
     'productive-debt': {
-      number: '4',
+      number: '3',
       title: 'Productive Debt',
       headline: 'How Productive Debt Works',
-      subtitle: 'Benefits of treasury-backed lending',
+      subtitle: 'Rate composition and spread compression',
       learningPoints: [
         'How the base rate benefits lenders and borrowers',
+        'Borrow rate = base rate + spread',
         'Spread compression mechanics',
-        'Reduced rate volatility',
       ],
-      transitionText: "With rates understood, let's see how liquidity flows...",
+      transitionText: "Now let's understand why tranches have different risk levels...",
+      next: { id: 'risk', label: 'Tranche Risk' },
+    },
+    risk: {
+      number: '4',
+      title: 'Tranche Risk',
+      headline: 'Understanding Tranche Risk',
+      subtitle: 'Why higher LLTV means higher risk',
+      learningPoints: [
+        'How price drops affect different tranches',
+        'Why junior tranches absorb losses first',
+        'The risk-return connection',
+      ],
+      transitionText: "With risk understood, let's see how liquidity connects tranches...",
       next: { id: 'tranches', label: 'Tranches & Liquidity' },
     },
     tranches: {
@@ -208,15 +210,29 @@ function App() {
         'Health factor calculator for all tranches',
         'Bad debt cascade and simulation',
       ],
+      transitionText: 'Now you understand tranches. Ready to choose your strategy?',
+      next: { id: 'vaults', label: 'Vaults' },
+    },
+    vaults: {
+      number: '8',
+      title: 'Vaults',
+      headline: 'Choose Your Strategy',
+      subtitle: 'Now that you understand tranches, choose how to allocate',
+      learningPoints: [
+        'How vaults aggregate user deposits',
+        'Vault manager allocation strategies',
+        'Risk/reward trade-offs across strategies',
+      ],
       transitionText: 'Ready to go deeper?',
       next: { id: 'advanced', label: 'Advanced Tools' },
     },
     advanced: {
-      number: '8',
+      number: '9',
       title: 'Advanced',
       headline: 'Advanced Tools',
       subtitle: 'Deep dives and comparisons',
       learningPoints: [
+        'Volatility reduction mechanics',
         'Lotus vs Isolated Markets comparison',
         'Funding matrix visualization',
       ],
@@ -266,19 +282,7 @@ function App() {
               <Introduction onNavigate={handleSectionChange} />
             )}
 
-            {/* Section 2: Vaults */}
-            {activeSection === 'vaults' && (
-              <Vaults
-                tranches={computedTranches.map(t => ({
-                  lltv: t.lltv,
-                  supplyRate: t.supplyRate,
-                  borrowRate: t.borrowRate,
-                }))}
-                productiveDebtRate={productiveDebtRate}
-              />
-            )}
-
-            {/* Section 3: LotusUSD */}
+            {/* Section 2: LotusUSD */}
             {activeSection === 'lotususd' && (
               <LotusUSDAllocation
                 treasuryAllocation={treasuryAllocation}
@@ -288,7 +292,7 @@ function App() {
               />
             )}
 
-            {/* Section 4: Productive Debt */}
+            {/* Section 3: Productive Debt */}
             {activeSection === 'productive-debt' && (
               <ProductiveDebt
                 baseRate={productiveDebtRate}
@@ -296,6 +300,16 @@ function App() {
                 utilization={utilization}
                 onSpreadChange={setSpread}
                 onUtilizationChange={setUtilization}
+              />
+            )}
+
+            {/* Section 4: Tranche Risk */}
+            {activeSection === 'risk' && (
+              <TrancheRisk
+                tranches={computedTranches.map(t => ({
+                  lltv: t.lltv,
+                  borrowRate: t.borrowRate,
+                }))}
               />
             )}
 
@@ -335,9 +349,24 @@ function App() {
               />
             )}
 
-            {/* Section 8: Advanced Tools */}
+            {/* Section 8: Vaults */}
+            {activeSection === 'vaults' && (
+              <Vaults
+                tranches={computedTranches.map(t => ({
+                  lltv: t.lltv,
+                  supplyRate: t.supplyRate,
+                  borrowRate: t.borrowRate,
+                }))}
+                productiveDebtRate={productiveDebtRate}
+              />
+            )}
+
+            {/* Section 9: Advanced Tools */}
             {activeSection === 'advanced' && (
               <div className="space-y-8">
+                {/* Volatility Reduction - moved from Productive Debt */}
+                <VolatilityReductionSection baseRate={productiveDebtRate} spread={spread} />
+
                 <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
                   <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Lotus vs Isolated Markets</h3>
                   <p className="text-lotus-grey-400 mb-6">

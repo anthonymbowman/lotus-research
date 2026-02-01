@@ -2,12 +2,13 @@ import { useState } from 'react';
 
 export type Section =
   | 'intro'
-  | 'vaults'
   | 'lotususd'
   | 'productive-debt'
+  | 'risk'
   | 'tranches'
   | 'interest-cascade'
   | 'liquidations'
+  | 'vaults'
   | 'advanced';
 
 interface SidebarProps {
@@ -18,13 +19,14 @@ interface SidebarProps {
 
 const SECTIONS: { id: Section; label: string; icon: string; description: string }[] = [
   { id: 'intro', label: 'Introduction', icon: '1', description: 'What is Lotus Protocol?' },
-  { id: 'vaults', label: 'Vaults', icon: '2', description: 'Aggregated yield strategies' },
-  { id: 'lotususd', label: 'LotusUSD', icon: '3', description: 'Treasury backing & base rate' },
-  { id: 'productive-debt', label: 'Productive Debt', icon: '4', description: 'Spread compression & benefits' },
+  { id: 'lotususd', label: 'LotusUSD', icon: '2', description: 'Treasury backing & base rate' },
+  { id: 'productive-debt', label: 'Productive Debt', icon: '3', description: 'Rate composition & spreads' },
+  { id: 'risk', label: 'Tranche Risk', icon: '4', description: 'Why LLTV affects risk' },
   { id: 'tranches', label: 'Tranches & Liquidity', icon: '5', description: 'Connected liquidity model' },
   { id: 'interest-cascade', label: 'Interest Cascade', icon: '6', description: 'How interest flows' },
   { id: 'liquidations', label: 'Liquidations', icon: '7', description: 'Liquidation mechanics' },
-  { id: 'advanced', label: 'Advanced Tools', icon: '8', description: 'Bad debt, comparisons & more' },
+  { id: 'vaults', label: 'Vaults', icon: '8', description: 'Choose your strategy' },
+  { id: 'advanced', label: 'Advanced Tools', icon: '9', description: 'Volatility, comparisons & more' },
 ];
 
 export function Sidebar({ activeSection, onSectionChange, visitedSections }: SidebarProps) {

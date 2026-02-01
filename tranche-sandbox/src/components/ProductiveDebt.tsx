@@ -370,15 +370,15 @@ function SpreadCompressionSection({
 }
 
 // ============================================
-// Section 4: Volatility Reduction
+// Section 4: Volatility Reduction (Exported for Advanced section)
 // ============================================
 
-interface VolatilityReductionSectionProps {
+export interface VolatilityReductionSectionProps {
   baseRate: number;
   spread: number;
 }
 
-function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSectionProps) {
+export function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSectionProps) {
   const [showFormulas, setShowFormulas] = useState(false);
   const borrowRate = baseRate + spread;
 
@@ -713,10 +713,6 @@ export function ProductiveDebt({
         spread={spread}
         utilization={utilization}
         onUtilizationChange={onUtilizationChange}
-      />
-      <VolatilityReductionSection
-        baseRate={baseRate}
-        spread={spread}
       />
     </div>
   );

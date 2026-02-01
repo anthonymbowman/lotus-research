@@ -67,19 +67,36 @@ export function Introduction({ onNavigate }: IntroductionProps) {
         </ul>
       </div>
 
+      {/* Vault Mention */}
+      <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm text-lotus-grey-200">
+              <strong>Note:</strong> Most lenders participate through <strong>Vaults</strong> — curated strategies
+              that allocate across tranches automatically. We'll cover vaults after you understand how tranches work.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Get Started CTA */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 text-center">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">
           Ready to explore?
         </h3>
         <p className="text-lotus-grey-300 mb-6">
-          Start with Vaults to see how deposits are aggregated and allocated across tranches.
+          Start with LotusUSD to understand where the base rate comes from.
         </p>
         <button
-          onClick={() => onNavigate('vaults')}
+          onClick={() => onNavigate('lotususd')}
           className="inline-flex items-center gap-2 px-6 py-3 bg-lotus-purple-600 hover:bg-lotus-purple-500 text-white font-medium rounded-lg transition-colors"
         >
-          <span>Start with Vaults</span>
+          <span>Start with LotusUSD</span>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
