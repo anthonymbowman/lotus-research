@@ -282,12 +282,12 @@ export function TrancheLiquidity({
               <h4 className="font-medium text-lotus-purple-200 mb-2">Supply Utilization</h4>
               <div className="bg-lotus-grey-800 rounded-lg px-3 py-2 mb-2">
                 <code className="text-sm font-mono text-lotus-purple-300">
-                  SupplyUtil = JrBorrow / JrSupply
+                  SupplyUtil = Supply / AvailableSupply
                 </code>
               </div>
               <p className="text-sm text-lotus-grey-300">
-                How much of the available junior supply is being borrowed.
-                Higher = more of the supply is earning interest.
+                How much of the available supply at this tranche is being used.
+                Higher = more capital deployed at this risk level.
               </p>
             </div>
 
@@ -295,12 +295,12 @@ export function TrancheLiquidity({
               <h4 className="font-medium text-orange-200 mb-2">Borrow Utilization</h4>
               <div className="bg-lotus-grey-800 rounded-lg px-3 py-2 mb-2">
                 <code className="text-sm font-mono text-orange-300">
-                  BorrowUtil = OwnBorrow / JrBorrow
+                  BorrowUtil = 1 - (FreeSupply / JrSupply)
                 </code>
               </div>
               <p className="text-sm text-lotus-grey-300">
-                This tranche's share of the total borrows.
-                Used to calculate what portion of interest stays at this level.
+                How much of the junior supply is being borrowed against.
+                Higher = more of the supply is earning interest.
               </p>
             </div>
           </div>
@@ -313,23 +313,23 @@ export function TrancheLiquidity({
                 <thead>
                   <tr className="border-b border-lotus-purple-700/50">
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
-                    <th className="text-right py-2 px-3 text-blue-300 font-medium">Jr Supply</th>
-                    <th className="text-right py-2 px-3 text-emerald-300 font-medium">Jr Borrow</th>
+                    <th className="text-right py-2 px-3 text-blue-300 font-medium">Supply</th>
+                    <th className="text-right py-2 px-3 text-emerald-300 font-medium">Available</th>
                     <th className="text-right py-2 px-3 text-lotus-purple-300 font-medium">Supply Util</th>
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">Calculation</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tranches.map((t) => {
-                    const supplyUtil = t.jrSupply > 0 ? (t.jrBorrow / t.jrSupply) : 0;
+                    const supplyUtil = t.availableSupply > 0 ? (t.supplyAssets / t.availableSupply) : 0;
                     return (
                       <tr key={t.id} className="border-b border-lotus-purple-800/30 hover:bg-lotus-purple-900/20">
                         <td className="py-2 px-3 font-medium text-white">{t.lltv}%</td>
-                        <td className="py-2 px-3 text-right font-mono text-blue-200">{t.jrSupply.toLocaleString()}</td>
-                        <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.jrBorrow.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-right font-mono text-blue-200">{t.supplyAssets.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.availableSupply.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-lotus-purple-200">{(supplyUtil * 100).toFixed(1)}%</td>
                         <td className="py-2 px-3 text-sm text-lotus-grey-300 font-mono">
-                          {t.jrBorrow.toLocaleString()} / {t.jrSupply.toLocaleString()}
+                          {t.supplyAssets.toLocaleString()} / {t.availableSupply.toLocaleString()}
                         </td>
                       </tr>
                     );
@@ -347,23 +347,23 @@ export function TrancheLiquidity({
                 <thead>
                   <tr className="border-b border-orange-700/50">
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
-                    <th className="text-right py-2 px-3 text-orange-300 font-medium">Own Borrow</th>
-                    <th className="text-right py-2 px-3 text-amber-300 font-medium">Jr Borrow</th>
+                    <th className="text-right py-2 px-3 text-emerald-300 font-medium">Free Supply</th>
+                    <th className="text-right py-2 px-3 text-blue-300 font-medium">Jr Supply</th>
                     <th className="text-right py-2 px-3 text-orange-300 font-medium">Borrow Util</th>
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">Calculation</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tranches.map((t) => {
-                    const borrowUtil = t.jrBorrow > 0 ? (t.borrowAssets / t.jrBorrow) : 0;
+                    const borrowUtil = t.jrSupply > 0 ? 1 - (t.freeSupply / t.jrSupply) : 0;
                     return (
                       <tr key={t.id} className="border-b border-orange-800/30 hover:bg-orange-900/20">
                         <td className="py-2 px-3 font-medium text-white">{t.lltv}%</td>
-                        <td className="py-2 px-3 text-right font-mono text-orange-200">{t.borrowAssets.toLocaleString()}</td>
-                        <td className="py-2 px-3 text-right font-mono text-amber-200">{t.jrBorrow.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.freeSupply.toLocaleString()}</td>
+                        <td className="py-2 px-3 text-right font-mono text-blue-200">{t.jrSupply.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-orange-200">{(borrowUtil * 100).toFixed(1)}%</td>
                         <td className="py-2 px-3 text-sm text-lotus-grey-300 font-mono">
-                          {t.borrowAssets.toLocaleString()} / {t.jrBorrow.toLocaleString()}
+                          1 - {t.freeSupply.toLocaleString()} / {t.jrSupply.toLocaleString()}
                         </td>
                       </tr>
                     );
