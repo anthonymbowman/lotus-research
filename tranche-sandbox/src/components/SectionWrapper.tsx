@@ -5,8 +5,10 @@ interface SectionWrapperProps {
   id: string;
   number: string;
   title: string;
+  headline: string;
   subtitle: string;
   learningPoints: string[];
+  transitionText?: string;
   nextSection?: { id: Section; label: string };
   onNavigate: (section: Section) => void;
   children: ReactNode;
@@ -15,8 +17,10 @@ interface SectionWrapperProps {
 export function SectionWrapper({
   number,
   title,
+  headline,
   subtitle,
   learningPoints,
+  transitionText,
   nextSection,
   onNavigate,
   children,
@@ -25,12 +29,12 @@ export function SectionWrapper({
     <div className="space-y-8">
       {/* Section Header */}
       <div className="border-b border-lotus-grey-700 pb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-sm font-medium text-lotus-purple-400 bg-lotus-purple-900/30 px-2 py-0.5 rounded">
-            Section {number}
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-sm font-medium text-lotus-purple-400 bg-lotus-purple-900/30 px-3 py-1 rounded-full">
+            Section {number} · {title}
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-lotus-grey-100 mb-2">{title}</h1>
+        <h1 className="text-3xl font-bold text-lotus-grey-100 mb-2">{headline}</h1>
         <p className="text-lg text-lotus-grey-400">{subtitle}</p>
       </div>
 
@@ -55,6 +59,9 @@ export function SectionWrapper({
       {/* Next Section Navigation */}
       {nextSection && (
         <div className="border-t border-lotus-grey-700 pt-6 mt-8">
+          {transitionText && (
+            <p className="text-lotus-grey-300 italic mb-4">{transitionText}</p>
+          )}
           <button
             onClick={() => onNavigate(nextSection.id)}
             className="group flex items-center gap-2 text-lotus-purple-400 hover:text-lotus-purple-300 transition-colors"

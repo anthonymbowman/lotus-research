@@ -118,76 +118,89 @@ function App() {
   };
 
   // Section content mapping
-  const sectionMeta: Record<Section, { number: string; title: string; subtitle: string; learningPoints: string[]; next?: { id: Section; label: string } }> = {
+  const sectionMeta: Record<Section, { number: string; title: string; headline: string; subtitle: string; learningPoints: string[]; transitionText?: string; next?: { id: Section; label: string } }> = {
     intro: {
       number: '1',
-      title: 'Introduction',
+      title: 'Welcome',
+      headline: 'Welcome to Lotus Protocol',
       subtitle: 'Get started with Lotus Protocol',
       learningPoints: [
         'What Lotus Protocol is and how it works',
         'Key concepts: tranches, connected liquidity, productive debt',
         'How to navigate this documentation',
       ],
+      transitionText: "Now let's see how Lotus organizes risk and reward...",
       next: { id: 'vaults', label: 'Vaults' },
     },
     vaults: {
       number: '2',
       title: 'Vaults',
+      headline: 'Understanding Vaults',
       subtitle: 'Aggregated yield strategies',
       learningPoints: [
         'How vaults aggregate user deposits',
         'Vault manager allocation strategies',
         'Risk/reward trade-offs across strategies',
       ],
+      transitionText: 'Vaults allocate to tranches. But what powers the rates?',
       next: { id: 'lotususd', label: 'LotusUSD' },
     },
     lotususd: {
       number: '3',
       title: 'LotusUSD',
+      headline: 'The LotusUSD Base Rate',
       subtitle: 'Understanding treasury backing and base rates',
       learningPoints: [
         'How LotusUSD is backed by USDC and US Treasuries',
         'How the treasury allocation generates yield',
         'The productive debt rate calculation',
       ],
+      transitionText: 'This base rate changes everything for borrowers and lenders...',
       next: { id: 'productive-debt', label: 'Productive Debt' },
     },
     'productive-debt': {
       number: '4',
       title: 'Productive Debt',
+      headline: 'How Productive Debt Works',
       subtitle: 'Benefits of treasury-backed lending',
       learningPoints: [
         'How the base rate benefits lenders and borrowers',
         'Spread compression mechanics',
         'Reduced rate volatility',
       ],
+      transitionText: "With rates understood, let's see how liquidity flows...",
       next: { id: 'tranches', label: 'Tranches & Liquidity' },
     },
     tranches: {
       number: '5',
-      title: 'Tranches & Liquidity',
+      title: 'Tranches',
+      headline: 'Tranches & Connected Liquidity',
       subtitle: 'The connected liquidity model',
       learningPoints: [
         'What tranches are and how they work',
         'Junior vs senior metrics',
         'Utilization calculations',
       ],
+      transitionText: "Interest flows through these tranches. Let's trace it...",
       next: { id: 'interest-cascade', label: 'Interest Cascade' },
     },
     'interest-cascade': {
       number: '6',
-      title: 'Interest Cascade',
+      title: 'Interest',
+      headline: 'How Interest Flows',
       subtitle: 'How interest flows through tranches',
       learningPoints: [
         'The cascade mechanism explained',
         'How supply rates are calculated',
         'Time-based interest accrual simulation',
       ],
+      transitionText: 'What happens when things go wrong?',
       next: { id: 'liquidations', label: 'Liquidations' },
     },
     liquidations: {
       number: '7',
       title: 'Liquidations',
+      headline: 'Liquidations & Risk',
       subtitle: 'Understanding liquidation mechanics',
       learningPoints: [
         'What triggers liquidation',
@@ -195,11 +208,13 @@ function App() {
         'Health factor calculator for all tranches',
         'Bad debt cascade and simulation',
       ],
+      transitionText: 'Ready to go deeper?',
       next: { id: 'advanced', label: 'Advanced Tools' },
     },
     advanced: {
       number: '8',
-      title: 'Advanced Tools',
+      title: 'Advanced',
+      headline: 'Advanced Tools',
       subtitle: 'Deep dives and comparisons',
       learningPoints: [
         'Lotus vs Isolated Markets comparison',
@@ -239,8 +254,10 @@ function App() {
             id={activeSection}
             number={currentMeta.number}
             title={currentMeta.title}
+            headline={currentMeta.headline}
             subtitle={currentMeta.subtitle}
             learningPoints={currentMeta.learningPoints}
+            transitionText={currentMeta.transitionText}
             nextSection={currentMeta.next}
             onNavigate={handleSectionChange}
           >

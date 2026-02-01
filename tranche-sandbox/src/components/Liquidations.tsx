@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import type { TrancheData } from '../types';
 import { BadDebtSimulator } from './BadDebtSimulator';
+import { TeachingPrompt } from './TeachingPrompt';
+import { DynamicInsight } from './DynamicInsight';
 
 interface LiquidationsProps {
   tranches: { lltv: number }[];
@@ -185,9 +187,35 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
       {/* Health Factor Calculator - ALL TRANCHES */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Health Factor Calculator</h3>
-        <p className="text-lotus-grey-300 mb-6">
+        <p className="text-lotus-grey-300 mb-4">
           Enter your position to see health metrics across <span className="text-lotus-purple-400 font-medium">all tranches simultaneously</span>.
         </p>
+
+        <TeachingPrompt>
+          Try the preset scenarios below, then adjust the values to see how collateral drops affect different tranches.
+        </TeachingPrompt>
+
+        {/* Scenario Presets */}
+        <div className="flex flex-wrap gap-3 my-4">
+          <button
+            onClick={() => { setCollateralValue(10000); setDebtValue(7000); }}
+            className="px-4 py-2 bg-emerald-900/30 border border-emerald-700 rounded-lg text-emerald-300 hover:bg-emerald-900/50 transition-colors text-sm font-medium"
+          >
+            Safe Position
+          </button>
+          <button
+            onClick={() => { setCollateralValue(10000); setDebtValue(8200); }}
+            className="px-4 py-2 bg-amber-900/30 border border-amber-700 rounded-lg text-amber-300 hover:bg-amber-900/50 transition-colors text-sm font-medium"
+          >
+            At Risk
+          </button>
+          <button
+            onClick={() => { setCollateralValue(10000); setDebtValue(9200); }}
+            className="px-4 py-2 bg-red-900/30 border border-red-700 rounded-lg text-red-300 hover:bg-red-900/50 transition-colors text-sm font-medium"
+          >
+            Liquidatable
+          </button>
+        </div>
 
         {/* Inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -283,6 +311,32 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
         <p className="text-xs text-lotus-grey-500 mt-4">
           Health Factor = LLTV / Current LTV. Values &gt; 1 are healthy, &lt; 1 means liquidatable.
         </p>
+
+        {/* Dynamic insights based on position health */}
+        <div className="mt-4 space-y-3">
+          <DynamicInsight
+            show={allTrancheCalculations.some(c => c.isLiquidatable)}
+            variant="warning"
+          >
+            <strong>Liquidation Risk:</strong> At this LTV, positions in the{' '}
+            {allTrancheCalculations.filter(c => c.isLiquidatable).map(c => `${c.lltv}%`).join(', ')}{' '}
+            tranche(s) would be liquidatable. Junior tranches liquidate first because they have higher LLTVs.
+          </DynamicInsight>
+
+          <DynamicInsight
+            show={allTrancheCalculations.every(c => c.isHealthy && !c.isWarning)}
+            variant="success"
+          >
+            <strong>Healthy Position:</strong> This position is safe across all tranches. Even in the most aggressive 95% LLTV tranche, you have a buffer before liquidation.
+          </DynamicInsight>
+
+          <DynamicInsight
+            show={allTrancheCalculations.some(c => c.isWarning) && !allTrancheCalculations.some(c => c.isLiquidatable)}
+            variant="info"
+          >
+            <strong>Approaching Risk Zone:</strong> Some tranches are showing health factors below 1.2. Consider reducing debt or adding collateral to increase your safety margin.
+          </DynamicInsight>
+        </div>
       </div>
 
       {/* How liquidation protects lenders */}

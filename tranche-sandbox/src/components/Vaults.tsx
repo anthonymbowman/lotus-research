@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { CollapsibleSection } from './ConceptExplainer';
+import { TeachingPrompt } from './TeachingPrompt';
+import { DynamicInsight } from './DynamicInsight';
 
 interface VaultsProps {
   tranches: { lltv: number; supplyRate: number | null; borrowRate: number }[];
@@ -265,9 +267,15 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
       {/* Strategy Selector */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Allocation Strategies</h3>
-        <p className="text-lotus-grey-400 mb-6">
+        <p className="text-lotus-grey-400 mb-4">
           Vault managers choose strategies based on risk tolerance. Compare strategies or customize your own allocation.
         </p>
+
+        <TeachingPrompt>
+          Click each strategy card to see how APY and risk change. Then try adjusting the sliders to create your own allocation.
+        </TeachingPrompt>
+
+        <div className="h-4" />
 
         {/* Strategy Cards with Visual Allocation Bars */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -414,6 +422,15 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             })}
           </div>
         </div>
+
+        {/* Dynamic Insight for High Risk */}
+        <DynamicInsight show={riskScore > 7} variant="warning">
+          <strong>High Risk Allocation:</strong> With a risk score above 7, this strategy concentrates heavily in junior tranches. While yields are higher, these tranches absorb losses first during bad debt events.
+        </DynamicInsight>
+
+        <DynamicInsight show={riskScore <= 3 && expectedAPY > 0} variant="success">
+          <strong>Conservative Approach:</strong> This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and are last to absorb bad debt.
+        </DynamicInsight>
 
         {/* Results Summary */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

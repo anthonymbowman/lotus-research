@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { RateInput } from './RateInput';
+import { TeachingPrompt } from './TeachingPrompt';
+import { DynamicInsight } from './DynamicInsight';
 
 interface LotusUSDAllocationProps {
   treasuryAllocation: number;
@@ -162,12 +164,16 @@ export function LotusUSDAllocation({
 
   return (
     <div className="space-y-6">
-      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
+      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
         <p className="text-sm text-emerald-200">
           LotusUSD is backed by USDC and US Treasuries. The treasury yield generates the base rate
           for productive debt, allowing idle liquidity to earn yield even when not being borrowed.
         </p>
       </div>
+
+      <TeachingPrompt>
+        Move the treasury allocation slider to 100% to see the maximum possible base rate. Then try 0% to see what happens when everything is held in USDC.
+      </TeachingPrompt>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 flex items-center justify-center">
@@ -210,6 +216,18 @@ export function LotusUSDAllocation({
           </div>
         </div>
       </div>
+
+      <DynamicInsight show={treasuryAllocation >= 0.95} variant="info">
+        <strong>Maximum Treasury Exposure:</strong> At near-100% treasury allocation, the productive debt rate equals the full treasury rate. However, this leaves minimal USDC reserves for instant redemptions.
+      </DynamicInsight>
+
+      <DynamicInsight show={treasuryAllocation <= 0.05} variant="warning">
+        <strong>Minimal Yield:</strong> With treasury allocation near 0%, the productive debt rate approaches zero. All backing is in USDC which earns no yield, but provides maximum liquidity for redemptions.
+      </DynamicInsight>
+
+      <DynamicInsight show={treasuryAllocation >= 0.5 && treasuryAllocation <= 0.85} variant="success">
+        <strong>Balanced Allocation:</strong> This range balances yield generation with redemption liquidity. Most protocols target 70-80% treasury allocation.
+      </DynamicInsight>
 
       <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
         <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">How It Works</h3>
