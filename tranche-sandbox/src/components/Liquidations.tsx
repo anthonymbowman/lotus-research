@@ -433,7 +433,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
 
               <div className="w-full bg-amber-900/30 border border-amber-700 rounded-lg p-3 text-center">
                 <div className="text-amber-300 font-medium">85% LLTV (Mid)</div>
-                <div className="text-xs text-amber-200/70">Remaining cascades down</div>
+                <div className="text-xs text-amber-200/70">Remaining cascades to junior</div>
               </div>
 
               <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -450,7 +450,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
           {/* Key insight */}
           <div className="mt-5 p-4 bg-lotus-purple-900/20 border border-lotus-purple-700/50 rounded-lg">
             <p className="text-sm text-lotus-purple-200">
-              <span className="font-medium text-lotus-purple-300">Key insight:</span> Junior tranches bear more risk because they absorb whatever bad debt cascades down to them.
+              <span className="font-medium text-lotus-purple-300">Key insight:</span> Junior tranches bear more risk because they absorb whatever bad debt cascades to them from senior tranches.
               This is why they earn higher yields — risk and reward are aligned.
             </p>
           </div>

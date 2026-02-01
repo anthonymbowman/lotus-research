@@ -33,7 +33,7 @@ describe('Dynamic Loan Mix from protocol_math.md', () => {
     const result = computeFundingMatrix(tranches, false);
 
     // T3 (index 3) allocations from doc:
-    // 50% to T3, others cascade up
+    // 50% to T3, others cascade to senior tranches
     expect(result.matrix[3][3]).toBeCloseTo(0.50, 2);     // T3 → T3: 50%
     expect(result.matrix[4][3]).toBe(0);                  // T3 cannot fund T4 (junior)
   });

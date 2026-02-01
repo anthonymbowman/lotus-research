@@ -38,18 +38,18 @@ export function TrancheLiquidity({
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">The Liquidity Cascade</h3>
         <p className="text-lotus-grey-400 mb-6">
-          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism. Supply flows UP from junior to senior, while interest flows DOWN from senior to junior.
+          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism. Liquidity cascades from junior to senior tranches, while interest flows from senior to junior.
         </p>
 
         {/* Vertical Cascade Diagram */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-          {/* Supply Cascade (flows UP) */}
+          {/* Supply Cascade (junior to senior) */}
           <div className="bg-emerald-900/10 rounded-xl p-5 border border-emerald-700/50">
             <div className="flex items-center gap-2 mb-4">
               <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
-              <h4 className="font-semibold text-emerald-300">Supply Flows UP</h4>
+              <h4 className="font-semibold text-emerald-300">Liquidity Flows (Junior to Senior)</h4>
             </div>
 
             <div className="space-y-3">
@@ -72,7 +72,7 @@ export function TrancheLiquidity({
 
               <div className="bg-amber-900/30 rounded-lg p-3 border border-amber-700">
                 <div className="text-amber-300 font-medium">85% LLTV</div>
-                <p className="text-xs text-amber-200/70">Unused supply cascades up</p>
+                <p className="text-xs text-amber-200/70">Unused supply cascades to senior</p>
               </div>
 
               <div className="flex justify-center">
@@ -91,13 +91,13 @@ export function TrancheLiquidity({
             </div>
           </div>
 
-          {/* Interest Cascade (flows DOWN) */}
+          {/* Interest Cascade (senior to junior) */}
           <div className="bg-blue-900/10 rounded-xl p-5 border border-blue-700/50">
             <div className="flex items-center gap-2 mb-4">
               <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
-              <h4 className="font-semibold text-blue-300">Interest Flows DOWN</h4>
+              <h4 className="font-semibold text-blue-300">Interest Flows (Senior to Junior)</h4>
             </div>
 
             <div className="space-y-3">
@@ -114,7 +114,7 @@ export function TrancheLiquidity({
 
               <div className="bg-amber-900/30 rounded-lg p-3 border border-amber-700">
                 <div className="text-amber-300 font-medium">85% LLTV</div>
-                <p className="text-xs text-amber-200/70">Excess interest cascades down</p>
+                <p className="text-xs text-amber-200/70">Excess interest cascades to junior</p>
               </div>
 
               <div className="flex justify-center">
@@ -165,7 +165,7 @@ export function TrancheLiquidity({
               <span className="font-medium text-lotus-purple-300">Junior Benefits</span>
             </div>
             <p className="text-sm text-lotus-purple-200/80">
-              Junior lenders earn from multiple tranches when their liquidity cascades up.
+              Junior lenders earn from multiple tranches when their liquidity cascades to senior tranches.
             </p>
           </div>
         </div>
