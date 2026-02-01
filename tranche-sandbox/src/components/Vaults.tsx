@@ -153,7 +153,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               </svg>
             </div>
             <h4 className="font-medium text-lotus-grey-100 mb-1">1. Deposit</h4>
-            <p className="text-sm text-lotus-grey-400">
+            <p className="text-sm text-lotus-grey-300">
               Users deposit loan tokens (e.g., LotusUSD) into a vault and receive vault shares.
             </p>
           </div>
@@ -165,7 +165,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               </svg>
             </div>
             <h4 className="font-medium text-lotus-grey-100 mb-1">2. Allocate</h4>
-            <p className="text-sm text-lotus-grey-400">
+            <p className="text-sm text-lotus-grey-300">
               Vault manager allocates deposits across tranches based on the vault's strategy.
             </p>
           </div>
@@ -177,7 +177,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               </svg>
             </div>
             <h4 className="font-medium text-lotus-grey-100 mb-1">3. Earn Yield</h4>
-            <p className="text-sm text-lotus-grey-400">
+            <p className="text-sm text-lotus-grey-300">
               Interest earned accrues to the vault. Vault shares appreciate in value over time.
             </p>
           </div>
@@ -272,7 +272,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
       {/* Strategy Selector */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Allocation Strategies</h3>
-        <p className="text-lotus-grey-400 mb-4">
+        <p className="text-lotus-grey-300 mb-4">
           Vault managers choose strategies based on risk tolerance. Compare strategies or customize your own allocation.
         </p>
 
@@ -321,7 +321,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                   <div className="text-2xl font-mono font-bold text-emerald-400">
                     {(strategyAPY * 100).toFixed(2)}%
                   </div>
-                  <div className="text-xs text-lotus-grey-500">Expected APY</div>
+                  <div className="text-xs text-lotus-grey-300">Expected APY</div>
                 </div>
 
                 {/* Visual allocation bar */}
@@ -344,7 +344,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
 
                 {/* Risk indicator */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-lotus-grey-400">Risk</span>
+                  <span className="text-xs text-lotus-grey-300">Risk</span>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 10 }).map((_, i) => (
                       <div
@@ -363,7 +363,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                   </div>
                 </div>
 
-                <p className="text-xs text-lotus-grey-400 mt-3">{strategy.description}</p>
+                <p className="text-xs text-lotus-grey-300 mt-3">{strategy.description}</p>
               </button>
             );
           })}
@@ -376,7 +376,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               <h4 className="font-semibold text-lotus-grey-100 mb-1">
                 {useCustom ? 'Custom Allocation' : `${selectedStrategy} Strategy`}
               </h4>
-              <p className="text-xs text-lotus-grey-500">Adjust sliders to customize allocation</p>
+              <p className="text-xs text-lotus-grey-300">Adjust sliders to customize allocation</p>
             </div>
             <div className="flex items-center gap-3">
               <span className={`px-3 py-1.5 rounded-lg text-sm font-mono font-semibold ${
@@ -403,7 +403,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                 <div key={lltv} className="flex items-center gap-4">
                   <div className="w-24">
                     <div className={`text-sm font-medium text-${colors[i]}-400`}>{lltv}%</div>
-                    <div className="text-xs text-lotus-grey-500">{labels[i]}</div>
+                    <div className="text-xs text-lotus-grey-300">{labels[i]}</div>
                   </div>
                   <div className="flex-1">
                     <input
@@ -420,7 +420,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                   </div>
                   <div className="w-24 text-right">
                     <span className="text-sm font-mono text-emerald-400">{supplyRate.toFixed(2)}%</span>
-                    <div className="text-xs text-lotus-grey-500">APY</div>
+                    <div className="text-xs text-lotus-grey-300">APY</div>
                   </div>
                 </div>
               );
@@ -461,12 +461,12 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
           <div className="bg-lotus-grey-700/30 rounded-xl p-5 border border-lotus-grey-600">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-lotus-grey-700 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-lotus-grey-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-lotus-grey-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div>
-                <div className="text-sm text-lotus-grey-400">Risk Score</div>
+                <div className="text-sm text-lotus-grey-300">Risk Score</div>
                 <div className={`text-3xl font-mono font-bold ${
                   riskScore <= 3 ? 'text-emerald-400' : riskScore <= 6 ? 'text-amber-400' : 'text-red-400'
                 }`}>
@@ -496,7 +496,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
               <h4 className="font-medium text-lotus-grey-100 mb-2">Monitor & Rebalance</h4>
-              <ul className="text-sm text-lotus-grey-400 space-y-1">
+              <ul className="text-sm text-lotus-grey-300 space-y-1">
                 <li>Track tranche utilization and rates</li>
                 <li>Rebalance when conditions change</li>
                 <li>Move funds to higher-yielding tranches</li>
@@ -506,7 +506,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
 
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
               <h4 className="font-medium text-lotus-grey-100 mb-2">Risk Management</h4>
-              <ul className="text-sm text-lotus-grey-400 space-y-1">
+              <ul className="text-sm text-lotus-grey-300 space-y-1">
                 <li>Set allocation limits per tranche</li>
                 <li>Monitor bad debt exposure</li>
                 <li>Ensure liquidity for withdrawals</li>
@@ -539,7 +539,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Passive Yield</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Earn optimized yield without actively managing positions across tranches.
               </p>
             </div>
@@ -553,7 +553,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Diversification</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Exposure spread across multiple tranches reduces concentration risk.
               </p>
             </div>
@@ -567,7 +567,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Gas Efficiency</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Single deposit/withdrawal instead of managing multiple tranche positions.
               </p>
             </div>
@@ -581,7 +581,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Professional Management</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Vault managers have expertise in risk assessment and market timing.
               </p>
             </div>

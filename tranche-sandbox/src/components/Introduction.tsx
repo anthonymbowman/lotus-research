@@ -37,7 +37,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
               <span className="font-medium text-lotus-purple-300">
                 <TermDefinition term="connected-liquidity">Connected Liquidity</TermDefinition>
               </span>
-              <span className="text-lotus-grey-400"> — Unlike isolated pools, liquidity flows between tranches creating deeper markets and more efficient rates.</span>
+              <span className="text-lotus-grey-300"> — Unlike isolated pools, liquidity flows between tranches creating deeper markets and more efficient rates.</span>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -50,7 +50,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
               <span className="font-medium text-lotus-purple-300">
                 <TermDefinition term="productive-debt">Productive Debt</TermDefinition>
               </span>
-              <span className="text-lotus-grey-400"> — Idle liquidity earns yield from treasury-backed assets, compressing <TermDefinition term="spread">spreads</TermDefinition> and reducing rate volatility.</span>
+              <span className="text-lotus-grey-300"> — Idle liquidity earns yield from treasury-backed assets, compressing <TermDefinition term="spread">spreads</TermDefinition> and reducing rate volatility.</span>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -61,7 +61,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
             </div>
             <div>
               <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
-              <span className="text-lotus-grey-400"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
+              <span className="text-lotus-grey-300"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
             </div>
           </li>
         </ul>
@@ -72,7 +72,7 @@ export function Introduction({ onNavigate }: IntroductionProps) {
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">
           Ready to explore?
         </h3>
-        <p className="text-lotus-grey-400 mb-6">
+        <p className="text-lotus-grey-300 mb-6">
           Start with Vaults to see how deposits are aggregated and allocated across tranches.
         </p>
         <button

@@ -107,18 +107,18 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
       {/* Explanation */}
       <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
         <h4 className="font-medium text-lotus-grey-200 mb-3">What This Comparison Shows</h4>
-        <div className="text-sm text-lotus-grey-400 space-y-2">
+        <div className="text-sm text-lotus-grey-300 space-y-2">
           <p>
             We compare Lotus's connected liquidity to <strong className="text-lotus-grey-300">hypothetical isolated markets</strong> while
             holding <strong className="text-lotus-grey-300">borrow rate</strong> and <strong className="text-lotus-grey-300">supply</strong> constant at each LLTV.
           </p>
           <div className="bg-lotus-grey-800 rounded p-3 border border-lotus-grey-700 my-3">
             <p className="font-medium text-lotus-grey-200 mb-2">Key Constraint:</p>
-            <p className="text-sm text-lotus-grey-400">
+            <p className="text-sm text-lotus-grey-300">
               To maintain the same <strong className="text-lotus-grey-300">lender liquidity</strong> (% of supply that can be withdrawn instantly),
               isolated markets must limit how much can be borrowed.
             </p>
-            <div className="font-mono text-xs mt-2 space-y-1 text-lotus-grey-400">
+            <div className="font-mono text-xs mt-2 space-y-1 text-lotus-grey-300">
               <p>Lotus liquidity = freeSupply ÷ supply</p>
               <p>Isolated liquidity = (supply − borrow) ÷ supply</p>
               <p className="text-emerald-400">∴ isoBorrow = min(demand, supply × (1 − freeSupply ÷ supply))</p>
@@ -141,7 +141,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
           </div>
         </div>
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-          <div className="text-xs text-lotus-grey-400">Isolated Total Borrow</div>
+          <div className="text-xs text-lotus-grey-300">Isolated Total Borrow</div>
           <div className="text-xl font-mono font-semibold text-lotus-grey-300">
             ${formatNumber(totals.isoTotalBorrow, 0)}
           </div>
@@ -153,7 +153,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
           </div>
         </div>
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-          <div className="text-xs text-lotus-grey-400">Isolated Avg Supply Rate</div>
+          <div className="text-xs text-lotus-grey-300">Isolated Avg Supply Rate</div>
           <div className="text-xl font-mono font-semibold text-lotus-grey-300">
             {formatPercent(totals.isoAvgSupplyRate, 2)}
           </div>
@@ -190,29 +190,29 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
           <thead>
             <tr className="border-b border-lotus-grey-700 bg-lotus-grey-800">
               <th className="text-left py-2 px-3 font-semibold text-lotus-grey-300">LLTV</th>
-              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-400">Borrow Rate</th>
-              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-400">Supply</th>
+              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Borrow Rate</th>
+              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Supply</th>
               <th className="text-right py-2 px-3 font-semibold text-lotus-purple-300">Lotus Borrow</th>
-              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-500">Iso Borrow</th>
+              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Iso Borrow</th>
               <th className="text-right py-2 px-3 font-semibold text-lotus-purple-300">Liquidity %</th>
               <th className="text-right py-2 px-3 font-semibold text-emerald-400">Lotus Supply Rate</th>
-              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-500">Iso Supply Rate</th>
+              <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Iso Supply Rate</th>
             </tr>
           </thead>
           <tbody>
             {comparison.map((c) => (
               <tr key={c.lltv} className="border-b border-lotus-grey-700 hover:bg-lotus-grey-700/30">
                 <td className="py-2 px-3 font-medium text-lotus-grey-300">{c.lltv}%</td>
-                <td className="py-2 px-3 text-right font-mono text-lotus-grey-400">
+                <td className="py-2 px-3 text-right font-mono text-lotus-grey-300">
                   {formatPercent(c.borrowRate, 2)}
                 </td>
-                <td className="py-2 px-3 text-right font-mono text-lotus-grey-400">
+                <td className="py-2 px-3 text-right font-mono text-lotus-grey-300">
                   ${formatNumber(c.supply, 0)}
                 </td>
                 <td className="py-2 px-3 text-right font-mono text-lotus-purple-300">
                   ${formatNumber(c.lotusBorrowAmount, 0)}
                 </td>
-                <td className="py-2 px-3 text-right font-mono text-lotus-grey-500">
+                <td className="py-2 px-3 text-right font-mono text-lotus-grey-300">
                   ${formatNumber(c.isoBorrowAmount, 0)}
                 </td>
                 <td className="py-2 px-3 text-right font-mono text-lotus-purple-300">
@@ -221,7 +221,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
                 <td className="py-2 px-3 text-right font-mono text-emerald-400">
                   {formatPercent(c.lotusSupplyRate, 2)}
                 </td>
-                <td className="py-2 px-3 text-right font-mono text-lotus-grey-500">
+                <td className="py-2 px-3 text-right font-mono text-lotus-grey-300">
                   {formatPercent(c.isoSupplyRate, 2)}
                 </td>
               </tr>
@@ -231,7 +231,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
       </div>
 
       {/* Formula explanation */}
-      <div className="bg-lotus-grey-700/50 rounded-lg p-3 text-sm text-lotus-grey-400">
+      <div className="bg-lotus-grey-700/50 rounded-lg p-3 text-sm text-lotus-grey-300">
         <div className="font-mono text-xs space-y-1">
           <p><strong className="text-lotus-grey-300">Borrow Rate:</strong> baseRate + spread (constant for both)</p>
           <p><strong className="text-lotus-grey-300">Iso Borrow:</strong> min(lotusBorrow, supply × (1 − freeSupply ÷ supply))</p>

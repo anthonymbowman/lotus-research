@@ -40,7 +40,7 @@ export function ConceptPrimer({ concepts, defaultExpanded = false }: ConceptPrim
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-lotus-grey-400 transition-transform ${
+          className={`w-4 h-4 text-lotus-grey-300 transition-transform ${
             isExpanded ? 'rotate-180' : ''
           }`}
           fill="none"
@@ -65,7 +65,7 @@ export function ConceptPrimer({ concepts, defaultExpanded = false }: ConceptPrim
                 <span className="text-sm font-medium text-lotus-purple-300">
                   {entry.term}:
                 </span>{' '}
-                <span className="text-sm text-lotus-grey-400">
+                <span className="text-sm text-lotus-grey-300">
                   {entry.shortDef}
                 </span>
               </div>

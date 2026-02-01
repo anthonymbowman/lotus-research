@@ -14,7 +14,7 @@ export function WelcomeModal({ onStartTour, onSkip }: WelcomeModalProps) {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-lotus-grey-100 mb-2">Welcome to Lotus Protocol</h2>
-          <p className="text-lotus-grey-400">
+          <p className="text-lotus-grey-300">
             Learn how tranches, connected liquidity, and productive debt work together.
           </p>
         </div>

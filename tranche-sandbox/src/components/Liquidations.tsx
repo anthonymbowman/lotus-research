@@ -77,17 +77,17 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             {/* LTV Box */}
             <div className="text-center">
               <div className="px-8 py-4 bg-lotus-grey-700 rounded-xl border border-lotus-grey-600">
-                <div className="text-sm text-lotus-grey-400 mb-2">Your LTV</div>
+                <div className="text-sm text-lotus-grey-300 mb-2">Your LTV</div>
                 <div className="text-3xl font-mono font-bold text-lotus-grey-100">
                   <span className="text-lotus-purple-400">Debt</span>
-                  <span className="mx-2 text-lotus-grey-500">/</span>
+                  <span className="mx-2 text-lotus-grey-300">/</span>
                   <span className="text-blue-400">Collateral</span>
                 </div>
               </div>
             </div>
 
             {/* Comparison */}
-            <div className="text-4xl font-bold text-lotus-grey-500">&gt;</div>
+            <div className="text-4xl font-bold text-lotus-grey-300">&gt;</div>
 
             {/* LLTV Box */}
             <div className="text-center">
@@ -98,7 +98,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
 
             {/* Result */}
-            <div className="text-4xl font-bold text-lotus-grey-500">=</div>
+            <div className="text-4xl font-bold text-lotus-grey-300">=</div>
 
             {/* Liquidatable */}
             <div className="text-center">
@@ -109,7 +109,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
           </div>
 
-          <div className="mt-6 text-center text-sm text-lotus-grey-400">
+          <div className="mt-6 text-center text-sm text-lotus-grey-300">
             This can happen when <span className="text-lotus-purple-300">collateral price drops</span> or <span className="text-lotus-purple-300">interest accrues on debt</span>
           </div>
         </div>
@@ -143,11 +143,11 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-lotus-grey-700">
-                <th className="text-left py-3 px-4 text-lotus-grey-400 font-medium">Tranche</th>
-                <th className="text-center py-3 px-4 text-lotus-grey-400 font-medium">LLTV</th>
-                <th className="text-center py-3 px-4 text-lotus-grey-400 font-medium">Max Leverage</th>
-                <th className="text-center py-3 px-4 text-lotus-grey-400 font-medium">Liquidation Buffer</th>
-                <th className="text-center py-3 px-4 text-lotus-grey-400 font-medium">Risk Profile</th>
+                <th className="text-left py-3 px-4 text-lotus-grey-300 font-medium">Tranche</th>
+                <th className="text-center py-3 px-4 text-lotus-grey-300 font-medium">LLTV</th>
+                <th className="text-center py-3 px-4 text-lotus-grey-300 font-medium">Max Leverage</th>
+                <th className="text-center py-3 px-4 text-lotus-grey-300 font-medium">Liquidation Buffer</th>
+                <th className="text-center py-3 px-4 text-lotus-grey-300 font-medium">Risk Profile</th>
               </tr>
             </thead>
             <tbody>
@@ -184,7 +184,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
           </table>
         </div>
 
-        <p className="text-xs text-lotus-grey-500 mt-4">
+        <p className="text-xs text-lotus-grey-300 mt-4">
           Liquidation buffer = 100% - LLTV. This is the maximum collateral price drop you can sustain if borrowing at max LTV.
         </p>
 
@@ -257,7 +257,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
         {/* Current LTV Display */}
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600 mb-6">
           <div className="flex items-center justify-between">
-            <span className="text-lotus-grey-400">Your Current LTV</span>
+            <span className="text-lotus-grey-300">Your Current LTV</span>
             <span className="text-2xl font-mono font-bold text-lotus-purple-400">
               {((debtValue / collateralValue) * 100).toFixed(1)}%
             </span>
@@ -269,12 +269,12 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-lotus-grey-700">
-                <th className="text-left py-3 px-3 text-lotus-grey-400 font-medium">Tranche</th>
-                <th className="text-center py-3 px-3 text-lotus-grey-400 font-medium">LLTV</th>
-                <th className="text-center py-3 px-3 text-lotus-grey-400 font-medium">Health Factor</th>
-                <th className="text-center py-3 px-3 text-lotus-grey-400 font-medium">Status</th>
-                <th className="text-center py-3 px-3 text-lotus-grey-400 font-medium">Price Drop to Liquidation</th>
-                <th className="text-center py-3 px-3 text-lotus-grey-400 font-medium">Buffer to LLTV</th>
+                <th className="text-left py-3 px-3 text-lotus-grey-300 font-medium">Tranche</th>
+                <th className="text-center py-3 px-3 text-lotus-grey-300 font-medium">LLTV</th>
+                <th className="text-center py-3 px-3 text-lotus-grey-300 font-medium">Health Factor</th>
+                <th className="text-center py-3 px-3 text-lotus-grey-300 font-medium">Status</th>
+                <th className="text-center py-3 px-3 text-lotus-grey-300 font-medium">Price Drop to Liquidation</th>
+                <th className="text-center py-3 px-3 text-lotus-grey-300 font-medium">Buffer to LLTV</th>
               </tr>
             </thead>
             <tbody>
@@ -318,7 +318,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
           </table>
         </div>
 
-        <p className="text-xs text-lotus-grey-500 mt-4">
+        <p className="text-xs text-lotus-grey-300 mt-4">
           Health Factor = LLTV / Current LTV. Values &gt; 1 are healthy, &lt; 1 means liquidatable.
         </p>
 
@@ -363,7 +363,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Detection</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Position flagged when LTV exceeds LLTV
               </p>
             </div>
@@ -375,7 +375,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Collateral Seized</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Liquidators repay debt & receive collateral at discount
               </p>
             </div>
@@ -387,7 +387,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Debt Cleared</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Borrower's debt removed from protocol
               </p>
             </div>
@@ -399,7 +399,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
             </div>
             <div>
               <h4 className="font-medium text-lotus-grey-100 mb-1">Bad Debt Absorbed</h4>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Any shortfall absorbed by tranches via cascade
               </p>
             </div>
@@ -438,7 +438,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
               </svg>
               <h5 className="font-medium text-lotus-grey-100 mb-1">Rapid Price Drops</h5>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Price falls faster than liquidators can act
               </p>
             </div>
@@ -448,7 +448,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <h5 className="font-medium text-lotus-grey-100 mb-1">Oracle Delays</h5>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Price feeds lag behind actual market prices
               </p>
             </div>
@@ -458,7 +458,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
               <h5 className="font-medium text-lotus-grey-100 mb-1">Low Liquidator Incentive</h5>
-              <p className="text-sm text-lotus-grey-400">
+              <p className="text-sm text-lotus-grey-300">
                 Bonus doesn't cover gas and risk
               </p>
             </div>
@@ -468,7 +468,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
         {/* Bad Debt Cascade - CORRECT DIRECTION */}
         <div className="bg-lotus-grey-700/50 rounded-lg p-5 border border-lotus-grey-600">
           <h4 className="font-medium text-lotus-grey-200 mb-4">How Bad Debt is Absorbed (<TermDefinition term="cascade">Cascade</TermDefinition>)</h4>
-          <p className="text-sm text-lotus-grey-400 mb-4">
+          <p className="text-sm text-lotus-grey-300 mb-4">
             Bad debt cascades <span className="text-lotus-purple-300 font-medium">from senior to junior</span> (same direction as interest).
             At each tranche, bad debt is absorbed proportionally to <TermDefinition term="supply-utilization">supply utilization</TermDefinition>.
           </p>
@@ -525,7 +525,7 @@ export function Liquidations({ tranches, computedTranches }: LiquidationsProps) 
       {computedTranches && (
         <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
           <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Bad Debt Simulation</h3>
-          <p className="text-lotus-grey-400 mb-6">
+          <p className="text-lotus-grey-300 mb-6">
             Explore how bad debt is absorbed by tranches. Enter bad debt amounts to see
             how losses cascade from senior to junior tranches.
           </p>

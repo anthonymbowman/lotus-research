@@ -87,7 +87,7 @@ export function TermDefinition({ term, children }: TermDefinitionProps) {
             </code>
           )}
           {entry.example && (
-            <p className="text-xs text-lotus-grey-400 mt-2 italic">
+            <p className="text-xs text-lotus-grey-300 mt-2 italic">
               Example: {entry.example}
             </p>
           )}

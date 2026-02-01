@@ -30,7 +30,7 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
 
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-lotus-grey-400">Time Period:</span>
+          <span className="text-sm font-medium text-lotus-grey-300">Time Period:</span>
           <div className="flex gap-1">
             {TIME_PERIODS.map((period) => (
               <button
@@ -73,7 +73,7 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
           </div>
         </div>
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-          <div className="text-sm text-lotus-grey-400">Time Period</div>
+          <div className="text-sm text-lotus-grey-300">Time Period</div>
           <div className="text-2xl font-semibold text-lotus-grey-200">
             {getTimePeriodLabel(timePeriod)}
           </div>
@@ -158,7 +158,7 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
         })()}
       </div>
 
-      <div className="bg-lotus-grey-900 rounded-lg p-3 text-sm text-lotus-grey-400">
+      <div className="bg-lotus-grey-900 rounded-lg p-3 text-sm text-lotus-grey-300">
         <code className="font-mono">intReceived = (cascadedIn + intGen) × supplyUtil</code>
         <span className="mx-2 text-lotus-grey-600">|</span>
         <code className="font-mono">cascadedOut = (cascadedIn + intGen) × (1 - supplyUtil)</code>
@@ -167,7 +167,7 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
       {showCascade && (
         <div className="mt-6">
           <h4 className="font-medium text-lotus-grey-200 mb-3">Interest Cascade Flow</h4>
-          <p className="text-sm text-lotus-grey-500 mb-4">
+          <p className="text-sm text-lotus-grey-300 mb-4">
             Interest flows from senior to junior tranches. At each level, lenders receive a share
             based on their supply utilization, and the remainder cascades to the next junior tranche.
           </p>
@@ -177,7 +177,7 @@ export function InterestSimulator({ tranches, productiveDebtRate }: InterestSimu
 
       <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
         <h4 className="font-medium text-lotus-grey-200 mb-2">How Interest Flows</h4>
-        <ol className="list-decimal list-inside text-sm text-lotus-grey-400 space-y-1">
+        <ol className="list-decimal list-inside text-sm text-lotus-grey-300 space-y-1">
           <li>
             <strong className="text-lotus-grey-300">Generation:</strong> Each tranche generates interest = Borrow Amount × Borrow Rate × Time
           </li>
@@ -230,7 +230,7 @@ function CascadeVisualization({
     <div className="space-y-2">
       {cascadeData.map((data, i) => (
         <div key={data.lltv} className="flex items-center gap-2">
-          <div className="w-20 text-right text-sm font-medium text-lotus-grey-400">
+          <div className="w-20 text-right text-sm font-medium text-lotus-grey-300">
             {data.lltv}% LLTV
           </div>
 
@@ -281,11 +281,11 @@ function CascadeVisualization({
       <div className="flex items-center gap-4 mt-4 pt-4 border-t border-lotus-grey-700">
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 bg-blue-500 rounded"></div>
-          <span className="text-xs text-lotus-grey-400">Interest Flowing</span>
+          <span className="text-xs text-lotus-grey-300">Interest Flowing</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 bg-emerald-600 border border-emerald-500 rounded"></div>
-          <span className="text-xs text-lotus-grey-400">Interest Allocated to Lenders</span>
+          <span className="text-xs text-lotus-grey-300">Interest Allocated to Lenders</span>
         </div>
       </div>
     </div>

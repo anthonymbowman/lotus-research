@@ -155,7 +155,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
           </button>
           <button
             onClick={() => setShowDisclaimer(!showDisclaimer)}
-            className="text-xs text-lotus-grey-500 hover:text-lotus-grey-300 flex items-center gap-1"
+            className="text-xs text-lotus-grey-300 hover:text-lotus-grey-300 flex items-center gap-1"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -167,7 +167,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
       </div>
 
       {showDisclaimer && (
-        <div className="mb-4 p-3 bg-lotus-grey-700/50 border border-lotus-grey-600 rounded-lg text-xs text-lotus-grey-400">
+        <div className="mb-4 p-3 bg-lotus-grey-700/50 border border-lotus-grey-600 rounded-lg text-xs text-lotus-grey-300">
           {FUNDING_MATRIX_DISCLAIMER}
         </div>
       )}
@@ -215,7 +215,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
               <tr>
                 <th className="w-6"></th>
                 <th className="p-2"></th>
-                <th colSpan={tranches.length} className="p-2 text-center text-lotus-grey-400 font-medium border-b border-lotus-grey-700">
+                <th colSpan={tranches.length} className="p-2 text-center text-lotus-grey-300 font-medium border-b border-lotus-grey-700">
                   Lender Tranche (supply source) →
                 </th>
               </tr>
@@ -226,7 +226,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   <th
                     key={i}
                     className={`px-4 py-2 text-center font-medium cursor-pointer transition-colors
-                      ${selectedLender === i ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-400 hover:bg-lotus-grey-700/50'}`}
+                      ${selectedLender === i ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-300 hover:bg-lotus-grey-700/50'}`}
                     onClick={() => setSelectedLender(i)}
                   >
                     {t.lltv}%
@@ -240,7 +240,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   {borrowerIdx === 0 && (
                     <th
                       rowSpan={tranches.length}
-                      className="pr-1 text-lotus-grey-400 font-medium text-xs"
+                      className="pr-1 text-lotus-grey-300 font-medium text-xs"
                       style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                     >
                       ← Borrower
@@ -248,7 +248,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                   )}
                   <th
                     className={`px-3 py-2 text-right font-medium cursor-pointer transition-colors
-                      ${selectedBorrower === borrowerIdx ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-400 hover:bg-lotus-grey-700/50'}`}
+                      ${selectedBorrower === borrowerIdx ? 'text-lotus-purple-300 bg-lotus-purple-900/30' : 'text-lotus-grey-300 hover:bg-lotus-grey-700/50'}`}
                     onClick={() => setSelectedBorrower(borrowerIdx)}
                   >
                     {borrower.lltv}%
@@ -305,14 +305,14 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
 
           {/* Color Scale */}
           <div className="mt-3 flex items-center gap-2 text-xs">
-            <span className="text-lotus-grey-500">Color scale:</span>
+            <span className="text-lotus-grey-300">Color scale:</span>
             <div className="flex items-center gap-1">
               <div className="w-4 h-3 bg-lotus-purple-500/20 rounded"></div>
               <div className="w-4 h-3 bg-lotus-purple-500/40 rounded"></div>
               <div className="w-4 h-3 bg-lotus-purple-500/70 rounded"></div>
               <div className="w-4 h-3 bg-lotus-purple-500 rounded"></div>
             </div>
-            <span className="text-lotus-grey-500">Low → High</span>
+            <span className="text-lotus-grey-300">Low → High</span>
           </div>
         </div>
 
@@ -323,7 +323,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
             <div className="text-xs font-semibold text-lotus-grey-200 mb-1">
               Borrower Perspective
             </div>
-            <div className="text-xs text-lotus-grey-500 mb-2">
+            <div className="text-xs text-lotus-grey-300 mb-2">
               Where does {tranches[selectedBorrower]?.lltv}% borrow come from?
             </div>
 
@@ -333,7 +333,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 <PieLegend slices={borrowerPieSlices} />
               </div>
             ) : (
-              <div className="text-xs text-lotus-grey-500 italic py-8">
+              <div className="text-xs text-lotus-grey-300 italic py-8">
                 No borrows in {tranches[selectedBorrower]?.lltv}% tranche
               </div>
             )}
@@ -344,7 +344,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
             <div className="text-xs font-semibold text-lotus-grey-200 mb-1">
               Lender Perspective
             </div>
-            <div className="text-xs text-lotus-grey-500 mb-2">
+            <div className="text-xs text-lotus-grey-300 mb-2">
               Where does {tranches[selectedLender]?.lltv}% supply go?
             </div>
 
@@ -354,12 +354,12 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 <PieLegend slices={lenderPieSlices} />
               </div>
             ) : (
-              <div className="text-xs text-lotus-grey-500 italic py-8">
+              <div className="text-xs text-lotus-grey-300 italic py-8">
                 No supply allocated from {tranches[selectedLender]?.lltv}% tranche
               </div>
             )}
 
-            <div className="mt-2 text-xs text-lotus-grey-500">
+            <div className="mt-2 text-xs text-lotus-grey-300">
               Total allocated: <span className="font-mono font-medium text-emerald-400">
                 {formatPercent(fundingData.capitalAllocated?.[selectedLender] || 0)}
               </span>
@@ -458,12 +458,12 @@ function PieLegend({ slices }: { slices: PieSlice[] }) {
               style={{ backgroundColor: slice.color }}
             />
           )}
-          <span className="text-lotus-grey-500">{slice.isUnallocated ? 'Unallocated' : `${slice.lltv}%`}:</span>
+          <span className="text-lotus-grey-300">{slice.isUnallocated ? 'Unallocated' : `${slice.lltv}%`}:</span>
           <span className="font-mono text-lotus-grey-300">{formatPercent(slice.percent)}</span>
         </div>
       ))}
       {slices.length === 0 && (
-        <div className="text-lotus-grey-500 italic">None</div>
+        <div className="text-lotus-grey-300 italic">None</div>
       )}
     </div>
   );

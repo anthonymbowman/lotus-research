@@ -37,7 +37,7 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
     >
       <code className="font-mono text-xs text-lotus-purple-300 block">{formula}</code>
       {description && (
-        <p className="mt-1 text-xs text-lotus-grey-400">
+        <p className="mt-1 text-xs text-lotus-grey-300">
           {description}
         </p>
       )}
@@ -61,7 +61,7 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
       >
         {children}
         <svg
-          className="ml-1 w-3.5 h-3.5 text-lotus-grey-500 hover:text-lotus-purple-400 transition-colors"
+          className="ml-1 w-3.5 h-3.5 text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

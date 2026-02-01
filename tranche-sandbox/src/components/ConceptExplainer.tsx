@@ -27,7 +27,7 @@ export function ConceptExplainer({
       >
         <span className="font-medium text-lotus-grey-200">{title}</span>
         <svg
-          className={`w-5 h-5 text-lotus-grey-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 text-lotus-grey-300 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -38,7 +38,7 @@ export function ConceptExplainer({
 
       {isExpanded && (
         <div className="p-4 space-y-3 bg-lotus-grey-800/50">
-          <p className="text-sm text-lotus-grey-400">{description}</p>
+          <p className="text-sm text-lotus-grey-300">{description}</p>
 
           {formula && (
             <div className="bg-lotus-grey-900 rounded-lg px-4 py-2">
@@ -89,12 +89,12 @@ export function CollapsibleSection({
           <div>
             <span className="font-semibold text-lotus-grey-100">{title}</span>
             {description && (
-              <p className="text-sm text-lotus-grey-500 mt-0.5">{description}</p>
+              <p className="text-sm text-lotus-grey-300 mt-0.5">{description}</p>
             )}
           </div>
         </div>
         <svg
-          className={`w-5 h-5 text-lotus-grey-500 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 text-lotus-grey-300 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -133,7 +133,7 @@ export function StackedBar({
 
   return (
     <div className="flex items-center gap-3 py-1">
-      <span className="w-16 text-sm font-medium text-lotus-grey-400">
+      <span className="w-16 text-sm font-medium text-lotus-grey-300">
         {label}
       </span>
       <div className="flex-1 h-5 bg-lotus-grey-700 rounded overflow-hidden relative">
@@ -179,16 +179,16 @@ export function WaterfallItem({
   return (
     <div className="flex items-center gap-2">
       <div className={`flex-1 ${colors.bg} ${colors.border} border rounded-lg p-3`}>
-        <div className="text-xs text-lotus-grey-500 mb-1">{label}</div>
+        <div className="text-xs text-lotus-grey-300 mb-1">{label}</div>
         <div className="grid grid-cols-3 gap-2 text-sm">
           <div>
-            <div className="text-xs text-lotus-grey-500">In</div>
+            <div className="text-xs text-lotus-grey-300">In</div>
             <div className={`font-mono ${colors.text}`}>
               ${inFlow.toFixed(0)}
             </div>
           </div>
           <div>
-            <div className="text-xs text-lotus-grey-500">
+            <div className="text-xs text-lotus-grey-300">
               {colorScheme === 'interest' ? 'Keeps' : 'Absorbs'}
             </div>
             <div className="font-mono font-medium text-lotus-grey-100">
@@ -196,7 +196,7 @@ export function WaterfallItem({
             </div>
           </div>
           <div>
-            <div className="text-xs text-lotus-grey-500">Out</div>
+            <div className="text-xs text-lotus-grey-300">Out</div>
             <div className={`font-mono ${colors.text}`}>
               ${outFlow.toFixed(0)}
             </div>

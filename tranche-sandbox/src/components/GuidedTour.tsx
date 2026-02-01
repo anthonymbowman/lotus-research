@@ -50,12 +50,12 @@ export function GuidedTour({ onComplete }: GuidedTourProps) {
         </div>
 
         <h3 className="text-lg font-semibold text-lotus-grey-100 mb-2">{step.title}</h3>
-        <p className="text-sm text-lotus-grey-400 mb-6">{step.description}</p>
+        <p className="text-sm text-lotus-grey-300 mb-6">{step.description}</p>
 
         <div className="flex gap-3">
           <button
             onClick={handleSkip}
-            className="flex-1 py-2 px-4 text-lotus-grey-400 hover:text-lotus-grey-300 text-sm transition-colors"
+            className="flex-1 py-2 px-4 text-lotus-grey-300 hover:text-lotus-grey-300 text-sm transition-colors"
           >
             Skip Tour
           </button>

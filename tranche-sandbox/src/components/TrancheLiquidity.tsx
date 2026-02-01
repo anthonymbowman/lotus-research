@@ -43,7 +43,7 @@ export function TrancheLiquidity({
       {/* Liquidity Cascade Explanation */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">The Liquidity Cascade</h3>
-        <p className="text-lotus-grey-400 mb-6">
+        <p className="text-lotus-grey-300 mb-6">
           Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism. Liquidity cascades from junior to senior tranches, while interest flows from senior to junior.
         </p>
 
@@ -198,13 +198,13 @@ export function TrancheLiquidity({
         <div className="space-y-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Supply</h4>
-            <p className="text-sm text-lotus-grey-400 mb-3">
+            <p className="text-sm text-lotus-grey-300 mb-3">
               Junior Supply at tranche i = Sum of all supply from this tranche and more junior tranches.
             </p>
             <div className="space-y-2">
               {tranches.map((t) => (
                 <div key={t.id} className="flex items-center gap-2">
-                  <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                  <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
                   <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
                     <div
                       className="h-full bg-blue-500 transition-all"
@@ -221,13 +221,13 @@ export function TrancheLiquidity({
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Borrow</h4>
-            <p className="text-sm text-lotus-grey-400 mb-3">
+            <p className="text-sm text-lotus-grey-300 mb-3">
               Junior Borrow at tranche i = Sum of all borrows at or above this risk level.
             </p>
             <div className="space-y-2">
               {tranches.map((t) => (
                 <div key={t.id} className="flex items-center gap-2">
-                  <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                  <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
                   <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
                     <div
                       className="h-full bg-orange-500 transition-all"
@@ -244,7 +244,7 @@ export function TrancheLiquidity({
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Net Supply</h4>
-            <p className="text-sm text-lotus-grey-400 mb-3">
+            <p className="text-sm text-lotus-grey-300 mb-3">
               Jr Net = Jr Supply - Jr Borrow. This shows the "excess" supply available at each level.
             </p>
             <div className="space-y-2">
@@ -252,7 +252,7 @@ export function TrancheLiquidity({
                 const isPositive = t.jrNetSupply >= 0;
                 return (
                   <div key={t.id} className="flex items-center gap-2">
-                    <span className="text-xs text-lotus-grey-500 w-12">{t.lltv}%</span>
+                    <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
                     <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden relative">
                       <div
                         className={`h-full transition-all ${isPositive ? 'bg-emerald-500' : 'bg-red-500'}`}

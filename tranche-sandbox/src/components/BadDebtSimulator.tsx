@@ -53,8 +53,8 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
           </div>
         </div>
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-          <div className="text-sm text-lotus-grey-400">Unabsorbed</div>
-          <div className={`text-2xl font-mono font-semibold ${simulation.unabsorbedBadDebt > 0 ? 'text-red-400' : 'text-lotus-grey-500'}`}>
+          <div className="text-sm text-lotus-grey-300">Unabsorbed</div>
+          <div className={`text-2xl font-mono font-semibold ${simulation.unabsorbedBadDebt > 0 ? 'text-red-400' : 'text-lotus-grey-300'}`}>
             ${formatNumber(simulation.unabsorbedBadDebt, 0)}
           </div>
         </div>
@@ -66,15 +66,15 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
           <thead>
             <tr className="border-b border-lotus-grey-600">
               <th className="text-left py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800">Tranche</th>
-              <th className="text-right py-2 px-2 font-semibold text-lotus-grey-400 bg-lotus-grey-800">Borrow (Max)</th>
+              <th className="text-right py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800">Borrow (Max)</th>
               <th className="text-right py-2 px-2 font-semibold text-red-400 bg-red-900/20">Local Bad Debt</th>
-              <th className="py-2 px-1 text-lotus-grey-500 bg-lotus-grey-800">+</th>
+              <th className="py-2 px-1 text-lotus-grey-300 bg-lotus-grey-800">+</th>
               <th className="text-right py-2 px-2 font-semibold text-orange-400 bg-orange-900/20">Cascaded In</th>
-              <th className="py-2 px-1 text-lotus-grey-500 bg-lotus-grey-800">=</th>
+              <th className="py-2 px-1 text-lotus-grey-300 bg-lotus-grey-800">=</th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800">Total</th>
-              <th className="py-2 px-1 text-lotus-grey-500 bg-lotus-grey-800">×</th>
+              <th className="py-2 px-1 text-lotus-grey-300 bg-lotus-grey-800">×</th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/20">Supply Util</th>
-              <th className="py-2 px-1 text-lotus-grey-500 bg-lotus-grey-800">=</th>
+              <th className="py-2 px-1 text-lotus-grey-300 bg-lotus-grey-800">=</th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/20">Absorbed</th>
               <th className="text-right py-2 px-2 font-semibold text-orange-400 bg-orange-900/20">Cascaded Out</th>
               <th className="text-right py-2 px-2 font-semibold text-emerald-400 bg-emerald-900/20">Supply Left</th>
@@ -97,7 +97,7 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                   <td className="py-2 px-2 font-medium text-lotus-grey-300 bg-lotus-grey-800/50">
                     {result.lltv}%
                   </td>
-                  <td className="py-2 px-2 text-right font-mono text-lotus-grey-400 bg-lotus-grey-800/50">
+                  <td className="py-2 px-2 text-right font-mono text-lotus-grey-300 bg-lotus-grey-800/50">
                     ${formatNumber(t.borrowAssets, 0)}
                   </td>
                   <td className="py-2 px-2 bg-red-900/10">
@@ -112,19 +112,19 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                       }`}
                     />
                   </td>
-                  <td className="py-2 px-1 text-lotus-grey-500">+</td>
+                  <td className="py-2 px-1 text-lotus-grey-300">+</td>
                   <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/10">
                     ${formatNumber(result.badDebtCascadedIn, 0)}
                   </td>
-                  <td className="py-2 px-1 text-lotus-grey-500">=</td>
+                  <td className="py-2 px-1 text-lotus-grey-300">=</td>
                   <td className="py-2 px-2 text-right font-mono text-lotus-grey-300 bg-lotus-grey-800/30">
                     ${formatNumber(totalBadDebt, 0)}
                   </td>
-                  <td className="py-2 px-1 text-lotus-grey-500">×</td>
+                  <td className="py-2 px-1 text-lotus-grey-300">×</td>
                   <td className="py-2 px-2 text-right font-mono text-lotus-purple-300 bg-lotus-purple-900/10">
                     {formatPercent(result.supplyUtilization, 0)}
                   </td>
-                  <td className="py-2 px-1 text-lotus-grey-500">=</td>
+                  <td className="py-2 px-1 text-lotus-grey-300">=</td>
                   <td className="py-2 px-2 text-right font-mono font-medium text-lotus-purple-300 bg-lotus-purple-900/10">
                     {result.badDebtAbsorbed > 0 ? `$${formatNumber(result.badDebtAbsorbed, 0)}` : '-'}
                   </td>
@@ -149,18 +149,18 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
       </div>
 
       {/* Formula explanation */}
-      <div className="bg-lotus-grey-700/50 rounded-lg p-3 text-sm text-lotus-grey-400">
+      <div className="bg-lotus-grey-700/50 rounded-lg p-3 text-sm text-lotus-grey-300">
         <code className="font-mono text-lotus-purple-300">absorbed = (local + cascadedIn) × supplyUtil</code>
         <span className="mx-2">|</span>
         <code className="font-mono text-lotus-purple-300">cascadedOut = (local + cascadedIn) × (1 − supplyUtil)</code>
         <span className="mx-2">|</span>
-        <span className="text-lotus-grey-500">Local bad debt capped at borrow amount</span>
+        <span className="text-lotus-grey-300">Local bad debt capped at borrow amount</span>
       </div>
 
       {/* Explanation */}
       <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
         <h4 className="font-medium text-lotus-grey-200 mb-2">How Bad Debt is Absorbed</h4>
-        <ol className="list-decimal list-inside text-sm text-lotus-grey-400 space-y-1">
+        <ol className="list-decimal list-inside text-sm text-lotus-grey-300 space-y-1">
           <li>
             <strong className="text-lotus-grey-300">Default occurs:</strong> Enter bad debt amounts for tranches where borrowers default
           </li>

@@ -35,9 +35,9 @@ export function RateInput({
           min={(min * 100).toString()}
           max={(max * 100).toString()}
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-lotus-grey-400 text-sm">%</span>
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-lotus-grey-300 text-sm">%</span>
       </div>
-      {description && <p className="text-xs text-lotus-grey-500">{description}</p>}
+      {description && <p className="text-xs text-lotus-grey-300">{description}</p>}
     </div>
   );
 }
@@ -63,7 +63,7 @@ export function UtilizationSlider({ value, onChange }: UtilizationSliderProps) {
         step="0.5"
         className="w-full"
       />
-      <div className="flex justify-between text-xs text-lotus-grey-500">
+      <div className="flex justify-between text-xs text-lotus-grey-300">
         <span>0%</span>
         <span>50%</span>
         <span>100%</span>

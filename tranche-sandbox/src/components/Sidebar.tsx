@@ -63,7 +63,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
             </div>
             <div>
               <h1 className="text-lotus-grey-100 font-medium">Lotus Protocol</h1>
-              <p className="text-xs text-lotus-grey-400">Interactive Docs</p>
+              <p className="text-xs text-lotus-grey-300">Interactive Docs</p>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
                           ? 'bg-lotus-purple-500 text-white'
                           : isVisited
                           ? 'bg-lotus-purple-800 text-lotus-purple-300'
-                          : 'bg-lotus-grey-700 text-lotus-grey-400'
+                          : 'bg-lotus-grey-700 text-lotus-grey-300'
                       }`}
                     >
                       {isVisited && !isActive ? (
@@ -116,7 +116,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
                       >
                         {section.label}
                       </div>
-                      <div className="text-xs text-lotus-grey-500 truncate mt-0.5">
+                      <div className="text-xs text-lotus-grey-300 truncate mt-0.5">
                         {section.description}
                       </div>
                     </div>
@@ -133,7 +133,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
             href="https://docs.lotus.finance"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs text-lotus-grey-400 hover:text-lotus-purple-400 transition-colors"
+            className="flex items-center gap-2 text-xs text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

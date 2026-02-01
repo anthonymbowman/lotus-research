@@ -35,7 +35,7 @@ export function SectionWrapper({
           </span>
         </div>
         <h1 className="text-3xl font-bold text-lotus-grey-100 mb-2">{headline}</h1>
-        <p className="text-lg text-lotus-grey-400">{subtitle}</p>
+        <p className="text-lg text-lotus-grey-300">{subtitle}</p>
       </div>
 
       {/* Learning Points */}
@@ -43,7 +43,7 @@ export function SectionWrapper({
         <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">What you'll learn:</h3>
         <ul className="space-y-2">
           {learningPoints.map((point, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-lotus-grey-400">
+            <li key={i} className="flex items-start gap-2 text-sm text-lotus-grey-300">
               <svg className="w-4 h-4 text-lotus-purple-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>

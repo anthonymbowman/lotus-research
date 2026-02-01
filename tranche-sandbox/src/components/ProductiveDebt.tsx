@@ -63,7 +63,7 @@ function IntroSection() {
               <div className="text-lotus-purple-400">{benefit.icon}</div>
               <h4 className="font-medium text-lotus-grey-100">{benefit.title}</h4>
             </div>
-            <p className="text-sm text-lotus-grey-400">{benefit.description}</p>
+            <p className="text-sm text-lotus-grey-300">{benefit.description}</p>
           </div>
         ))}
       </div>
@@ -88,7 +88,7 @@ function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompos
     <div className="mb-8">
       <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Borrow Rate Composition</h3>
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <p className="text-sm text-lotus-grey-400 mb-6 text-center max-w-xl mx-auto">
+        <p className="text-sm text-lotus-grey-300 mb-6 text-center max-w-xl mx-auto">
           With productive debt, the borrow rate decomposes into a base component (from productive assets)
           plus a spread component (set by the market).
         </p>
@@ -122,11 +122,11 @@ function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompos
           <div className="text-3xl font-light text-lotus-grey-600">=</div>
 
           <div className="bg-lotus-grey-700 border border-lotus-grey-600 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-grey-400 mb-1 font-medium">Borrow Rate</div>
+            <div className="text-xs text-lotus-grey-300 mb-1 font-medium">Borrow Rate</div>
             <div className="text-2xl font-mono font-semibold text-lotus-grey-100">
               {formatPercent(borrowRate)}
             </div>
-            <div className="text-xs text-lotus-grey-500 mt-1">total rate</div>
+            <div className="text-xs text-lotus-grey-300 mt-1">total rate</div>
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@ function SpreadCompressionSection({
               step="5"
               className="w-full"
             />
-            <p className="text-xs text-lotus-grey-500 mt-2">
+            <p className="text-xs text-lotus-grey-300 mt-2">
               Lower utilization = bigger PD advantage.
             </p>
           </div>
@@ -209,7 +209,7 @@ function SpreadCompressionSection({
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-blue-400">Borrowers</span>
-              <span className="text-sm font-medium text-lotus-grey-400">
+              <span className="text-sm font-medium text-lotus-grey-300">
                 {((1 - lenderShare) * 100).toFixed(0)}% / {(lenderShare * 100).toFixed(0)}%
               </span>
               <span className="text-sm font-medium text-emerald-400">Lenders</span>
@@ -223,7 +223,7 @@ function SpreadCompressionSection({
               step="5"
               className="w-full"
             />
-            <p className="text-xs text-lotus-grey-500 mt-2">
+            <p className="text-xs text-lotus-grey-300 mt-2">
               How efficiency gains are distributed.
             </p>
           </div>
@@ -242,7 +242,7 @@ function SpreadCompressionSection({
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-500 w-16">No PD</span>
+                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
                 <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
                   <div
                     className="h-full bg-lotus-grey-500 rounded-lg flex items-center justify-end pr-2"
@@ -278,7 +278,7 @@ function SpreadCompressionSection({
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-500 w-16">No PD</span>
+                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
                 <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
                   <div
                     className="h-full bg-lotus-grey-500 rounded-lg flex items-center justify-end pr-2"
@@ -306,11 +306,11 @@ function SpreadCompressionSection({
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-lotus-grey-300">Borrow-Lend Spread</span>
-              <span className="text-xs text-lotus-grey-500">(inefficiency in the market)</span>
+              <span className="text-xs text-lotus-grey-300">(inefficiency in the market)</span>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-500 w-16">No PD</span>
+                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
                 <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
                   <div
                     className="h-full bg-red-500/80 rounded-lg flex items-center justify-end pr-2"
@@ -338,7 +338,7 @@ function SpreadCompressionSection({
         <div className="mt-6 border-t border-lotus-grey-700 pt-4">
           <button
             onClick={() => setShowFormulas(!showFormulas)}
-            className="flex items-center gap-2 text-sm text-lotus-grey-500 hover:text-lotus-grey-300"
+            className="flex items-center gap-2 text-sm text-lotus-grey-300 hover:text-lotus-grey-300"
           >
             <svg
               className={`w-4 h-4 transition-transform ${showFormulas ? 'rotate-90' : ''}`}
@@ -355,11 +355,11 @@ function SpreadCompressionSection({
               <p className="text-emerald-400">
                 <span className="text-emerald-300">Supply Rate (with PD)</span> = Base Rate + (Spread × Utilization)
               </p>
-              <p className="text-lotus-grey-500 mt-1">
-                <span className="text-lotus-grey-400">Supply Rate (no PD)</span> = Borrow Rate × Utilization
+              <p className="text-lotus-grey-300 mt-1">
+                <span className="text-lotus-grey-300">Supply Rate (no PD)</span> = Borrow Rate × Utilization
               </p>
-              <p className="text-lotus-grey-500 mt-2">
-                <span className="text-lotus-grey-400">B-L Spread</span> = Borrow Rate − Supply Rate
+              <p className="text-lotus-grey-300 mt-2">
+                <span className="text-lotus-grey-300">B-L Spread</span> = Borrow Rate − Supply Rate
               </p>
             </div>
           )}
@@ -418,11 +418,11 @@ function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSec
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 text-center border border-lotus-grey-600">
-            <div className="text-xs text-lotus-grey-500 uppercase tracking-wide mb-1">Without PD Range</div>
+            <div className="text-xs text-lotus-grey-300 uppercase tracking-wide mb-1">Without PD Range</div>
             <div className="text-xl font-mono font-semibold text-lotus-grey-300">
               {formatPercent(withoutPD.u0)} — {formatPercent(withoutPD.u100)}
             </div>
-            <div className="text-xs text-lotus-grey-500 mt-1">Δ {formatPercent(noPdRange)}</div>
+            <div className="text-xs text-lotus-grey-300 mt-1">Δ {formatPercent(noPdRange)}</div>
           </div>
           <div className="bg-orange-900/30 rounded-lg p-4 text-center border border-orange-700">
             <div className="text-xs text-orange-400 uppercase tracking-wide mb-1">With PD Range</div>
@@ -442,28 +442,28 @@ function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSec
 
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
           <div className="flex items-center gap-2">
-            <span className="text-lotus-grey-500">0% util:</span>
+            <span className="text-lotus-grey-300">0% util:</span>
             <span className="font-mono text-orange-400">{formatPercent(withPD.u0)}</span>
             <span className="text-lotus-grey-600">vs</span>
-            <span className="font-mono text-lotus-grey-500">{formatPercent(withoutPD.u0)}</span>
+            <span className="font-mono text-lotus-grey-300">{formatPercent(withoutPD.u0)}</span>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 bg-lotus-grey-700 rounded-full">
             <span className="text-lotus-grey-300 font-medium">90% util:</span>
             <span className="font-mono text-lotus-grey-100">{formatPercent(borrowRate)}</span>
-            <span className="text-xs text-lotus-grey-500">(equal)</span>
+            <span className="text-xs text-lotus-grey-300">(equal)</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-lotus-grey-500">100% util:</span>
+            <span className="text-lotus-grey-300">100% util:</span>
             <span className="font-mono text-orange-400">{formatPercent(withPD.u100)}</span>
             <span className="text-lotus-grey-600">vs</span>
-            <span className="font-mono text-lotus-grey-500">{formatPercent(withoutPD.u100)}</span>
+            <span className="font-mono text-lotus-grey-300">{formatPercent(withoutPD.u100)}</span>
           </div>
         </div>
 
         <div className="mt-6 border-t border-lotus-grey-700 pt-4">
           <button
             onClick={() => setShowFormulas(!showFormulas)}
-            className="flex items-center gap-2 text-sm text-lotus-grey-500 hover:text-lotus-grey-300"
+            className="flex items-center gap-2 text-sm text-lotus-grey-300 hover:text-lotus-grey-300"
           >
             <svg
               className={`w-4 h-4 transition-transform ${showFormulas ? 'rotate-90' : ''}`}
@@ -480,7 +480,7 @@ function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSec
               <p className="text-orange-400">
                 With PD: Rate = Base + Spread × factor(u) = {formatPercent(baseRate)} + {formatPercent(spread)} × factor
               </p>
-              <p className="text-lotus-grey-500">
+              <p className="text-lotus-grey-300">
                 Without PD: Rate = BorrowRate × factor(u) = {formatPercent(borrowRate)} × factor
               </p>
               <p className="text-lotus-grey-600 text-xs mt-2">
@@ -667,13 +667,13 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
       <div className="flex flex-wrap justify-center gap-6 mt-3 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-5 h-0.5 bg-orange-500 rounded"></div>
-          <span className="text-lotus-grey-400">With PD</span>
+          <span className="text-lotus-grey-300">With PD</span>
         </div>
         <div className="flex items-center gap-2">
           <svg width="20" height="2">
             <line x1="0" y1="1" x2="20" y2="1" stroke="#736D7F" strokeWidth="2" strokeDasharray="4,2" />
           </svg>
-          <span className="text-lotus-grey-500">Without PD</span>
+          <span className="text-lotus-grey-300">Without PD</span>
         </div>
         <div className="flex items-center gap-2">
           <svg width="20" height="2">

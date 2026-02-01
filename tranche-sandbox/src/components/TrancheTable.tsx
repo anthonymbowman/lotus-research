@@ -121,7 +121,7 @@ export function TrancheTable({
                       className="w-16 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-purple-600 rounded font-mono text-lotus-purple-200
                         focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
                     />
-                    <span className="ml-1 text-lotus-grey-500">%</span>
+                    <span className="ml-1 text-lotus-grey-300">%</span>
                   </div>
                 </td>
 
@@ -168,7 +168,7 @@ export function TrancheTable({
         </table>
       </div>
 
-      <div className="mt-4 px-3 py-2 bg-lotus-grey-800 rounded text-xs text-lotus-grey-500">
+      <div className="mt-4 px-3 py-2 bg-lotus-grey-800 rounded text-xs text-lotus-grey-300">
         <span className="font-medium">Lower LLTV = More Senior</span> |
         Higher LLTV = More Junior (higher risk, higher yield)
       </div>

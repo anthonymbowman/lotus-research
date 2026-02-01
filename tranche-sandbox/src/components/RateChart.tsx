@@ -171,13 +171,13 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
         <div className="flex flex-col gap-2 text-xs pt-2">
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
-            <span className="text-lotus-grey-400">Total Borrow Rate</span>
+            <span className="text-lotus-grey-300">Total Borrow Rate</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-0.5 bg-teal-500 rounded"></div>
-            <span className="text-lotus-grey-400">Total Supply Rate</span>
+            <span className="text-lotus-grey-300">Total Supply Rate</span>
           </div>
-          <div className="text-lotus-grey-500 mt-1 text-[10px]">
+          <div className="text-lotus-grey-300 mt-1 text-[10px]">
             (includes {formatPercent(productiveDebtRate)} PD rate)
           </div>
         </div>

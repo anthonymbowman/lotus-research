@@ -143,7 +143,7 @@ function AllocationSlider({
         step="1"
         className="w-full"
       />
-      <div className="flex justify-between text-xs text-lotus-grey-500">
+      <div className="flex justify-between text-xs text-lotus-grey-300">
         <span>0% (All USDC)</span>
         <span>50%</span>
         <span>100% (All Treasuries)</span>
@@ -262,7 +262,7 @@ export function LotusUSDAllocation({
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
           Show Formula
         </summary>
-        <div className="px-4 pb-4 text-sm text-lotus-grey-400 font-mono space-y-2">
+        <div className="px-4 pb-4 text-sm text-lotus-grey-300 font-mono space-y-2">
           <p>productiveDebtRate = treasuryRate x treasuryAllocation</p>
           <p>productiveDebtRate = {formatPercent(treasuryRate)} x {treasuryAllocation.toFixed(2)} = {formatPercent(productiveDebtRate)}</p>
         </div>
