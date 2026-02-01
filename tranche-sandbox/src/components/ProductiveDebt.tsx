@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { generateScenario2ChartData } from '../math/scenario2';
 import type { ChartPoint } from '../types';
-import { ConceptPrimer } from './ConceptPrimer';
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -177,10 +176,18 @@ function SpreadCompressionSection({
       <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Spread Compression</h3>
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <div className="bg-lotus-purple-900/20 rounded-lg p-3 border border-lotus-purple-700/50 mb-6">
-          <p className="text-sm text-lotus-purple-200">
-            Productive debt lets idle liquidity earn the base rate, so lenders don't rely entirely on
-            utilization to earn yield. This compresses the borrow-lend spread.
+        {/* What is Spread Compression */}
+        <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50 mb-6">
+          <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">What is Spread Compression?</h4>
+          <p className="text-sm text-lotus-purple-300 mb-3">
+            The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
+            In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
+          </p>
+          <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">Why Does It Matter?</h4>
+          <p className="text-sm text-lotus-purple-300">
+            Productive debt compresses this spread by ensuring idle liquidity earns the base rate.
+            This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
+            — especially when utilization is low.
           </p>
         </div>
 
@@ -699,9 +706,6 @@ export function ProductiveDebt({
 }: ProductiveDebtProps) {
   return (
     <div className="space-y-8">
-      {/* Key Concepts Primer */}
-      <ConceptPrimer concepts={['productive-debt', 'spread', 'supply-rate', 'borrow-rate']} />
-
       <IntroSection />
       <RateCompositionSection
         baseRate={baseRate}

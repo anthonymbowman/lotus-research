@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { RateInput } from './RateInput';
 import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
-import { ConceptPrimer } from './ConceptPrimer';
 import { TermDefinition } from './TermDefinition';
 
 interface LotusUSDAllocationProps {
@@ -32,6 +31,7 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
 
   return (
     <div className="flex flex-col items-center">
+      <h4 className="text-sm font-medium text-lotus-grey-300 mb-3">LotusUSD Allocation</h4>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {treasuryAllocation > 0 && (
           <path
@@ -50,22 +50,6 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
           />
         )}
         <circle cx={center} cy={center} r={radius * 0.5} fill="#191621" />
-        <text
-          x={center}
-          y={center - 8}
-          textAnchor="middle"
-          className="fill-lotus-grey-200 text-xs font-medium"
-        >
-          LotusUSD
-        </text>
-        <text
-          x={center}
-          y={center + 8}
-          textAnchor="middle"
-          className="fill-lotus-grey-400 text-xs"
-        >
-          Backing
-        </text>
       </svg>
 
       <div className="flex gap-6 mt-4">
@@ -166,9 +150,6 @@ export function LotusUSDAllocation({
 
   return (
     <div className="space-y-6">
-      {/* Key Concepts Primer */}
-      <ConceptPrimer concepts={['lotususd', 'productive-debt']} />
-
       <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
         <p className="text-sm text-emerald-200">
           <TermDefinition term="lotususd">LotusUSD</TermDefinition> is backed by USDC and US Treasuries. The treasury yield generates the base rate
@@ -177,7 +158,7 @@ export function LotusUSDAllocation({
       </div>
 
       <TeachingPrompt>
-        Move the treasury allocation slider to 100% to see the maximum possible base rate. Then try 0% to see what happens when everything is held in USDC.
+        Move the treasury allocation slider to see how treasury allocation affects the productive debt rate.
       </TeachingPrompt>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -211,15 +192,16 @@ export function LotusUSDAllocation({
                   {formatPercent(productiveDebtRate)}
                 </span>
               </div>
-              <p className="text-xs text-emerald-500 mt-2">
-                = Treasury Rate x Treasury Allocation
-              </p>
-              <p className="text-xs text-emerald-500">
-                = {formatPercent(treasuryRate)} x {(treasuryAllocation * 100).toFixed(0)}%
-              </p>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="bg-lotus-grey-800/50 rounded-lg p-4 border border-lotus-grey-700">
+        <p className="text-sm text-lotus-grey-300">
+          The % allocated to treasuries will vary depending on market conditions. It is designed to maintain
+          sufficient instantaneous market liquidity while maximizing the % allocated to treasuries.
+        </p>
       </div>
 
       <DynamicInsight show={treasuryAllocation >= 0.95} variant="info">
@@ -228,10 +210,6 @@ export function LotusUSDAllocation({
 
       <DynamicInsight show={treasuryAllocation <= 0.05} variant="warning">
         <strong>Minimal Yield:</strong> With treasury allocation near 0%, the productive debt rate approaches zero. All backing is in USDC which earns no yield, but provides maximum liquidity for redemptions.
-      </DynamicInsight>
-
-      <DynamicInsight show={treasuryAllocation >= 0.5 && treasuryAllocation <= 0.85} variant="success">
-        <strong>Balanced Allocation:</strong> This range balances yield generation with redemption liquidity. Most protocols target 70-80% treasury allocation.
       </DynamicInsight>
 
       <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
@@ -258,15 +236,6 @@ export function LotusUSDAllocation({
         </div>
       </div>
 
-      <details className="bg-lotus-grey-800 rounded-lg border border-lotus-grey-700">
-        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
-          Show Formula
-        </summary>
-        <div className="px-4 pb-4 text-sm text-lotus-grey-300 font-mono space-y-2">
-          <p>productiveDebtRate = treasuryRate x treasuryAllocation</p>
-          <p>productiveDebtRate = {formatPercent(treasuryRate)} x {treasuryAllocation.toFixed(2)} = {formatPercent(productiveDebtRate)}</p>
-        </div>
-      </details>
     </div>
   );
 }

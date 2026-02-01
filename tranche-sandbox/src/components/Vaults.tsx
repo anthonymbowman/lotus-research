@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
-import { CollapsibleSection } from './ConceptExplainer';
 import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
-import { ConceptPrimer } from './ConceptPrimer';
 import { TermDefinition } from './TermDefinition';
 
 interface VaultsProps {
@@ -58,29 +56,11 @@ const DEFAULT_STRATEGIES: AllocationStrategy[] = [
 
 export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   const [selectedStrategy, setSelectedStrategy] = useState<string>('Balanced');
-  const [customAllocations, setCustomAllocations] = useState<{ [lltv: number]: number }>({
-    75: 30,
-    80: 25,
-    85: 25,
-    90: 15,
-    95: 5,
-  });
-  const [useCustom, setUseCustom] = useState(false);
 
   const activeAllocations = useMemo(() => {
-    if (useCustom) {
-      return Object.entries(customAllocations).map(([lltv, percent]) => ({
-        lltv: parseInt(lltv),
-        percent,
-      }));
-    }
     const strategy = DEFAULT_STRATEGIES.find(s => s.name === selectedStrategy);
     return strategy?.allocations || [];
-  }, [useCustom, customAllocations, selectedStrategy]);
-
-  const totalAllocation = useMemo(() => {
-    return activeAllocations.reduce((sum, a) => sum + a.percent, 0);
-  }, [activeAllocations]);
+  }, [selectedStrategy]);
 
   const expectedAPY = useMemo(() => {
     let weightedRate = 0;
@@ -95,43 +75,15 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   }, [activeAllocations, tranches, productiveDebtRate]);
 
   const riskScore = useMemo(() => {
-    if (useCustom) {
-      let score = 0;
-      for (const allocation of activeAllocations) {
-        const riskFactor = (allocation.lltv - 70) / 5;
-        score += riskFactor * (allocation.percent / 100);
-      }
-      return Math.min(10, Math.max(0, score));
-    }
     return DEFAULT_STRATEGIES.find(s => s.name === selectedStrategy)?.riskScore || 5;
-  }, [useCustom, activeAllocations, selectedStrategy]);
-
-  const handleAllocationChange = (lltv: number, value: number) => {
-    setUseCustom(true);
-    setCustomAllocations(prev => ({
-      ...prev,
-      [lltv]: Math.max(0, Math.min(100, value)),
-    }));
-  };
+  }, [selectedStrategy]);
 
   const handleStrategySelect = (name: string) => {
     setSelectedStrategy(name);
-    setUseCustom(false);
-    const strategy = DEFAULT_STRATEGIES.find(s => s.name === name);
-    if (strategy) {
-      const newAllocations: { [lltv: number]: number } = {};
-      strategy.allocations.forEach(a => {
-        newAllocations[a.lltv] = a.percent;
-      });
-      setCustomAllocations(newAllocations);
-    }
   };
 
   return (
     <div className="space-y-8">
-      {/* Key Concepts Primer */}
-      <ConceptPrimer concepts={['vault-manager', 'tranche-seniority', 'lltv']} />
-
       {/* Context from Prior Learning */}
       <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
         <div className="flex items-start gap-3">
@@ -142,9 +94,9 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
           </div>
           <div>
             <p className="text-sm text-emerald-200">
-              <strong>You now understand:</strong> How tranches have different risk levels based on LLTV,
-              how interest cascades through connected liquidity, and how liquidations protect lenders.
-              Now you're ready to choose how to allocate across these tranches.
+              <strong>You now understand:</strong> How LotusUSD backing generates yield, how tranches offer different risk/reward profiles,
+              how liquidity and interest cascade through the system, and how bad debt is absorbed.
+              Now you're ready to see how vaults help you allocate across these tranches.
             </p>
           </div>
         </div>
@@ -172,7 +124,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             </div>
             <h4 className="font-medium text-lotus-grey-100 mb-1">1. Deposit</h4>
             <p className="text-sm text-lotus-grey-300">
-              Users deposit loan tokens (e.g., LotusUSD) into a vault and receive vault shares.
+              Users deposit USDC into a vault and receive vault shares representing their position.
             </p>
           </div>
 
@@ -291,11 +243,11 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Allocation Strategies</h3>
         <p className="text-lotus-grey-300 mb-4">
-          Vault managers choose strategies based on risk tolerance. Compare strategies or customize your own allocation.
+          Vault managers choose strategies based on risk tolerance. Click a strategy to see its allocation breakdown.
         </p>
 
         <TeachingPrompt>
-          Click each strategy card to see how APY and risk change. Then try adjusting the sliders to create your own allocation.
+          Click each strategy card to see how the allocation, APY, and risk level change.
         </TeachingPrompt>
 
         <div className="h-4" />
@@ -303,7 +255,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         {/* Strategy Cards with Visual Allocation Bars */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {DEFAULT_STRATEGIES.map((strategy) => {
-            const isSelected = selectedStrategy === strategy.name && !useCustom;
+            const isSelected = selectedStrategy === strategy.name;
             const strategyAPY = strategy.allocations.reduce((acc, alloc) => {
               const tranche = tranches.find(t => t.lltv === alloc.lltv);
               if (tranche && tranche.supplyRate !== null) {
@@ -392,53 +344,54 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h4 className="font-semibold text-lotus-grey-100 mb-1">
-                {useCustom ? 'Custom Allocation' : `${selectedStrategy} Strategy`}
+                {selectedStrategy} Strategy Breakdown
               </h4>
-              <p className="text-xs text-lotus-grey-300">Adjust sliders to customize allocation</p>
+              <p className="text-xs text-lotus-grey-300">Allocation across tranches</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`px-3 py-1.5 rounded-lg text-sm font-mono font-semibold ${
-                totalAllocation === 100
-                  ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700'
-                  : 'bg-amber-900/30 text-amber-400 border border-amber-700'
-              }`}>
-                {totalAllocation}% allocated
+              <span className="px-3 py-1.5 rounded-lg text-sm font-mono font-semibold bg-emerald-900/30 text-emerald-400 border border-emerald-700">
+                100% allocated
               </span>
             </div>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-3">
             {[75, 80, 85, 90, 95].map((lltv, i) => {
               const allocation = activeAllocations.find(a => a.lltv === lltv)?.percent || 0;
               const tranche = tranches.find(t => t.lltv === lltv);
               const supplyRate = tranche?.supplyRate !== null
                 ? (productiveDebtRate + (tranche?.supplyRate || 0)) * 100
                 : 0;
-              const colors = ['emerald', 'emerald', 'amber', 'orange', 'red'];
+              const barColors = ['bg-emerald-500', 'bg-emerald-400', 'bg-amber-500', 'bg-orange-500', 'bg-red-500'];
+              const textColors = ['text-emerald-400', 'text-emerald-400', 'text-amber-400', 'text-orange-400', 'text-red-400'];
               const labels = ['Senior', 'Senior', 'Mid', 'Junior', 'Junior'];
 
               return (
                 <div key={lltv} className="flex items-center gap-4">
-                  <div className="w-24">
-                    <div className={`text-sm font-medium text-${colors[i]}-400`}>{lltv}%</div>
-                    <div className="text-xs text-lotus-grey-300">{labels[i]}</div>
+                  <div className="w-20">
+                    <div className={`text-sm font-medium ${textColors[i]}`}>{lltv}%</div>
+                    <div className="text-xs text-lotus-grey-400">{labels[i]}</div>
                   </div>
                   <div className="flex-1">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={allocation}
-                      onChange={(e) => handleAllocationChange(lltv, parseInt(e.target.value))}
-                      className="w-full"
-                    />
+                    <div className="h-6 bg-lotus-grey-700 rounded-lg overflow-hidden">
+                      <div
+                        className={`h-full ${barColors[i]} transition-all flex items-center justify-end pr-2`}
+                        style={{ width: `${allocation}%` }}
+                      >
+                        {allocation > 10 && (
+                          <span className="text-xs font-mono font-semibold text-white">{allocation}%</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-16 text-right">
-                    <span className="text-lg font-mono font-semibold text-lotus-grey-100">{allocation}%</span>
-                  </div>
-                  <div className="w-24 text-right">
+                  {allocation <= 10 && (
+                    <div className="w-12 text-left">
+                      <span className="text-sm font-mono font-semibold text-lotus-grey-300">{allocation}%</span>
+                    </div>
+                  )}
+                  <div className="w-20 text-right">
                     <span className="text-sm font-mono text-emerald-400">{supplyRate.toFixed(2)}%</span>
-                    <div className="text-xs text-lotus-grey-300">APY</div>
+                    <div className="text-xs text-lotus-grey-400">APY</div>
                   </div>
                 </div>
               );
@@ -504,108 +457,6 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         </div>
       </div>
 
-      {/* Vault Manager Role */}
-      <CollapsibleSection
-        title="The Vault Manager's Role"
-        icon="🎯"
-        description="How vault managers optimize allocations"
-      >
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="font-medium text-lotus-grey-100 mb-2">Monitor & Rebalance</h4>
-              <ul className="text-sm text-lotus-grey-300 space-y-1">
-                <li>Track tranche utilization and rates</li>
-                <li>Rebalance when conditions change</li>
-                <li>Move funds to higher-yielding tranches</li>
-                <li>Reduce exposure during volatile periods</li>
-              </ul>
-            </div>
-
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="font-medium text-lotus-grey-100 mb-2">Risk Management</h4>
-              <ul className="text-sm text-lotus-grey-300 space-y-1">
-                <li>Set allocation limits per tranche</li>
-                <li>Monitor bad debt exposure</li>
-                <li>Ensure liquidity for withdrawals</li>
-                <li>Follow vault's risk parameters</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="p-3 bg-amber-900/20 border border-amber-700/50 rounded-lg">
-            <p className="text-sm text-amber-300">
-              <span className="font-medium">Key insight:</span> Vault managers earn management fees
-              but are responsible for maintaining the vault's risk profile and optimizing returns.
-            </p>
-          </div>
-        </div>
-      </CollapsibleSection>
-
-      {/* Benefits */}
-      <CollapsibleSection
-        title="Why Use Vaults?"
-        icon="✨"
-        description="Benefits for depositors"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start gap-3 p-4 bg-lotus-grey-700/30 rounded-lg">
-            <div className="w-8 h-8 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-medium text-lotus-grey-100 mb-1">Passive Yield</h4>
-              <p className="text-sm text-lotus-grey-300">
-                Earn optimized yield without actively managing positions across tranches.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 bg-lotus-grey-700/30 rounded-lg">
-            <div className="w-8 h-8 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-medium text-lotus-grey-100 mb-1">Diversification</h4>
-              <p className="text-sm text-lotus-grey-300">
-                Exposure spread across multiple tranches reduces concentration risk.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 bg-lotus-grey-700/30 rounded-lg">
-            <div className="w-8 h-8 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-medium text-lotus-grey-100 mb-1">Gas Efficiency</h4>
-              <p className="text-sm text-lotus-grey-300">
-                Single deposit/withdrawal instead of managing multiple tranche positions.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 bg-lotus-grey-700/30 rounded-lg">
-            <div className="w-8 h-8 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-medium text-lotus-grey-100 mb-1">Professional Management</h4>
-              <p className="text-sm text-lotus-grey-300">
-                Vault managers have expertise in risk assessment and market timing.
-              </p>
-            </div>
-          </div>
-        </div>
-      </CollapsibleSection>
     </div>
   );
 }

@@ -12,12 +12,9 @@ import { LotusUSDAllocation } from './components/LotusUSDAllocation';
 import { TrancheLiquidity } from './components/TrancheLiquidity';
 import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
-import { IsolatedComparison } from './components/IsolatedComparison';
 import { FundingMatrix } from './components/FundingMatrix';
-import { RateChart } from './components/RateChart';
 import { Vaults } from './components/Vaults';
 import { TrancheRisk } from './components/TrancheRisk';
-import { VolatilityReductionSection } from './components/ProductiveDebt';
 
 const STORAGE_KEY = 'lotus-docs-visited';
 const TOUR_KEY = 'lotus-docs-tour-completed';
@@ -87,7 +84,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1) as Section;
-      if (hash && ['intro', 'lotususd', 'productive-debt', 'risk', 'tranches', 'interest-cascade', 'liquidations', 'vaults', 'advanced'].includes(hash)) {
+      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults'].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -126,116 +123,52 @@ function App() {
       title: 'Welcome',
       headline: 'Welcome to Lotus Protocol',
       subtitle: 'Get started with Lotus Protocol',
-      learningPoints: [
-        'What Lotus Protocol is and how it works',
-        'Key concepts: tranches, connected liquidity, productive debt',
-        'How to navigate this documentation',
-      ],
-      transitionText: "Let's start with the foundation: LotusUSD and where base rates come from...",
-      next: { id: 'lotususd', label: 'LotusUSD' },
+      learningPoints: [],
+      transitionText: "Let's start with the foundation: LotusUSD and productive debt...",
+      next: { id: 'lotususd', label: 'LotusUSD & Productive Debt' },
     },
     lotususd: {
       number: '2',
-      title: 'LotusUSD',
-      headline: 'The LotusUSD Base Rate',
-      subtitle: 'Understanding treasury backing and base rates',
-      learningPoints: [
-        'How LotusUSD is backed by USDC and US Treasuries',
-        'How the treasury allocation generates yield',
-        'The productive debt rate calculation',
-      ],
-      transitionText: 'This base rate changes everything for borrowers and lenders...',
-      next: { id: 'productive-debt', label: 'Productive Debt' },
-    },
-    'productive-debt': {
-      number: '3',
-      title: 'Productive Debt',
-      headline: 'How Productive Debt Works',
-      subtitle: 'Rate composition and spread compression',
-      learningPoints: [
-        'How the base rate benefits lenders and borrowers',
-        'Borrow rate = base rate + spread',
-        'Spread compression mechanics',
-      ],
+      title: 'LotusUSD & Productive Debt',
+      headline: 'LotusUSD & Productive Debt',
+      subtitle: 'Treasury backing, base rates, and spread compression',
+      learningPoints: [],
       transitionText: "Now let's understand why tranches have different risk levels...",
       next: { id: 'risk', label: 'Tranche Risk' },
     },
     risk: {
-      number: '4',
+      number: '3',
       title: 'Tranche Risk',
       headline: 'Understanding Tranche Risk',
       subtitle: 'Why higher LLTV means higher risk',
-      learningPoints: [
-        'How price drops affect different tranches',
-        'Why junior tranches absorb losses first',
-        'The risk-return connection',
-      ],
+      learningPoints: [],
       transitionText: "With risk understood, let's see how liquidity connects tranches...",
       next: { id: 'tranches', label: 'Tranches & Liquidity' },
     },
     tranches: {
-      number: '5',
+      number: '4',
       title: 'Tranches',
       headline: 'Tranches & Connected Liquidity',
       subtitle: 'The connected liquidity model',
-      learningPoints: [
-        'What tranches are and how they work',
-        'Junior vs senior metrics',
-        'Utilization calculations',
-      ],
+      learningPoints: [],
       transitionText: "Interest flows through these tranches. Let's trace it...",
-      next: { id: 'interest-cascade', label: 'Interest Cascade' },
+      next: { id: 'interest-bad-debt', label: 'Interest & Bad Debt' },
     },
-    'interest-cascade': {
-      number: '6',
-      title: 'Interest',
-      headline: 'How Interest Flows',
-      subtitle: 'How interest flows through tranches',
-      learningPoints: [
-        'The cascade mechanism explained',
-        'How supply rates are calculated',
-        'Time-based interest accrual simulation',
-      ],
-      transitionText: 'What happens when things go wrong?',
-      next: { id: 'liquidations', label: 'Liquidations' },
-    },
-    liquidations: {
-      number: '7',
-      title: 'Liquidations',
-      headline: 'Liquidations & Risk',
-      subtitle: 'Understanding liquidation mechanics',
-      learningPoints: [
-        'What triggers liquidation',
-        'Per-tranche liquidation thresholds',
-        'Health factor calculator for all tranches',
-        'Bad debt cascade and simulation',
-      ],
-      transitionText: 'Now you understand tranches. Ready to choose your strategy?',
+    'interest-bad-debt': {
+      number: '5',
+      title: 'Interest & Bad Debt',
+      headline: 'Interest Cascade & Bad Debt',
+      subtitle: 'How interest flows and what happens when things go wrong',
+      learningPoints: [],
+      transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
       next: { id: 'vaults', label: 'Vaults' },
     },
     vaults: {
-      number: '8',
+      number: '6',
       title: 'Vaults',
       headline: 'Choose Your Strategy',
       subtitle: 'Now that you understand tranches, choose how to allocate',
-      learningPoints: [
-        'How vaults aggregate user deposits',
-        'Vault manager allocation strategies',
-        'Risk/reward trade-offs across strategies',
-      ],
-      transitionText: 'Ready to go deeper?',
-      next: { id: 'advanced', label: 'Advanced Tools' },
-    },
-    advanced: {
-      number: '9',
-      title: 'Advanced',
-      headline: 'Advanced Tools',
-      subtitle: 'Deep dives and comparisons',
-      learningPoints: [
-        'Volatility reduction mechanics',
-        'Lotus vs Isolated Markets comparison',
-        'Funding matrix visualization',
-      ],
+      learningPoints: [],
     },
   };
 
@@ -282,28 +215,30 @@ function App() {
               <Introduction onNavigate={handleSectionChange} />
             )}
 
-            {/* Section 2: LotusUSD */}
+            {/* Section 2: LotusUSD & Productive Debt (combined) */}
             {activeSection === 'lotususd' && (
-              <LotusUSDAllocation
-                treasuryAllocation={treasuryAllocation}
-                treasuryRate={treasuryRate}
-                onTreasuryAllocationChange={setTreasuryAllocation}
-                onTreasuryRateChange={setTreasuryRate}
-              />
+              <div className="space-y-12">
+                <LotusUSDAllocation
+                  treasuryAllocation={treasuryAllocation}
+                  treasuryRate={treasuryRate}
+                  onTreasuryAllocationChange={setTreasuryAllocation}
+                  onTreasuryRateChange={setTreasuryRate}
+                />
+
+                <div className="border-t border-lotus-grey-700 pt-8">
+                  <h2 className="text-2xl font-semibold text-lotus-grey-100 mb-6">Productive Debt Benefits</h2>
+                  <ProductiveDebt
+                    baseRate={productiveDebtRate}
+                    spread={spread}
+                    utilization={utilization}
+                    onSpreadChange={setSpread}
+                    onUtilizationChange={setUtilization}
+                  />
+                </div>
+              </div>
             )}
 
-            {/* Section 3: Productive Debt */}
-            {activeSection === 'productive-debt' && (
-              <ProductiveDebt
-                baseRate={productiveDebtRate}
-                spread={spread}
-                utilization={utilization}
-                onSpreadChange={setSpread}
-                onUtilizationChange={setUtilization}
-              />
-            )}
-
-            {/* Section 4: Tranche Risk */}
+            {/* Section 3: Tranche Risk */}
             {activeSection === 'risk' && (
               <TrancheRisk
                 tranches={computedTranches.map(t => ({
@@ -313,43 +248,49 @@ function App() {
               />
             )}
 
-            {/* Section 5: Tranches & Liquidity */}
+            {/* Section 4: Tranches & Liquidity */}
             {activeSection === 'tranches' && (
-              <TrancheLiquidity
-                tranches={computedTranches}
-                productiveDebtRate={productiveDebtRate}
-                onTrancheChange={handleTrancheChange}
-              />
-            )}
-
-            {/* Section 6: Interest Cascade */}
-            {activeSection === 'interest-cascade' && (
               <div className="space-y-8">
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Interest Accrual Simulation</h3>
-                  <p className="text-lotus-grey-400 mb-6">
-                    See how interest flows through tranches over different time periods.
-                    The cascade mechanism allocates interest based on supply utilization at each level.
-                  </p>
-                  <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
-                </div>
+                <TrancheLiquidity
+                  tranches={computedTranches}
+                  productiveDebtRate={productiveDebtRate}
+                  onTrancheChange={handleTrancheChange}
+                />
 
                 <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Rates by LLTV</h3>
-                  <RateChart tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
+                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Dynamic Loan Mix</h3>
+                  <p className="text-lotus-grey-300 mb-4">
+                    The metrics above determine how liquidity flows across tranches and which lenders are supplying to which borrowers.
+                  </p>
+                  <p className="text-lotus-grey-300 mb-6">
+                    <strong className="text-lotus-purple-300">Lenders</strong> ultimately supply to multiple tranches (their own and more senior tranches).
+                    <strong className="text-blue-300"> Borrowers</strong> draw from multiple tranches (their own and more junior tranches).
+                  </p>
+                  <FundingMatrix tranches={computedTranches} includePendingInterest={false} />
                 </div>
               </div>
             )}
 
-            {/* Section 7: Liquidations */}
-            {activeSection === 'liquidations' && (
-              <Liquidations
-                tranches={computedTranches.map(t => ({ lltv: t.lltv }))}
-                computedTranches={computedTranches}
-              />
+            {/* Section 5: Interest & Bad Debt (merged from Interest Cascade + Liquidations) */}
+            {activeSection === 'interest-bad-debt' && (
+              <div className="space-y-8">
+                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Interest Accrual Simulation</h3>
+                  <p className="text-lotus-grey-400 mb-6">
+                    See how interest flows through tranches. The cascade mechanism allocates
+                    interest based on supply utilization at each level.
+                  </p>
+                  <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
+                </div>
+
+                <Liquidations
+                  tranches={computedTranches.map(t => ({ lltv: t.lltv }))}
+                  computedTranches={computedTranches}
+                />
+              </div>
             )}
 
-            {/* Section 8: Vaults */}
+            {/* Section 6: Vaults */}
             {activeSection === 'vaults' && (
               <Vaults
                 tranches={computedTranches.map(t => ({
@@ -359,30 +300,6 @@ function App() {
                 }))}
                 productiveDebtRate={productiveDebtRate}
               />
-            )}
-
-            {/* Section 9: Advanced Tools */}
-            {activeSection === 'advanced' && (
-              <div className="space-y-8">
-                {/* Volatility Reduction - moved from Productive Debt */}
-                <VolatilityReductionSection baseRate={productiveDebtRate} spread={spread} />
-
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Lotus vs Isolated Markets</h3>
-                  <p className="text-lotus-grey-400 mb-6">
-                    Compare connected liquidity to traditional isolated lending pools.
-                  </p>
-                  <IsolatedComparison tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
-                </div>
-
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Dynamic Loan Mix</h3>
-                  <p className="text-lotus-grey-400 mb-6">
-                    Visualize how each lender's supply is allocated across borrower tranches.
-                  </p>
-                  <FundingMatrix tranches={computedTranches} includePendingInterest={false} />
-                </div>
-              </div>
             )}
           </SectionWrapper>
         </div>

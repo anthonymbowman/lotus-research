@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const TOTAL_SCENES = 12;
+const TOTAL_SCENES = 6;
 
 interface SceneData {
   title: string;
@@ -11,62 +11,27 @@ interface SceneData {
 const SCENE_DATA: Record<number, SceneData> = {
   1: {
     title: 'Isolated Market Baseline',
-    copy: 'Most lending markets use one pool per asset pair.',
-    insights: ['One market', 'One risk configuration', 'Everyone shares the same terms'],
+    copy: 'One market, one risk configuration, everyone shares the same terms.',
   },
   2: {
     title: 'Risk Curve',
-    copy: 'Markets lock risk parameters in place.',
-    insights: ['The market defines one acceptable risk point', 'Pricing assumes a static risk profile'],
+    copy: 'As the liquidation loan-to-value ratio rises the risk of bad debt increases. As a result the interest rate increases with LLTV.',
   },
   3: {
     title: 'Risk Is Not Static',
-    copy: 'Collateral risk changes. Market parameters don\'t.',
-    insights: ['The same LLTV can mean very different real risk', 'Rates lag reality'],
+    copy: 'As collateral risk changes, the risk changes. But, an isolated market\'s LLTV remains fixed. This causes the interest rate to be volatile.',
   },
   4: {
     title: 'Borrower Subsidy Problem',
     copy: 'All borrowers pay the same rate.',
-    insights: ['Low-risk borrower overpays', 'High-risk borrower underpays', 'Risk is averaged, not priced'],
   },
   5: {
     title: 'Borrower That Cannot Exist',
     copy: 'Some borrowers are simply excluded.',
-    insights: ['Market forbids valid demand', 'Leverage ceiling is arbitrary'],
   },
   6: {
-    title: 'Forced Lender Exposure',
-    copy: 'Lenders can\'t choose their risk.',
-    insights: ['Conservative lenders ride choppy risk', 'Aggressive lenders don\'t get paid enough'],
-  },
-  7: {
-    title: 'System-Level Failure Mode',
-    copy: 'To earn more, risk must move elsewhere.',
-    insights: ['Yield pressure pushes lenders toward riskier collateral', 'Risk migrates, not disappears'],
-  },
-  8: {
-    title: 'Transition to Lotus',
-    copy: 'Lotus keeps one market — but lets risk vary.',
-  },
-  9: {
-    title: 'Borrowers Choose Their Risk',
-    copy: 'Borrowers choose where they sit on the curve.',
-    insights: ['Low LTV borrower → low rate', 'High LTV borrower → higher rate, max leverage'],
-  },
-  10: {
-    title: 'Lenders Choose Their Exposure',
-    copy: 'Lenders choose what risk they underwrite.',
-    insights: ['No forced averaging', 'Risk and return are aligned'],
-  },
-  11: {
-    title: 'Cascading Liquidity',
-    copy: 'Unused liquidity doesn\'t go idle.',
-    insights: ['Junior lenders not dependent on junior borrowers', 'Capital remains productive'],
-  },
-  12: {
-    title: 'Resolution',
-    copy: 'One market. Many risk choices. Shared liquidity.',
-    insights: ['Borrowers: Fair pricing', 'Lenders: Risk control'],
+    title: 'Risk Migration',
+    copy: 'To earn more, risk-seeking lenders move to markets with riskier collateral.',
   },
 };
 
@@ -75,22 +40,21 @@ const SCENE_DATA: Record<number, SceneData> = {
 // ============================================================================
 
 const CHART = {
-  width: 380,
-  height: 180,
-  padding: { top: 25, right: 15, bottom: 30, left: 40 },
+  width: 440,
+  height: 240,
+  padding: { top: 30, right: 20, bottom: 40, left: 50 },
   get graphWidth() { return this.width - this.padding.left - this.padding.right; },
   get graphHeight() { return this.height - this.padding.top - this.padding.bottom; },
 };
 
-// Risk curve: flat at low LLTV, exponential at high LLTV
+// Risk curve: continuously increasing with steeper rise at high LLTV
 function riskCurveY(x: number, shift = 0): number {
-  const adjusted = Math.max(0, Math.min(1, x + shift));
-  const k = 6;
-  const threshold = 0.55;
-  const raw = Math.exp(k * (adjusted - threshold));
-  const minVal = Math.exp(k * (0 - threshold));
-  const maxVal = Math.exp(k * (1 - threshold));
-  return 0.05 + 0.9 * (raw - minVal) / (maxVal - minVal);
+  const adjusted = Math.max(0, x + shift);
+  // Steeper exponential curve that keeps accelerating at high LLTV
+  const base = 0.05;
+  const growth = Math.pow(adjusted, 3.5) * 0.95;
+  // Cap output at 1 (top of chart) so curve terminates at chart boundary
+  return Math.min(1, base + growth);
 }
 
 function toX(x: number): number {
@@ -107,6 +71,8 @@ function generateCurvePath(shift = 0): string {
     const x = i / 60;
     const y = riskCurveY(x, shift);
     points.push(i === 0 ? `M${toX(x)},${toY(y)}` : `L${toX(x)},${toY(y)}`);
+    // Stop drawing if we've hit the top of the chart
+    if (y >= 1) break;
   }
   return points.join(' ');
 }
@@ -117,7 +83,7 @@ function generateCurvePath(shift = 0): string {
 
 function ChartContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700 shadow-lg">
+    <div className="bg-lotus-grey-900 rounded-xl p-5 border border-lotus-grey-700 shadow-lg">
       <svg width={CHART.width} height={CHART.height} className="overflow-visible block mx-auto">
         {/* Background */}
         <defs>
@@ -146,12 +112,13 @@ function ChartContainer({ children }: { children: React.ReactNode }) {
             strokeWidth={1}
           />
         ))}
-        {/* Axis labels */}
-        <text x={CHART.padding.left + CHART.graphWidth / 2} y={CHART.height - 4} textAnchor="middle" className="text-[9px] fill-lotus-grey-500 font-medium">
-          LLTV →
+        {/* X-Axis label */}
+        <text x={CHART.padding.left + CHART.graphWidth / 2} y={CHART.height - 8} textAnchor="middle" className="text-xs fill-lotus-grey-300 font-semibold">
+          Liquidation LTV (LLTV) →
         </text>
-        <text x={10} y={CHART.padding.top + CHART.graphHeight / 2} textAnchor="middle" transform={`rotate(-90, 10, ${CHART.padding.top + CHART.graphHeight / 2})`} className="text-[9px] fill-lotus-grey-500 font-medium">
-          Risk
+        {/* Y-Axis label */}
+        <text x={16} y={CHART.padding.top + CHART.graphHeight / 2} textAnchor="middle" transform={`rotate(-90, 16, ${CHART.padding.top + CHART.graphHeight / 2})`} className="text-xs fill-lotus-grey-300 font-semibold">
+          Interest Rate
         </text>
         {children}
       </svg>
@@ -199,11 +166,12 @@ function PoolCard({ title, subtitle, metrics, variant = 'default', size = 'norma
   );
 }
 
-function Actor({ type, label, sublabel, variant = 'neutral' }: {
+function Actor({ type, label, sublabel, variant = 'neutral', size = 'normal' }: {
   type: 'borrower' | 'lender';
   label: string;
   sublabel?: string;
   variant?: 'safe' | 'risky' | 'neutral' | 'blocked';
+  size?: 'normal' | 'small';
 }) {
   const styles = {
     safe: {
@@ -236,27 +204,37 @@ function Actor({ type, label, sublabel, variant = 'neutral' }: {
     },
   };
   const s = styles[variant];
+  const iconSize = size === 'small' ? 'w-8 h-8' : 'w-10 h-10';
+  const innerIconSize = size === 'small' ? 'w-4 h-4' : 'w-5 h-5';
+  const padding = size === 'small' ? 'px-3 py-2' : 'px-4 py-3';
 
   return (
-    <div className={`bg-gradient-to-br ${s.bg} border-2 ${s.border} rounded-xl px-4 py-3 text-center shadow-lg ${s.glow} transition-all duration-300`}>
-      <div className={`w-10 h-10 mx-auto mb-2 rounded-full bg-black/30 flex items-center justify-center ${s.icon}`}>
+    <div className={`bg-gradient-to-br ${s.bg} border-2 ${s.border} rounded-xl ${padding} text-center shadow-lg ${s.glow} transition-all duration-300`}>
+      <div className={`${iconSize} mx-auto mb-2 rounded-full bg-black/30 flex items-center justify-center ${s.icon}`}>
         {type === 'borrower' ? (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className={innerIconSize} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         ) : (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className={innerIconSize} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         )}
       </div>
-      <div className={`text-xs font-semibold ${s.text}`}>{label}</div>
-      {sublabel && <div className="text-[10px] text-lotus-grey-500 mt-0.5">{sublabel}</div>}
+      <div className={`${size === 'small' ? 'text-[10px]' : 'text-xs'} font-semibold ${s.text}`}>{label}</div>
+      {sublabel && <div className={`${size === 'small' ? 'text-[9px]' : 'text-[10px]'} ${variant === 'neutral' ? 'text-lotus-grey-400' : s.text} opacity-80 mt-0.5`}>{sublabel}</div>}
     </div>
   );
 }
 
-function Arrow({ direction = 'right', color = 'text-lotus-grey-500' }: { direction?: 'right' | 'down' | 'up'; color?: string }) {
+function Arrow({ direction = 'right', color = 'text-lotus-grey-500' }: { direction?: 'right' | 'down' | 'up' | 'both'; color?: string }) {
+  if (direction === 'both') {
+    return (
+      <svg className={`w-6 h-6 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18m0 0l-4 4m4-4l-4-4" />
+      </svg>
+    );
+  }
   const paths = {
     right: 'M17 8l4 4m0 0l-4 4m4-4H3',
     down: 'M19 14l-7 7m0 0l-7-7m7 7V3',
@@ -266,58 +244,6 @@ function Arrow({ direction = 'right', color = 'text-lotus-grey-500' }: { directi
     <svg className={`w-6 h-6 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d={paths[direction]} />
     </svg>
-  );
-}
-
-function TrancheBar({ tranches, activeIndex, showRates = false }: {
-  tranches: { lltv: number; rate?: string }[];
-  activeIndex?: number | number[];
-  showRates?: boolean;
-}) {
-  const colors = [
-    { bg: 'bg-emerald-500', border: 'border-emerald-400', text: 'text-emerald-100' },
-    { bg: 'bg-cyan-500', border: 'border-cyan-400', text: 'text-cyan-100' },
-    { bg: 'bg-amber-500', border: 'border-amber-400', text: 'text-amber-100' },
-    { bg: 'bg-red-500', border: 'border-red-400', text: 'text-red-100' },
-  ];
-
-  const isActive = (i: number) => {
-    if (activeIndex === undefined) return false;
-    return Array.isArray(activeIndex) ? activeIndex.includes(i) : activeIndex === i;
-  };
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      {tranches.map((t, i) => (
-        <div
-          key={t.lltv}
-          className={`
-            relative rounded-lg px-4 py-2 border-2 transition-all duration-300
-            ${isActive(i)
-              ? `${colors[i].bg} ${colors[i].border} shadow-lg`
-              : 'bg-lotus-grey-800/80 border-lotus-grey-700'
-            }
-          `}
-        >
-          <div className="flex items-center justify-between">
-            <span className={`font-mono text-sm font-bold ${isActive(i) ? colors[i].text : 'text-lotus-grey-300'}`}>
-              {t.lltv}%
-            </span>
-            {showRates && t.rate && (
-              <span className={`text-xs font-mono ${isActive(i) ? colors[i].text : 'text-lotus-grey-500'}`}>
-                {t.rate}
-              </span>
-            )}
-          </div>
-          {i === 0 && (
-            <span className="absolute -right-12 top-1/2 -translate-y-1/2 text-[9px] text-emerald-500 font-medium">Senior</span>
-          )}
-          {i === tranches.length - 1 && (
-            <span className="absolute -right-12 top-1/2 -translate-y-1/2 text-[9px] text-red-500 font-medium">Junior</span>
-          )}
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -334,18 +260,6 @@ function Callout({ children, variant = 'info' }: { children: React.ReactNode; va
   );
 }
 
-function StatRow({ items }: { items: { value: string; label: string; color?: string }[] }) {
-  return (
-    <div className="flex items-center justify-center gap-8">
-      {items.map((item, i) => (
-        <div key={i} className="text-center">
-          <div className={`text-3xl font-mono font-bold ${item.color || 'text-lotus-grey-100'}`}>{item.value}</div>
-          <div className="text-[10px] text-lotus-grey-500 uppercase tracking-wide mt-1">{item.label}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // ============================================================================
 // SCENES
@@ -353,21 +267,57 @@ function StatRow({ items }: { items: { value: string; label: string; color?: str
 
 function Scene1() {
   return (
-    <div className="flex flex-col items-center gap-6">
-      <PoolCard
-        title="wstETH / USDC"
-        subtitle="Isolated Lending Pool"
-        metrics={[
-          { label: 'LLTV', value: '86%', color: 'text-orange-400' },
-          { label: 'Rate', value: '5.2%', color: 'text-emerald-400' },
-        ]}
-        variant="highlight"
-      />
-      <StatRow items={[
-        { value: '1', label: 'Market', color: 'text-lotus-purple-400' },
-        { value: '1', label: 'LLTV', color: 'text-orange-400' },
-        { value: '1', label: 'Rate', color: 'text-emerald-400' },
-      ]} />
+    <div className="flex flex-col items-center gap-5">
+      {/* Main flow diagram */}
+      <div className="flex items-center gap-6">
+        {/* Lender side */}
+        <div className="flex flex-col items-center">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 border-2 border-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span className="text-sm font-semibold text-emerald-300 mt-2">Lender</span>
+        </div>
+
+        {/* Arrow to market */}
+        <svg className="w-10 h-6 text-lotus-grey-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+
+        {/* Market in center */}
+        <div className="flex flex-col items-center">
+          <div className="bg-gradient-to-br from-lotus-purple-900/50 to-lotus-purple-950/70 border-2 border-lotus-purple-500 rounded-xl px-8 py-5 shadow-lg shadow-lotus-purple-500/20">
+            <div className="text-lg font-bold text-lotus-grey-100 text-center">wstETH / USDC</div>
+            <div className="text-center mt-2">
+              <span className="text-xl font-mono font-bold text-orange-400">86% LLTV</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Arrow from market */}
+        <svg className="w-10 h-6 text-lotus-grey-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+
+        {/* Borrower side */}
+        <div className="flex flex-col items-center">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-900/60 to-orange-950/80 border-2 border-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <svg className="w-7 h-7 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <span className="text-sm font-semibold text-orange-300 mt-2">Borrower</span>
+        </div>
+      </div>
+
+      {/* Explanation text */}
+      <div className="max-w-lg text-center bg-lotus-grey-900/50 rounded-lg px-5 py-3 border border-lotus-grey-700">
+        <p className="text-sm text-lotus-grey-300 leading-relaxed">
+          All lenders earn the same rate regardless of their risk preference.<br />
+          All borrowers pay the same rate regardless of their risk.
+        </p>
+      </div>
     </div>
   );
 }
@@ -381,52 +331,53 @@ function Scene2() {
       {/* LLTV line */}
       <line x1={toX(lltvX)} y1={CHART.padding.top} x2={toX(lltvX)} y2={toY(0)} stroke="#f97316" strokeWidth={2} strokeDasharray="6,4" />
       {/* Point on curve */}
-      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX))} r={8} fill="#f97316" stroke="#fff" strokeWidth={2} />
-      {/* Label */}
-      <text x={toX(lltvX)} y={CHART.padding.top - 8} textAnchor="middle" className="text-[11px] fill-orange-400 font-bold">86%</text>
-      {/* Legend */}
-      <g transform={`translate(${CHART.width - 80}, ${CHART.padding.top + 10})`}>
-        <rect x={0} y={0} width={70} height={24} rx={4} fill="#191621" stroke="#27232F" />
-        <line x1={8} y1={12} x2={24} y2={12} stroke="#8E62FF" strokeWidth={2} />
-        <text x={30} y={16} className="text-[9px] fill-lotus-grey-400">Risk Curve</text>
-      </g>
+      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX))} r={10} fill="#f97316" stroke="#fff" strokeWidth={2} />
+      {/* LLTV Label */}
+      <text x={toX(lltvX)} y={CHART.padding.top - 12} textAnchor="middle" className="text-sm fill-orange-400 font-bold">86% LLTV</text>
+      {/* Interest rate label at the point */}
+      <text x={toX(lltvX) + 20} y={toY(riskCurveY(lltvX)) - 15} textAnchor="start" className="text-xs fill-lotus-grey-200 font-semibold">Interest Rate</text>
     </ChartContainer>
   );
 }
 
 function Scene3() {
   const lltvX = 0.65;
-  const shift = 0.12;
+  const shift = 0.15;
   return (
     <ChartContainer>
       {/* Original curve (faded) */}
-      <path d={generateCurvePath()} fill="none" stroke="#8E62FF" strokeWidth={2} opacity={0.25} strokeLinecap="round" />
+      <path d={generateCurvePath()} fill="none" stroke="#8E62FF" strokeWidth={2} opacity={0.3} strokeLinecap="round" />
       {/* Shifted curve */}
       <path d={generateCurvePath(shift)} fill="none" stroke="#ef4444" strokeWidth={3} strokeLinecap="round" />
       {/* LLTV line */}
       <line x1={toX(lltvX)} y1={CHART.padding.top} x2={toX(lltvX)} y2={toY(0)} stroke="#f97316" strokeWidth={2} strokeDasharray="6,4" />
       {/* Mismatch zone */}
       <rect
-        x={toX(lltvX) - 12}
+        x={toX(lltvX) - 15}
         y={toY(riskCurveY(lltvX, shift))}
-        width={24}
+        width={30}
         height={toY(riskCurveY(lltvX)) - toY(riskCurveY(lltvX, shift))}
         fill="#ef4444"
         fillOpacity={0.3}
-        rx={3}
+        rx={4}
       />
       {/* Points */}
-      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX))} r={6} fill="#8E62FF" opacity={0.4} />
-      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX, shift))} r={8} fill="#ef4444" stroke="#fff" strokeWidth={2} />
-      {/* Labels */}
-      <text x={toX(lltvX)} y={CHART.padding.top - 8} textAnchor="middle" className="text-[11px] fill-orange-400 font-bold">86% (fixed)</text>
-      {/* Legend */}
-      <g transform={`translate(${CHART.width - 90}, ${CHART.padding.top + 8})`}>
-        <rect x={0} y={0} width={80} height={36} rx={4} fill="#191621" stroke="#27232F" />
-        <line x1={8} y1={10} x2={24} y2={10} stroke="#ef4444" strokeWidth={2} />
-        <text x={30} y={13} className="text-[9px] fill-red-400">New Risk</text>
-        <line x1={8} y1={26} x2={24} y2={26} stroke="#8E62FF" strokeWidth={2} opacity={0.4} />
-        <text x={30} y={29} className="text-[9px] fill-lotus-grey-500">Original</text>
+      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX))} r={7} fill="#8E62FF" opacity={0.5} />
+      <circle cx={toX(lltvX)} cy={toY(riskCurveY(lltvX, shift))} r={10} fill="#ef4444" stroke="#fff" strokeWidth={2} />
+      {/* LLTV Label */}
+      <text x={toX(lltvX)} y={CHART.padding.top - 12} textAnchor="middle" className="text-sm fill-orange-400 font-bold">86% (fixed)</text>
+      {/* Rate volatility annotation */}
+      <g transform={`translate(${toX(lltvX) + 25}, ${(toY(riskCurveY(lltvX)) + toY(riskCurveY(lltvX, shift))) / 2})`}>
+        <text x={0} y={-6} className="text-xs fill-red-400 font-semibold">Rate</text>
+        <text x={0} y={8} className="text-xs fill-red-400 font-semibold">Volatility</text>
+      </g>
+      {/* Legend - more readable */}
+      <g transform={`translate(${CHART.padding.left + 10}, ${CHART.padding.top + 10})`}>
+        <rect x={0} y={0} width={130} height={50} rx={6} fill="#191621" stroke="#3B3546" strokeWidth={1} />
+        <line x1={12} y1={18} x2={32} y2={18} stroke="#ef4444" strokeWidth={3} />
+        <text x={40} y={22} className="text-xs fill-red-300 font-medium">Actual Risk</text>
+        <line x1={12} y1={36} x2={32} y2={36} stroke="#8E62FF" strokeWidth={2} opacity={0.5} />
+        <text x={40} y={40} className="text-xs fill-lotus-grey-400 font-medium">Original Risk</text>
       </g>
     </ChartContainer>
   );
@@ -434,213 +385,125 @@ function Scene3() {
 
 function Scene4() {
   return (
-    <div className="flex flex-col items-center gap-5">
-      <div className="flex items-center gap-6">
-        <Actor type="borrower" variant="safe" label="Conservative" sublabel="40% LTV" />
-        <Actor type="borrower" variant="risky" label="Aggressive" sublabel="84% LTV" />
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="h-px w-12 bg-gradient-to-r from-transparent to-lotus-grey-600" />
-        <div className="bg-gradient-to-br from-lotus-grey-800 to-lotus-grey-900 border-2 border-orange-500 rounded-xl px-5 py-3 shadow-lg shadow-orange-500/10">
-          <div className="text-[10px] text-lotus-grey-500 uppercase tracking-wide">Same Rate</div>
-          <div className="text-2xl font-mono font-bold text-orange-400">5.2%</div>
+    <div className="flex flex-col items-center gap-6">
+      {/* Two columns: Lenders and Borrowers */}
+      <div className="flex items-stretch gap-8">
+        {/* Lenders */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="text-xs text-lotus-grey-400 uppercase tracking-wide font-semibold mb-1">Lenders</div>
+          <div className="flex flex-col gap-2">
+            <Actor type="lender" variant="safe" label="Conservative" sublabel="Wants safety" size="small" />
+            <Actor type="lender" variant="risky" label="Aggressive" sublabel="Wants yield" size="small" />
+          </div>
+          <div className="mt-2 max-w-[140px] bg-amber-900/50 border border-amber-600/50 rounded-lg px-3 py-2">
+            <p className="text-[11px] text-amber-200 text-center leading-tight">
+              Both take on the same risk exposure
+            </p>
+          </div>
         </div>
-        <div className="h-px w-12 bg-gradient-to-l from-transparent to-lotus-grey-600" />
+
+        {/* Center: Same Rate */}
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-px h-8 bg-lotus-grey-700" />
+          <div className="bg-gradient-to-br from-lotus-grey-800 to-lotus-grey-900 border-2 border-orange-500 rounded-xl px-6 py-4 shadow-lg shadow-orange-500/10">
+            <div className="text-[10px] text-lotus-grey-500 uppercase tracking-wide text-center mb-1">Same Rate</div>
+            <div className="text-2xl font-mono font-bold text-orange-400 text-center">5.2%</div>
+          </div>
+          <div className="w-px h-8 bg-lotus-grey-700" />
+        </div>
+
+        {/* Borrowers */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="text-xs text-lotus-grey-400 uppercase tracking-wide font-semibold mb-1">Borrowers</div>
+          <div className="flex flex-col gap-2">
+            <Actor type="borrower" variant="safe" label="Conservative" sublabel="40% LTV" size="small" />
+            <Actor type="borrower" variant="risky" label="Aggressive" sublabel="84% LTV" size="small" />
+          </div>
+          <div className="mt-2 max-w-[140px] bg-amber-900/50 border border-amber-600/50 rounded-lg px-3 py-2">
+            <p className="text-[11px] text-amber-200 text-center leading-tight">
+              Conservative subsidizes aggressive
+            </p>
+          </div>
+        </div>
       </div>
-      <Callout variant="warning">
-        Cautious borrower subsidizes the aggressive one
-      </Callout>
     </div>
   );
 }
 
 function Scene5() {
+  const lltvX = 0.65; // 86% LLTV position on chart
   return (
     <div className="flex flex-col items-center gap-5">
-      <PoolCard title="wstETH / USDC" subtitle="Maximum LLTV: 86%" variant="default" size="small" />
-      <div className="flex items-center gap-4">
-        <Actor type="borrower" variant="blocked" label="Wants 95%" sublabel="Needs leverage" />
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-red-900/50 border-2 border-red-500 flex items-center justify-center">
-            <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+      <ChartContainer>
+        {/* Risk curve */}
+        <path d={generateCurvePath()} fill="none" stroke="#8E62FF" strokeWidth={3} strokeLinecap="round" />
+        {/* LLTV cutoff line */}
+        <line x1={toX(lltvX)} y1={CHART.padding.top} x2={toX(lltvX)} y2={toY(0)} stroke="#f97316" strokeWidth={2} strokeDasharray="6,4" />
+        {/* Blocked zone (right of LLTV) */}
+        <rect
+          x={toX(lltvX)}
+          y={CHART.padding.top}
+          width={CHART.graphWidth - lltvX * CHART.graphWidth}
+          height={CHART.graphHeight}
+          fill="#ef4444"
+          fillOpacity={0.15}
+        />
+        {/* Blocked pattern overlay */}
+        <defs>
+          <pattern id="blockedPattern" patternUnits="userSpaceOnUse" width="8" height="8">
+            <path d="M-1,1 l2,-2 M0,8 l8,-8 M7,9 l2,-2" stroke="#ef4444" strokeWidth="0.5" opacity="0.4"/>
+          </pattern>
+        </defs>
+        <rect
+          x={toX(lltvX)}
+          y={CHART.padding.top}
+          width={CHART.graphWidth - lltvX * CHART.graphWidth}
+          height={CHART.graphHeight}
+          fill="url(#blockedPattern)"
+        />
+        {/* LLTV Label */}
+        <text x={toX(lltvX)} y={CHART.padding.top - 12} textAnchor="middle" className="text-sm fill-orange-400 font-bold">86% Max</text>
+        {/* Blocked demand annotation */}
+        <g transform={`translate(${toX(0.82)}, ${toY(0.5)})`}>
+          <rect x={-50} y={-22} width={100} height={44} rx={6} fill="#7f1d1d" stroke="#ef4444" strokeWidth={1} />
+          <text x={0} y={-4} textAnchor="middle" className="text-sm fill-red-200 font-bold">BLOCKED</text>
+          <text x={0} y={12} textAnchor="middle" className="text-xs fill-red-300">Demand Denied</text>
+        </g>
+      </ChartContainer>
+
+      {/* Blocked participants */}
+      <div className="flex items-center gap-10">
+        <div className="flex flex-col items-center gap-2">
+          <Actor type="borrower" variant="blocked" label="High-leverage Borrower" size="small" />
+          <div className="bg-red-900/50 border border-red-600/50 rounded px-3 py-1.5">
+            <span className="text-sm text-red-200 font-medium">Wants 95% LTV</span>
           </div>
-          <span className="text-[10px] text-red-400 mt-1 font-medium">DENIED</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <Actor type="lender" variant="blocked" label="Risk-seeking Lender" size="small" />
+          <div className="bg-red-900/50 border border-red-600/50 rounded px-3 py-1.5">
+            <span className="text-sm text-red-200 font-medium">Wants higher yield</span>
+          </div>
         </div>
       </div>
-      <Callout variant="warning">
-        Valid demand is blocked by arbitrary ceiling
-      </Callout>
     </div>
   );
 }
 
 function Scene6() {
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-5">
       <div className="flex items-center gap-6">
-        <Actor type="lender" variant="safe" label="Conservative" sublabel="Wants safety" />
-        <Actor type="lender" variant="risky" label="Yield-seeker" sublabel="Wants returns" />
-      </div>
-      <div className="flex items-center gap-2 text-lotus-grey-600">
-        <Arrow direction="down" />
-        <Arrow direction="down" />
-      </div>
-      <PoolCard title="Same Pool" subtitle="Single risk profile" metrics={[{ label: 'LLTV', value: '86%' }]} variant="default" size="small" />
-      <Callout variant="warning">
-        Both lenders forced into identical risk exposure
-      </Callout>
-    </div>
-  );
-}
-
-function Scene7() {
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-4">
         <PoolCard title="wstETH / USDC" subtitle="Safe collateral" metrics={[{ label: 'Yield', value: '4%', color: 'text-lotus-grey-400' }]} variant="muted" size="small" />
         <div className="flex flex-col items-center">
           <Arrow direction="right" color="text-lotus-purple-400" />
-          <span className="text-[9px] text-lotus-purple-400 mt-1">Capital</span>
+          <span className="text-xs text-lotus-purple-400 mt-1 font-medium">Capital flows</span>
         </div>
         <PoolCard title="ALT / USDC" subtitle="Risky collateral" metrics={[{ label: 'Yield', value: '12%', color: 'text-emerald-400' }]} variant="highlight" size="small" />
       </div>
       <Callout variant="warning">
-        Yield-seeking lenders move to riskier markets.<br />
         <span className="font-semibold text-amber-300">Risk migrates — it doesn't disappear.</span>
       </Callout>
-    </div>
-  );
-}
-
-function Scene8() {
-  const tranches = [
-    { lltv: 77 },
-    { lltv: 86 },
-    { lltv: 91.5 },
-    { lltv: 94.5 },
-  ];
-  return (
-    <div className="flex items-center justify-center gap-6">
-      <PoolCard title="Single Pool" subtitle="One LLTV" variant="muted" size="small" />
-      <div className="flex flex-col items-center">
-        <Arrow direction="right" color="text-lotus-purple-500" />
-      </div>
-      <div>
-        <TrancheBar tranches={tranches} activeIndex={[0, 1, 2, 3]} />
-        <div className="text-center text-[10px] text-lotus-purple-400 font-semibold mt-3">Lotus Tranches</div>
-      </div>
-    </div>
-  );
-}
-
-function Scene9() {
-  const tranches = [
-    { lltv: 77, rate: '3.5%' },
-    { lltv: 86, rate: '4.8%' },
-    { lltv: 91.5, rate: '6.5%' },
-    { lltv: 94.5, rate: '8.2%' },
-  ];
-  return (
-    <div className="flex items-center justify-center gap-5">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <Actor type="borrower" variant="safe" label="Conservative" />
-          <Arrow direction="right" color="text-emerald-500" />
-        </div>
-        <div className="flex items-center gap-3">
-          <Actor type="borrower" variant="risky" label="Aggressive" />
-          <Arrow direction="right" color="text-red-500" />
-        </div>
-      </div>
-      <TrancheBar tranches={tranches} activeIndex={[0, 3]} showRates />
-    </div>
-  );
-}
-
-function Scene10() {
-  const tranches = [
-    { lltv: 77, rate: 'Safe' },
-    { lltv: 86, rate: '' },
-    { lltv: 91.5, rate: '' },
-    { lltv: 94.5, rate: 'High yield' },
-  ];
-  return (
-    <div className="flex items-center justify-center gap-5">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <Actor type="lender" variant="safe" label="Conservative" />
-          <Arrow direction="right" color="text-emerald-500" />
-        </div>
-        <div className="flex items-center gap-3">
-          <Actor type="lender" variant="risky" label="Yield-seeker" />
-          <Arrow direction="right" color="text-red-500" />
-        </div>
-      </div>
-      <TrancheBar tranches={tranches} activeIndex={[0, 3]} showRates />
-    </div>
-  );
-}
-
-function Scene11() {
-  const tranches = [
-    { lltv: 77 },
-    { lltv: 86 },
-    { lltv: 91.5 },
-    { lltv: 94.5 },
-  ];
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-6">
-        <div className="flex flex-col items-center gap-2">
-          <Actor type="borrower" variant="blocked" label="Exits" />
-          <Arrow direction="up" color="text-red-400" />
-        </div>
-        <TrancheBar tranches={tranches} activeIndex={3} />
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-lotus-purple-900/50 border-2 border-lotus-purple-500 flex items-center justify-center">
-            <Arrow direction="up" color="text-lotus-purple-400" />
-          </div>
-          <span className="text-[10px] text-lotus-purple-400 mt-1 font-medium">Cascades</span>
-        </div>
-      </div>
-      <Callout variant="success">
-        Junior lenders stay productive — liquidity flows to senior tranches.
-      </Callout>
-    </div>
-  );
-}
-
-function Scene12() {
-  return (
-    <div className="flex flex-col items-center gap-5">
-      <ChartContainer>
-        <path d={generateCurvePath()} fill="none" stroke="#8E62FF" strokeWidth={3} strokeLinecap="round" />
-        {[0.15, 0.4, 0.65, 0.85].map((x, i) => {
-          const colors = ['#10b981', '#22d3ee', '#f59e0b', '#ef4444'];
-          const y = riskCurveY(x);
-          return (
-            <g key={x}>
-              <line x1={toX(x)} y1={toY(y) + 10} x2={toX(x)} y2={toY(0)} stroke={colors[i]} strokeWidth={2} strokeDasharray="4,3" opacity={0.5} />
-              <circle cx={toX(x)} cy={toY(y)} r={10} fill={colors[i]} stroke="#fff" strokeWidth={2} />
-            </g>
-          );
-        })}
-        {/* Connected liquidity bar */}
-        <line x1={toX(0.15)} y1={toY(0) + 15} x2={toX(0.85)} y2={toY(0) + 15} stroke="#8E62FF" strokeWidth={4} strokeLinecap="round" />
-        <text x={CHART.padding.left + CHART.graphWidth / 2} y={toY(0) + 28} textAnchor="middle" className="text-[10px] fill-lotus-purple-400 font-semibold">
-          Connected Liquidity
-        </text>
-      </ChartContainer>
-      <div className="flex gap-4">
-        <Callout variant="success">
-          <span className="font-semibold">Borrowers:</span> Fair pricing
-        </Callout>
-        <Callout variant="info">
-          <span className="font-semibold">Lenders:</span> Risk control
-        </Callout>
-      </div>
     </div>
   );
 }
@@ -657,12 +520,6 @@ function SceneVisual({ scene }: { scene: number }) {
     4: <Scene4 />,
     5: <Scene5 />,
     6: <Scene6 />,
-    7: <Scene7 />,
-    8: <Scene8 />,
-    9: <Scene9 />,
-    10: <Scene10 />,
-    11: <Scene11 />,
-    12: <Scene12 />,
   };
   return (
     <div className="animate-fadeIn">
@@ -703,12 +560,8 @@ export function ProtocolExplainer() {
       {/* Header */}
       <div className="px-5 py-3 border-b border-lotus-grey-700/50 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide ${
-            scene <= 7
-              ? 'bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30'
-              : 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30'
-          }`}>
-            {scene <= 7 ? 'The Problem' : 'The Solution'}
+          <div className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30">
+            The Problem
           </div>
         </div>
         <h3 className="text-sm font-semibold text-lotus-grey-100">{data.title}</h3>
@@ -716,7 +569,7 @@ export function ProtocolExplainer() {
       </div>
 
       {/* Visual */}
-      <div className="px-6 py-8 min-h-[300px] flex items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-lotus-grey-800/50 via-transparent to-transparent">
+      <div className="px-6 py-8 min-h-[320px] flex items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-lotus-grey-800/50 via-transparent to-transparent">
         <SceneVisual scene={scene} />
       </div>
 
@@ -760,6 +613,110 @@ export function ProtocolExplainer() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
+      </div>
+    </div>
+  );
+}
+
+export function LotusSolution() {
+  return (
+    <div className="bg-gradient-to-b from-lotus-grey-800 to-lotus-grey-900 rounded-2xl border border-lotus-grey-700 overflow-hidden shadow-xl">
+      {/* Header */}
+      <div className="px-5 py-3 border-b border-lotus-grey-700/50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30">
+            The Solution
+          </div>
+        </div>
+        <h3 className="text-sm font-semibold text-lotus-grey-100">Lotus Protocol</h3>
+      </div>
+
+      {/* Content */}
+      <div className="px-6 py-6 space-y-6">
+        {/* Overview */}
+        <div className="text-sm text-lotus-grey-200 leading-relaxed">
+          <p className="mb-4">
+            <span className="text-lotus-purple-400 font-semibold">Lotus</span> is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate pools for every risk setting, Lotus uses <span className="text-emerald-400 font-medium">tranches</span> to offer multiple risk levels while keeping liquidity connected.
+          </p>
+          <p>
+            A market contains multiple tranches ordered by risk (senior to junior). Unused liquidity from junior tranches can support more senior borrowers. This keeps markets deep without forcing everyone into the same risk profile.
+          </p>
+        </div>
+
+        {/* Tranche visualization */}
+        <div className="flex items-center justify-center gap-2 py-4">
+          {[
+            { lltv: 75, color: 'bg-emerald-500', label: 'Senior' },
+            { lltv: 80, color: 'bg-emerald-400' },
+            { lltv: 85, color: 'bg-amber-500' },
+            { lltv: 90, color: 'bg-orange-500' },
+            { lltv: 95, color: 'bg-red-500', label: 'Junior' },
+          ].map((t, i) => (
+            <div key={t.lltv} className="flex flex-col items-center gap-1">
+              {i === 0 && <span className="text-xs text-emerald-400 font-semibold">Senior</span>}
+              {i === 4 && <span className="text-xs text-red-400 font-semibold">Junior</span>}
+              {i !== 0 && i !== 4 && <span className="text-xs text-transparent">-</span>}
+              <div className={`${t.color} rounded-lg px-3 py-2`}>
+                <span className="font-mono text-sm font-bold text-white">{t.lltv}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Interest and Loss Allocation */}
+        <div className="text-sm text-lotus-grey-200 leading-relaxed">
+          <p>
+            Interest and loss allocation follow the tranche structure, so risk and reward stay aligned.
+          </p>
+        </div>
+
+        {/* LotusUSD Section */}
+        <div className="bg-lotus-purple-900/20 rounded-xl p-5 border border-lotus-purple-700/50">
+          <h4 className="text-sm font-semibold text-lotus-purple-300 mb-3">LotusUSD</h4>
+          <p className="text-sm text-lotus-grey-200 leading-relaxed">
+            In USD-denominated Lotus markets, the loan asset is <span className="text-lotus-purple-400 font-medium">LotusUSD</span>. LotusUSD is a vault token backed by USDC and tokenized short-term US Treasuries. Its goal is to earn a rate that is close to the risk-free rate on deployed assets while maintaining onchain liquidity. Using a yield-bearing token as the loan asset is called <span className="text-emerald-400 font-medium">"productive debt"</span>.
+          </p>
+        </div>
+
+        {/* Productive Debt Benefits */}
+        <div className="bg-emerald-900/20 rounded-xl p-5 border border-emerald-700/50">
+          <h4 className="text-sm font-semibold text-emerald-300 mb-4">Productive Debt Benefits</h4>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-emerald-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-emerald-400 text-xs font-bold">1</span>
+              </div>
+              <div>
+                <p className="text-sm text-lotus-grey-100 font-medium">Baseline yield for lenders</p>
+                <p className="text-xs text-lotus-grey-300 mt-1">
+                  Lenders earn a baseline yield even when utilization is low. Some return comes from LotusUSD's base yield, not only from borrower demand.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-emerald-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-emerald-400 text-xs font-bold">2</span>
+              </div>
+              <div>
+                <p className="text-sm text-lotus-grey-100 font-medium">Idle liquidity earns yield</p>
+                <p className="text-xs text-lotus-grey-300 mt-1">
+                  Unborrowed funds can remain productive instead of sitting as zero-yield reserves.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-emerald-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-emerald-400 text-xs font-bold">3</span>
+              </div>
+              <div>
+                <p className="text-sm text-lotus-grey-100 font-medium">More stable rates</p>
+                <p className="text-xs text-lotus-grey-300 mt-1">
+                  Because part of the return comes from the base rate, rates tend to move less abruptly as utilization changes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

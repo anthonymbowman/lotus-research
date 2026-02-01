@@ -1,7 +1,6 @@
 import type { Section } from './Sidebar';
-import { RoleDiagramCompact } from './RoleDiagram';
 import { TermDefinition } from './TermDefinition';
-import { ProtocolExplainer } from './ProtocolExplainer';
+import { ProtocolExplainer, LotusSolution } from './ProtocolExplainer';
 
 interface IntroductionProps {
   onNavigate: (section: Section) => void;
@@ -13,13 +12,8 @@ export function Introduction({ onNavigate }: IntroductionProps) {
       {/* Interactive Protocol Explainer */}
       <ProtocolExplainer />
 
-      {/* Lender & Borrower Role Explainer */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">
-          Two Ways to Participate
-        </h3>
-        <RoleDiagramCompact />
-      </div>
+      {/* The Lotus Solution */}
+      <LotusSolution />
 
       {/* The Lotus Difference */}
       <div className="bg-lotus-purple-900/20 rounded-lg p-6 border border-lotus-purple-700/50">
@@ -27,6 +21,17 @@ export function Introduction({ onNavigate }: IntroductionProps) {
           The Lotus Difference
         </h3>
         <ul className="space-y-4">
+          <li className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <div>
+              <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
+              <span className="text-lotus-grey-300"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
+            </div>
+          </li>
           <li className="flex items-start gap-3">
             <div className="w-8 h-8 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
               <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,17 +56,6 @@ export function Introduction({ onNavigate }: IntroductionProps) {
                 <TermDefinition term="productive-debt">Productive Debt</TermDefinition>
               </span>
               <span className="text-lotus-grey-300"> — Idle liquidity earns yield from treasury-backed assets, compressing <TermDefinition term="spread">spreads</TermDefinition> and reducing rate volatility.</span>
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <div>
-              <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
-              <span className="text-lotus-grey-300"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
             </div>
           </li>
         </ul>

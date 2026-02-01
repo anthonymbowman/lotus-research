@@ -3,9 +3,8 @@ import type { TrancheData, TrancheInput } from '../types';
 import { TrancheTable } from './TrancheTable';
 import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
-import { ConceptPrimer } from './ConceptPrimer';
 import { TermDefinition } from './TermDefinition';
-import { DynamicInsight } from './DynamicInsight';
+import { RateChart } from './RateChart';
 
 interface TrancheLiquidityProps {
   tranches: TrancheData[];
@@ -24,9 +23,6 @@ export function TrancheLiquidity({
 
   return (
     <div className="space-y-6">
-      {/* Key Concepts Primer */}
-      <ConceptPrimer concepts={['lltv', 'tranche-seniority', 'cascade', 'supply-utilization']} />
-
       <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
         <p className="text-sm text-lotus-purple-200">
           Tranches allow lenders to choose their risk/reward profile. Lower <TermDefinition term="lltv">LLTV</TermDefinition> = more <TermDefinition term="tranche-seniority">senior</TermDefinition> (safer),
@@ -42,99 +38,46 @@ export function TrancheLiquidity({
 
       {/* Liquidity Cascade Explanation */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">The Liquidity Cascade</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Benefits of Cascading Liquidity</h3>
         <p className="text-lotus-grey-300 mb-6">
-          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism. Liquidity cascades from junior to senior tranches, while interest flows from senior to junior.
+          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism.
         </p>
 
-        {/* Vertical Cascade Diagram */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-          {/* Supply Cascade (junior to senior) */}
-          <div className="bg-emerald-900/10 rounded-xl p-5 border border-emerald-700/50">
-            <div className="flex items-center gap-2 mb-4">
-              <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-              </svg>
-              <h4 className="font-semibold text-emerald-300">Liquidity Flows (Junior to Senior)</h4>
+        {/* Bullet point explanation */}
+        <div className="space-y-4 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 bg-emerald-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-emerald-400 text-sm font-bold">1</span>
             </div>
-
-            <div className="space-y-3">
-              {/* Senior - receives supply from below */}
-              <div className="bg-emerald-900/30 rounded-lg p-4 border-2 border-emerald-600">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-lg font-semibold text-emerald-300">75% LLTV</span>
-                    <span className="ml-2 text-xs text-emerald-400 bg-emerald-900/50 px-2 py-0.5 rounded">Most Senior</span>
-                  </div>
-                </div>
-                <p className="text-sm text-emerald-200/70 mt-1">Can borrow from all tranches below</p>
-              </div>
-
-              <div className="flex justify-center">
-                <svg className="w-6 h-6 text-emerald-500 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-
-              <div className="bg-amber-900/30 rounded-lg p-3 border border-amber-700">
-                <div className="text-amber-300 font-medium">85% LLTV</div>
-                <p className="text-xs text-amber-200/70">Unused supply cascades to senior</p>
-              </div>
-
-              <div className="flex justify-center">
-                <svg className="w-6 h-6 text-emerald-500 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-
-              <div className="bg-red-900/30 rounded-lg p-3 border border-red-700">
-                <div className="flex items-center justify-between">
-                  <span className="text-red-300 font-medium">95% LLTV</span>
-                  <span className="text-xs text-red-400 bg-red-900/50 px-2 py-0.5 rounded">Most Junior</span>
-                </div>
-                <p className="text-xs text-red-200/70">Supplies liquidity first</p>
-              </div>
+            <div>
+              <p className="text-sm text-lotus-grey-200">
+                <strong className="text-emerald-400">Liquidity cascades upward:</strong> Unused supply from junior tranches (higher LLTV)
+                flows to more senior tranches (lower LLTV) to support borrowers there.
+              </p>
             </div>
           </div>
 
-          {/* Interest Cascade (senior to junior) */}
-          <div className="bg-blue-900/10 rounded-xl p-5 border border-blue-700/50">
-            <div className="flex items-center gap-2 mb-4">
-              <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-              <h4 className="font-semibold text-blue-300">Interest Flows (Senior to Junior)</h4>
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 bg-blue-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-blue-400 text-sm font-bold">2</span>
             </div>
+            <div>
+              <p className="text-sm text-lotus-grey-200">
+                <strong className="text-blue-400">Interest cascades downward:</strong> Interest generated at senior tranches flows down
+                to junior tranches based on supply utilization at each level.
+              </p>
+            </div>
+          </div>
 
-            <div className="space-y-3">
-              <div className="bg-emerald-900/30 rounded-lg p-3 border border-emerald-700">
-                <div className="text-emerald-300 font-medium">75% LLTV</div>
-                <p className="text-xs text-emerald-200/70">Keeps portion based on supply utilization</p>
-              </div>
-
-              <div className="flex justify-center">
-                <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-
-              <div className="bg-amber-900/30 rounded-lg p-3 border border-amber-700">
-                <div className="text-amber-300 font-medium">85% LLTV</div>
-                <p className="text-xs text-amber-200/70">Excess interest cascades to junior</p>
-              </div>
-
-              <div className="flex justify-center">
-                <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-
-              <div className="bg-red-900/30 rounded-lg p-4 border-2 border-red-600">
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold text-red-300">95% LLTV</span>
-                </div>
-                <p className="text-sm text-red-200/70 mt-1">Receives 100% of remaining interest</p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 bg-lotus-purple-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="text-lotus-purple-400 text-sm font-bold">3</span>
+            </div>
+            <div>
+              <p className="text-sm text-lotus-grey-200">
+                <strong className="text-lotus-purple-400">No idle capital:</strong> Your supply earns yield even when borrowers at your
+                tranche level aren't active, because it supports borrowers at more senior tranches.
+              </p>
             </div>
           </div>
         </div>
@@ -168,18 +111,29 @@ export function TrancheLiquidity({
               <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span className="font-medium text-lotus-purple-300">Junior Benefits</span>
+              <span className="font-medium text-lotus-purple-300">Higher Risk = Higher Yield</span>
             </div>
             <p className="text-sm text-lotus-purple-200/80">
-              Junior lenders earn from multiple tranches when their liquidity cascades to senior tranches.
+              Junior lenders underwrite higher-risk LLTVs and earn higher yields to compensate.
             </p>
           </div>
         </div>
 
-        {/* Why This Matters */}
-        <DynamicInsight show={true} variant="info">
-          <strong>Why this matters:</strong> Unlike isolated pools where unused capital sits idle, connected liquidity means your supply can earn yield across multiple tranches. Junior tranches absorb losses first — that's why they earn higher yields to compensate for the risk.
-        </DynamicInsight>
+        {/* Important clarification about bad debt */}
+        <div className="mt-6 p-4 bg-amber-900/20 rounded-lg border border-amber-700/50">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <p className="text-sm text-amber-200">
+                <strong>Important:</strong> Bad debt is allocated proportionally to lenders who provided the liquidity
+                that was borrowed. Junior lenders earn higher yields because they underwrite riskier (higher LLTV) loans,
+                not because they "absorb losses first."
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 overflow-x-auto">
@@ -188,6 +142,12 @@ export function TrancheLiquidity({
           productiveDebtRate={productiveDebtRate}
           onTrancheChange={onTrancheChange}
         />
+      </div>
+
+      {/* Rates by LLTV - moved up to be right after main table */}
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Rates by LLTV</h3>
+        <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
       </div>
 
       <CollapsibleSection
@@ -270,41 +230,132 @@ export function TrancheLiquidity({
         </div>
       </CollapsibleSection>
 
+      {/* Understanding Supply Metrics - CollapsibleSection style matching Utilization Metrics */}
+      <CollapsibleSection
+        title="Understanding Supply Metrics"
+        icon="📦"
+        description="Free Supply and Available Supply explained"
+      >
+        <div className="space-y-4">
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-grey-100 mb-2">Free Supply</h4>
+            <p className="text-sm text-lotus-grey-300 mb-3">
+              The amount of liquidity that can be <strong className="text-emerald-400">borrowed or withdrawn</strong> from the tranche.
+            </p>
+            <p className="text-xs text-lotus-grey-400 mb-4">
+              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">FreeSupply = min(JrNetSupply at this tranche and all more senior tranches)</span>
+            </p>
+
+            {/* Legend */}
+            <div className="flex gap-4 mb-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded" />
+                <span className="text-lotus-grey-300">Jr Net Supply</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-emerald-500 rounded" />
+                <span className="text-lotus-grey-300">Free Supply</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {(() => {
+                const maxJrNet = Math.max(...tranches.map(tr => Math.max(0, tr.jrNetSupply)));
+                return tranches.map((t) => (
+                  <div key={t.id} className="flex items-center gap-2">
+                    <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
+                    <div className="flex-1 h-5 bg-lotus-grey-700 rounded overflow-hidden relative">
+                      {/* Jr Net Supply bar (blue) */}
+                      <div
+                        className="absolute h-full bg-blue-500/60 transition-all"
+                        style={{ width: `${maxJrNet > 0 ? (Math.max(0, t.jrNetSupply) / maxJrNet) * 100 : 0}%` }}
+                      />
+                      {/* Free Supply bar (emerald, overlaid) */}
+                      <div
+                        className="absolute h-full bg-emerald-500 transition-all"
+                        style={{ width: `${maxJrNet > 0 ? (t.freeSupply / maxJrNet) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <div className="flex gap-2 w-32 justify-end">
+                      <span className="text-xs font-mono text-blue-400">
+                        {Math.max(0, t.jrNetSupply).toLocaleString()}
+                      </span>
+                      <span className="text-xs text-lotus-grey-500">/</span>
+                      <span className="text-xs font-mono text-emerald-400">
+                        {t.freeSupply.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+
+            <p className="text-xs text-lotus-grey-400 mt-3 italic">
+              Free supply is constrained by the minimum Jr Net Supply at all more senior tranches.
+              Even if a junior tranche has excess liquidity, it can only be withdrawn if senior tranches also have liquidity available.
+            </p>
+          </div>
+
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <h4 className="font-medium text-lotus-grey-100 mb-2">Available Supply</h4>
+            <p className="text-sm text-lotus-grey-300 mb-3">
+              The total supply available for borrowers at this tranche. Equals Jr Net Supply plus existing borrows at the tranche.
+            </p>
+            <p className="text-xs text-lotus-grey-400 mb-4">
+              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">AvailableSupply = JrNetSupply + BorrowsAtTranche</span>
+            </p>
+
+            {/* Legend */}
+            <div className="flex gap-4 mb-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded" />
+                <span className="text-lotus-grey-300">Jr Net Supply</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-orange-500 rounded" />
+                <span className="text-lotus-grey-300">Borrows at Tranche</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {(() => {
+                const maxAvailable = Math.max(...tranches.map(tr => tr.availableSupply));
+                return tranches.map((t) => {
+                  const jrNetPercent = maxAvailable > 0 ? (Math.max(0, t.jrNetSupply) / maxAvailable) * 100 : 0;
+                  const borrowPercent = maxAvailable > 0 ? (t.borrowAssets / maxAvailable) * 100 : 0;
+                  return (
+                    <div key={t.id} className="flex items-center gap-2">
+                      <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
+                      <div className="flex-1 h-5 bg-lotus-grey-700 rounded overflow-hidden flex">
+                        {/* Jr Net Supply bar (blue) */}
+                        <div
+                          className="h-full bg-blue-500 transition-all"
+                          style={{ width: `${jrNetPercent}%` }}
+                        />
+                        {/* Borrows at tranche bar (orange) */}
+                        <div
+                          className="h-full bg-orange-500 transition-all"
+                          style={{ width: `${borrowPercent}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-mono text-lotus-grey-300 w-20 text-right">
+                        {t.availableSupply.toLocaleString()}
+                      </span>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </div>
+      </CollapsibleSection>
+
       <CollapsibleSection
         title="Utilization Metrics"
         icon="📈"
         description="How supply and borrow utilization are calculated"
       >
         <div className="space-y-6">
-          {/* Formula explanations */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
-              <h4 className="font-medium text-lotus-purple-200 mb-2">Supply Utilization</h4>
-              <div className="bg-lotus-grey-800 rounded-lg px-3 py-2 mb-2">
-                <code className="text-sm font-mono text-lotus-purple-300">
-                  SupplyUtil = Supply / AvailableSupply
-                </code>
-              </div>
-              <p className="text-sm text-lotus-grey-300">
-                How much of the available supply at this tranche is being used.
-                Higher = more capital deployed at this risk level.
-              </p>
-            </div>
-
-            <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-700/50">
-              <h4 className="font-medium text-orange-200 mb-2">Borrow Utilization</h4>
-              <div className="bg-lotus-grey-800 rounded-lg px-3 py-2 mb-2">
-                <code className="text-sm font-mono text-orange-300">
-                  BorrowUtil = 1 - (FreeSupply / JrSupply)
-                </code>
-              </div>
-              <p className="text-sm text-lotus-grey-300">
-                How much of the junior supply is being borrowed against.
-                Higher = more of the supply is earning interest.
-              </p>
-            </div>
-          </div>
-
           {/* Supply Utilization Table */}
           <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
             <h4 className="font-medium text-lotus-purple-200 mb-3">Supply Utilization by Tranche</h4>
@@ -315,8 +366,12 @@ export function TrancheLiquidity({
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
                     <th className="text-right py-2 px-3 text-blue-300 font-medium">Supply</th>
                     <th className="text-right py-2 px-3 text-emerald-300 font-medium">Available</th>
-                    <th className="text-right py-2 px-3 text-lotus-purple-300 font-medium">Supply Util</th>
-                    <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">Calculation</th>
+                    <th className="text-right py-2 px-3 text-lotus-purple-300 font-medium group relative cursor-help">
+                      Supply Util
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg text-xs font-mono text-lotus-purple-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+                        Supply / AvailableSupply
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -328,15 +383,15 @@ export function TrancheLiquidity({
                         <td className="py-2 px-3 text-right font-mono text-blue-200">{t.supplyAssets.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.availableSupply.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-lotus-purple-200">{(supplyUtil * 100).toFixed(1)}%</td>
-                        <td className="py-2 px-3 text-sm text-lotus-grey-300 font-mono">
-                          {t.supplyAssets.toLocaleString()} / {t.availableSupply.toLocaleString()}
-                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
+            <p className="text-xs text-lotus-grey-400 mt-2">
+              Supply utilization determines how much interest stays at this tranche vs cascading to more junior tranches. Higher supply utilization means more of the interest is kept at this level.
+            </p>
           </div>
 
           {/* Borrow Utilization Table */}
@@ -349,8 +404,12 @@ export function TrancheLiquidity({
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
                     <th className="text-right py-2 px-3 text-emerald-300 font-medium">Free Supply</th>
                     <th className="text-right py-2 px-3 text-blue-300 font-medium">Jr Supply</th>
-                    <th className="text-right py-2 px-3 text-orange-300 font-medium">Borrow Util</th>
-                    <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">Calculation</th>
+                    <th className="text-right py-2 px-3 text-orange-300 font-medium group relative cursor-help">
+                      Borrow Util
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg text-xs font-mono text-orange-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+                        1 - (FreeSupply / JrSupply)
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -362,22 +421,14 @@ export function TrancheLiquidity({
                         <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.freeSupply.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono text-blue-200">{t.jrSupply.toLocaleString()}</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-orange-200">{(borrowUtil * 100).toFixed(1)}%</td>
-                        <td className="py-2 px-3 text-sm text-lotus-grey-300 font-mono">
-                          1 - {t.freeSupply.toLocaleString()} / {t.jrSupply.toLocaleString()}
-                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <div className="p-3 bg-amber-900/20 border border-amber-700/50 rounded-lg">
-            <p className="text-sm text-amber-300">
-              <span className="font-medium">Key insight:</span> Supply utilization determines how much
-              interest stays at this tranche vs cascading to more junior tranches. Higher supply utilization
-              means more of the interest is kept at this level.
+            <p className="text-xs text-lotus-grey-400 mt-2">
+              Borrow utilization is used to determine interest rates according to the Interest Rate Model (IRM). Higher utilization leads to higher borrow rates.
             </p>
           </div>
         </div>

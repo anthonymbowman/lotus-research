@@ -23,10 +23,10 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
 
   if (tranches.length === 0) return null;
 
-  const chartWidth = 500;
+  const chartWidth = 800;
   const chartHeight = 200;
   const paddingLeft = 50;
-  const paddingRight = 20;
+  const paddingRight = 30;
   const paddingTop = 20;
   const paddingBottom = 40;
   const graphWidth = chartWidth - paddingLeft - paddingRight;
@@ -58,8 +58,27 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
 
   return (
     <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700">
-      <div className="flex gap-6 items-start">
-        <svg width={chartWidth} height={chartHeight} className="overflow-visible">
+      {/* Legend at top */}
+      <div className="flex gap-6 items-center justify-end mb-4 text-xs">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
+          <span className="text-lotus-grey-300">Total Borrow Rate</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-teal-500 rounded"></div>
+          <span className="text-lotus-grey-300">Total Supply Rate</span>
+        </div>
+        <div className="text-lotus-grey-400 text-[10px]">
+          (includes {formatPercent(productiveDebtRate)} PD rate)
+        </div>
+      </div>
+
+      <div className="w-full">
+        <svg
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          className="w-full h-auto overflow-visible"
+          preserveAspectRatio="xMidYMid meet"
+        >
           {/* Background */}
           <rect
             x={paddingLeft}
@@ -166,21 +185,6 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
             </g>
           ))}
         </svg>
-
-        {/* Legend */}
-        <div className="flex flex-col gap-2 text-xs pt-2">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
-            <span className="text-lotus-grey-300">Total Borrow Rate</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-teal-500 rounded"></div>
-            <span className="text-lotus-grey-300">Total Supply Rate</span>
-          </div>
-          <div className="text-lotus-grey-300 mt-1 text-[10px]">
-            (includes {formatPercent(productiveDebtRate)} PD rate)
-          </div>
-        </div>
       </div>
     </div>
   );
