@@ -1,7 +1,7 @@
 import type { Section } from './Sidebar';
 import { RoleDiagramCompact } from './RoleDiagram';
-import { ConceptPrimer } from './ConceptPrimer';
 import { TermDefinition } from './TermDefinition';
+import { ProtocolExplainer } from './ProtocolExplainer';
 
 interface IntroductionProps {
   onNavigate: (section: Section) => void;
@@ -10,8 +10,8 @@ interface IntroductionProps {
 export function Introduction({ onNavigate }: IntroductionProps) {
   return (
     <div className="space-y-8">
-      {/* Key Concepts Primer */}
-      <ConceptPrimer concepts={['connected-liquidity', 'productive-debt', 'tranche-seniority']} />
+      {/* Interactive Protocol Explainer */}
+      <ProtocolExplainer />
 
       {/* Lender & Borrower Role Explainer */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
