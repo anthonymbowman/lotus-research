@@ -220,7 +220,7 @@ function App() {
           >
             {/* Section 1: Introduction */}
             {activeSection === 'intro' && (
-              <Introduction onNavigate={handleSectionChange} />
+              <Introduction />
             )}
 
             {/* Section 2: LotusUSD & Productive Debt (combined) */}

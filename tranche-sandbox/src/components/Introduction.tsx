@@ -1,15 +1,9 @@
-import type { Section } from './Sidebar';
 import { TermDefinition } from './TermDefinition';
 import { ProtocolExplainer, LotusSolution } from './ProtocolExplainer';
 import { PageHeader } from './PageHeader';
-import { ChooseYourPath } from './ChooseYourPath';
 import { AppCTA } from './AppCTA';
 
-interface IntroductionProps {
-  onNavigate: (section: Section) => void;
-}
-
-export function Introduction({ onNavigate }: IntroductionProps) {
+export function Introduction() {
   return (
     <div className="space-y-8">
       <PageHeader
@@ -90,9 +84,6 @@ export function Introduction({ onNavigate }: IntroductionProps) {
           </div>
         </div>
       </div>
-
-      {/* Choose Your Path */}
-      <ChooseYourPath onNavigate={onNavigate} />
 
       {/* CTA */}
       <AppCTA context="intro" />
