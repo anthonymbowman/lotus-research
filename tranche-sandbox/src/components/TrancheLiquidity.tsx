@@ -3,9 +3,10 @@ import type { TrancheData, TrancheInput } from '../types';
 import { TrancheTable } from './TrancheTable';
 import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
-import { TermDefinition } from './TermDefinition';
 import { RateChart } from './RateChart';
 import { DynamicLoanMix } from './DynamicLoanMix';
+import { PageHeader } from './PageHeader';
+import { FailureModeCallout } from './FailureModeCallout';
 
 interface TrancheLiquidityProps {
   tranches: TrancheData[];
@@ -24,12 +25,15 @@ export function TrancheLiquidity({
 
   return (
     <div className="space-y-6">
-      <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
-        <p className="text-sm text-lotus-purple-200">
-          Tranches allow lenders to choose their risk/reward profile. Lower <TermDefinition term="lltv">LLTV</TermDefinition> = more <TermDefinition term="tranche-seniority">senior</TermDefinition> (safer),
-          higher LLTV = more junior (higher yield). Liquidity flows between tranches, creating <TermDefinition term="connected-liquidity">connected markets</TermDefinition>.
-        </p>
-      </div>
+      <PageHeader
+        title="Connected Liquidity"
+        whatYoullLearn={[
+          "How lenders and borrowers interact with different tranches",
+          "Why liquidity cascades upward and interest cascades downward",
+          "How the funding matrix shows who is lending to whom",
+        ]}
+        tryThis="Adjust the supply and borrow values in the table below to see how liquidity flows between tranches."
+      />
 
       {/* Role Cards */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
@@ -493,6 +497,16 @@ export function TrancheLiquidity({
           </div>
         </div>
       </CollapsibleSection>
+
+      <FailureModeCallout title="Stress Scenario: Withdrawal Queues">
+        <p>
+          Free Supply determines how much can be withdrawn instantly. During high-stress
+          periods, if many lenders attempt to withdraw simultaneously, withdrawals may
+          be delayed until borrowers repay loans or new supply enters the system. Junior
+          lenders are particularly affected as their Free Supply depends on senior
+          tranches maintaining liquidity buffers.
+        </p>
+      </FailureModeCallout>
     </div>
   );
 }

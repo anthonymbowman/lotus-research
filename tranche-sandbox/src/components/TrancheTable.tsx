@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { TrancheInput, TrancheData } from '../types';
 import { formatNumber, formatPercent } from '../math/lotusAccounting';
 import { FormulaTooltip, FORMULAS } from './FormulaTooltip';
@@ -14,24 +15,46 @@ export function TrancheTable({
   onTrancheChange,
   productiveDebtRate,
 }: TrancheTableProps) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   return (
     <div>
-      <div className="mb-4 p-3 bg-emerald-900/30 rounded-lg border border-emerald-700">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-emerald-300">
-            Productive Debt Rate (from LotusUSD)
-          </span>
-          <span className="text-lg font-mono font-semibold text-emerald-400">
-            {formatPercent(productiveDebtRate, 2)}
-          </span>
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-3 bg-emerald-900/30 rounded-lg border border-emerald-700 flex-1">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-emerald-300">
+              Productive Debt Rate (from LotusUSD)
+            </span>
+            <span className="text-lg font-mono font-semibold text-emerald-400">
+              {formatPercent(productiveDebtRate, 2)}
+            </span>
+          </div>
+          <p className="text-xs text-emerald-500 mt-1">
+            This base rate is added to the spread to get the total borrow rate.
+          </p>
         </div>
-        <p className="text-xs text-emerald-500 mt-1">
-          This base rate is added to the spread to get the total borrow rate.
-        </p>
+
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors text-sm font-medium ${
+            showAdvanced
+              ? 'bg-lotus-purple-900/30 border-lotus-purple-500 text-lotus-purple-300'
+              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
+          }`}
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {showAdvanced ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            )}
+          </svg>
+          {showAdvanced ? 'Hide Details' : 'Show Details'}
+        </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[900px]">
+        <table className={`w-full text-sm ${showAdvanced ? 'min-w-[900px]' : 'min-w-[600px]'}`}>
           <thead>
             <tr className="border-b border-lotus-grey-700">
               <th className="text-left py-2 px-2 font-semibold text-lotus-grey-300 bg-lotus-grey-800 border-r border-lotus-grey-700 sticky left-0 z-10">
@@ -49,27 +72,31 @@ export function TrancheTable({
               <th className="text-right py-2 px-2 font-semibold text-orange-300 bg-orange-900/30">
                 Borrow Rate
               </th>
-              <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
-                <FormulaTooltip {...FORMULAS.jrSupply}>Jr Supply</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
-                <FormulaTooltip {...FORMULAS.jrBorrow}>Jr Borrow</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
-                <FormulaTooltip {...FORMULAS.jrNetSupply}>Jr Net</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-emerald-300 bg-emerald-900/30">
-                <FormulaTooltip {...FORMULAS.freeSupply}>Free Supply</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-emerald-300 bg-emerald-900/30">
-                <FormulaTooltip {...FORMULAS.availableSupply}>Available</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                <FormulaTooltip {...FORMULAS.supplyUtil}>Supply Util</FormulaTooltip>
-              </th>
-              <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                <FormulaTooltip {...FORMULAS.borrowUtil}>Borrow Util</FormulaTooltip>
-              </th>
+              {showAdvanced && (
+                <>
+                  <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
+                    <FormulaTooltip {...FORMULAS.jrSupply}>Jr Supply</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
+                    <FormulaTooltip {...FORMULAS.jrBorrow}>Jr Borrow</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
+                    <FormulaTooltip {...FORMULAS.jrNetSupply}>Jr Net</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-emerald-300 bg-emerald-900/30">
+                    <FormulaTooltip {...FORMULAS.freeSupply}>Free Supply</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-emerald-300 bg-emerald-900/30">
+                    <FormulaTooltip {...FORMULAS.availableSupply}>Available</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
+                    <FormulaTooltip {...FORMULAS.supplyUtil}>Supply Util</FormulaTooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
+                    <FormulaTooltip {...FORMULAS.borrowUtil}>Borrow Util</FormulaTooltip>
+                  </th>
+                </>
+              )}
               <th className="text-right py-2 px-2 font-semibold text-teal-300 bg-teal-900/30">
                 <FormulaTooltip {...FORMULAS.supplyRate}>Supply Rate</FormulaTooltip>
               </th>
@@ -129,33 +156,37 @@ export function TrancheTable({
                   {formatPercent(productiveDebtRate + tranche.borrowRate, 2)}
                 </td>
 
-                <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                  {formatNumber(tranche.jrSupply, 0)}
-                </td>
+                {showAdvanced && (
+                  <>
+                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                      {formatNumber(tranche.jrSupply, 0)}
+                    </td>
 
-                <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                  {formatNumber(tranche.jrBorrow, 0)}
-                </td>
+                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                      {formatNumber(tranche.jrBorrow, 0)}
+                    </td>
 
-                <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                  {formatNumber(tranche.jrNetSupply, 0)}
-                </td>
+                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                      {formatNumber(tranche.jrNetSupply, 0)}
+                    </td>
 
-                <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
-                  {formatNumber(tranche.freeSupply, 0)}
-                </td>
+                    <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
+                      {formatNumber(tranche.freeSupply, 0)}
+                    </td>
 
-                <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
-                  {formatNumber(tranche.availableSupply, 0)}
-                </td>
+                    <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
+                      {formatNumber(tranche.availableSupply, 0)}
+                    </td>
 
-                <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
-                  <UtilizationBar value={tranche.supplyUtilization} color="purple" />
-                </td>
+                    <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
+                      <UtilizationBar value={tranche.supplyUtilization} color="purple" />
+                    </td>
 
-                <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
-                  <UtilizationBar value={tranche.borrowUtilization} color="blue" />
-                </td>
+                    <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
+                      <UtilizationBar value={tranche.borrowUtilization} color="blue" />
+                    </td>
+                  </>
+                )}
 
                 <td className="py-2 px-2 text-right font-mono text-teal-400 bg-teal-900/20">
                   {tranche.supplyRate !== null

@@ -1,6 +1,7 @@
 import type { TrancheData } from '../types';
 import { BadDebtSimulator } from './BadDebtSimulator';
 import { TermDefinition } from './TermDefinition';
+import { FailureModeCallout } from './FailureModeCallout';
 
 interface LiquidationsProps {
   tranches: { lltv: number }[];
@@ -43,6 +44,16 @@ export function Liquidations({ computedTranches }: LiquidationsProps) {
           <BadDebtSimulator tranches={computedTranches} />
         </div>
       )}
+
+      <FailureModeCallout title="Stress Scenario: Correlated Defaults">
+        <p>
+          Bad debt rarely occurs in isolation. During market crashes, multiple borrowers
+          may become undercollateralized simultaneously. This can overwhelm liquidators
+          and cause cascading defaults across tranches. In extreme scenarios, if total
+          bad debt exceeds the combined supply of all tranches, some debt may remain
+          unabsorbed, resulting in losses for the protocol.
+        </p>
+      </FailureModeCallout>
     </div>
   );
 }

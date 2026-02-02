@@ -8,6 +8,49 @@ export interface GlossaryEntry {
 }
 
 export const GLOSSARY: Record<string, GlossaryEntry> = {
+  ltv: {
+    term: 'LTV',
+    shortDef: 'Loan-to-Value — the current ratio of your borrowed amount to your collateral value.',
+    fullDef: 'LTV measures how much you\'ve borrowed relative to your collateral. Unlike LLTV (which is the maximum), LTV is your current position. If your LTV exceeds the tranche\'s LLTV, your position becomes liquidatable.',
+    formula: 'LTV = Borrowed Amount / Collateral Value',
+    example: 'Borrowed $6,000 against $10,000 collateral → LTV = 60%',
+    related: ['lltv', 'health-factor', 'liquidation'],
+  },
+
+  lif: {
+    term: 'LIF',
+    shortDef: 'Liquidation Incentive Factor — the bonus liquidators receive for repaying bad debt.',
+    fullDef: 'LIF determines how much collateral a liquidator receives per unit of debt they repay. A LIF of 1.10 means liquidators get $1.10 in collateral for every $1.00 of debt repaid. Higher LLTV tranches have lower LIF (less profit for liquidators), which can slow liquidations.',
+    formula: 'LIF = min(1.15, 1 / (0.3 × LLTV + 0.7))',
+    example: 'At 85% LLTV, LIF ≈ 1.08 → liquidators earn 8% profit on liquidations',
+    related: ['liquidation', 'lltv', 'bad-debt'],
+  },
+
+  tranche: {
+    term: 'Tranche',
+    shortDef: 'A risk tier defined by its LLTV — higher LLTV means higher risk and higher potential yield.',
+    fullDef: 'Tranches are risk layers in Lotus Protocol. Each tranche has a specific LLTV (like 75%, 85%, 95%). Lenders choose which tranche to supply to based on their risk tolerance. Senior tranches (lower LLTV) are safer but earn less, while junior tranches (higher LLTV) earn more but face more bad debt risk.',
+    example: '75% LLTV tranche = senior/safer, 95% LLTV tranche = junior/riskier',
+    related: ['lltv', 'tranche-seniority', 'cascade'],
+  },
+
+  'cascading-supply': {
+    term: 'Cascading Supply',
+    shortDef: 'Unused supply from junior tranches flows upward to support senior borrowers.',
+    fullDef: 'Unlike isolated lending pools, Lotus connects tranches through cascading supply. When borrowers at a senior tranche need liquidity, they can use supply from junior tranches that isn\'t being utilized at that level. This maximizes capital efficiency.',
+    example: 'If 95% LLTV has $5M unused supply, it can support 75% LLTV borrowers',
+    related: ['connected-liquidity', 'tranche', 'free-supply'],
+  },
+
+  'free-supply': {
+    term: 'Free Supply',
+    shortDef: 'The amount of liquidity available to be borrowed or withdrawn from a tranche.',
+    fullDef: 'Free Supply represents the liquidity that can actually be accessed. It\'s constrained by the minimum Junior Net Supply across all more senior tranches. Even if a junior tranche has excess liquidity, it can only be withdrawn if senior tranches also have available liquidity.',
+    formula: 'Free Supply = min(Jr Net Supply at this and all senior tranches)',
+    example: 'If 75% tranche has 1000 Jr Net and 80% has 500, the 80% free supply is limited to 500',
+    related: ['cascading-supply', 'connected-liquidity'],
+  },
+
   lltv: {
     term: 'LLTV',
     shortDef: 'Loan-to-Liquidation-Value — the maximum percentage you can borrow against your collateral before liquidation.',

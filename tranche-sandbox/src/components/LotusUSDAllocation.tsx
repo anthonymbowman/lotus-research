@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { RateInput } from './RateInput';
-import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
 import { TermDefinition } from './TermDefinition';
 
@@ -181,9 +180,40 @@ export function LotusUSDAllocation({
         </p>
       </div>
 
-      <TeachingPrompt>
-        Move the treasury allocation slider to see how treasury allocation affects the productive debt rate.
-      </TeachingPrompt>
+      {/* Presets */}
+      <div className="flex flex-wrap gap-2">
+        <span className="text-sm text-lotus-grey-400 self-center mr-2">Presets:</span>
+        <button
+          onClick={() => { onTreasuryAllocationChange(0.8); onTreasuryRateChange(0.04); }}
+          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+            treasuryAllocation === 0.8 && treasuryRate === 0.04
+              ? 'bg-lotus-purple-900/30 border-lotus-purple-500 text-lotus-purple-300'
+              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
+          }`}
+        >
+          Typical (80% @ 4%)
+        </button>
+        <button
+          onClick={() => { onTreasuryAllocationChange(0.95); onTreasuryRateChange(0.05); }}
+          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+            treasuryAllocation === 0.95 && treasuryRate === 0.05
+              ? 'bg-emerald-900/30 border-emerald-500 text-emerald-300'
+              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
+          }`}
+        >
+          High Yield (95% @ 5%)
+        </button>
+        <button
+          onClick={() => { onTreasuryAllocationChange(0.5); onTreasuryRateChange(0.035); }}
+          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+            treasuryAllocation === 0.5 && treasuryRate === 0.035
+              ? 'bg-blue-900/30 border-blue-500 text-blue-300'
+              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
+          }`}
+        >
+          High Liquidity (50% @ 3.5%)
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 flex items-center justify-center">

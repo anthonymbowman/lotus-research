@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
-import { TeachingPrompt } from './TeachingPrompt';
 import { DynamicInsight } from './DynamicInsight';
 import { TermDefinition } from './TermDefinition';
+import { PageHeader } from './PageHeader';
+import { AppCTA } from './AppCTA';
+import { analytics } from '../analytics';
 
 interface VaultsProps {
   tranches: { lltv: number; supplyRate: number | null; borrowRate: number }[];
@@ -79,37 +81,21 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   }, [selectedStrategy]);
 
   const handleStrategySelect = (name: string) => {
+    analytics.strategySelected(name);
     setSelectedStrategy(name);
   };
 
   return (
     <div className="space-y-8">
-      {/* Context from Prior Learning */}
-      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm text-emerald-200">
-              <strong>You now understand:</strong> How LotusUSD backing generates yield, how tranches offer different risk/reward profiles,
-              how liquidity and interest cascade through the system, and how bad debt is absorbed.
-              Now you're ready to see how vaults help you allocate across these tranches.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* What are Vaults */}
-      <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
-        <p className="text-sm text-lotus-purple-200">
-          Vaults are smart contracts that aggregate user deposits and deploy them across tranches
-          according to a strategy. <TermDefinition term="vault-manager">Vault managers</TermDefinition> make allocation decisions so depositors can
-          earn yield without actively managing positions.
-        </p>
-      </div>
+      <PageHeader
+        title="Vault Strategies"
+        whatYoullLearn={[
+          "How vaults aggregate deposits and allocate across tranches",
+          "The tradeoffs between conservative and aggressive strategies",
+          "How expected APY and risk score relate to allocation",
+        ]}
+        tryThis="Click each strategy card below to compare their allocations, APY, and risk profiles."
+      />
 
       {/* How Vaults Work */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
@@ -242,15 +228,9 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
       {/* Strategy Selector */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Allocation Strategies</h3>
-        <p className="text-lotus-grey-300 mb-4">
+        <p className="text-lotus-grey-300 mb-6">
           Vault managers choose strategies based on risk tolerance. Click a strategy to see its allocation breakdown.
         </p>
-
-        <TeachingPrompt>
-          Click each strategy card to see how the allocation, APY, and risk level change.
-        </TeachingPrompt>
-
-        <div className="h-4" />
 
         {/* Strategy Cards with Visual Allocation Bars */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -457,6 +437,8 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         </div>
       </div>
 
+      {/* CTA */}
+      <AppCTA context="vaults" />
     </div>
   );
 }

@@ -53,7 +53,13 @@ export default {
         'body': ['Roboto', 'system-ui', 'sans-serif'],
       },
       lineHeight: {
-        'tight': '130%',
+        'tight': '1.3',
+        'normal': '1.6',
+        'relaxed': '1.7',
+      },
+      fontSize: {
+        'base': ['1rem', { lineHeight: '1.6' }],
+        'lg': ['1.125rem', { lineHeight: '1.6' }],
       },
       backgroundImage: {
         'lotus-gradient': 'linear-gradient(135deg, #0D0A14 0%, #280B55 100%)',

@@ -1,6 +1,9 @@
 import type { Section } from './Sidebar';
 import { TermDefinition } from './TermDefinition';
 import { ProtocolExplainer, LotusSolution } from './ProtocolExplainer';
+import { PageHeader } from './PageHeader';
+import { ChooseYourPath } from './ChooseYourPath';
+import { AppCTA } from './AppCTA';
 
 interface IntroductionProps {
   onNavigate: (section: Section) => void;
@@ -9,6 +12,16 @@ interface IntroductionProps {
 export function Introduction({ onNavigate }: IntroductionProps) {
   return (
     <div className="space-y-8">
+      <PageHeader
+        title="Welcome to Lotus"
+        whatYoullLearn={[
+          "What problem Lotus solves for DeFi lending",
+          "How tranches create different risk/reward options",
+          "Why connected liquidity beats isolated pools",
+        ]}
+        tryThis="Click through the interactive diagram below to see how traditional lending fails borrowers and lenders."
+      />
+
       {/* Interactive Protocol Explainer */}
       <ProtocolExplainer />
 
@@ -78,24 +91,11 @@ export function Introduction({ onNavigate }: IntroductionProps) {
         </div>
       </div>
 
-      {/* Get Started CTA */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 text-center">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">
-          Ready to explore?
-        </h3>
-        <p className="text-lotus-grey-300 mb-6">
-          Start with LotusUSD to understand where the base rate comes from.
-        </p>
-        <button
-          onClick={() => onNavigate('lotususd')}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-lotus-purple-600 hover:bg-lotus-purple-500 text-white font-medium rounded-lg transition-colors"
-        >
-          <span>Start with LotusUSD</span>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      {/* Choose Your Path */}
+      <ChooseYourPath onNavigate={onNavigate} />
+
+      {/* CTA */}
+      <AppCTA context="intro" />
     </div>
   );
 }

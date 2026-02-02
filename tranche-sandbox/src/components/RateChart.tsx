@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import type { TrancheData } from '../types';
 import { formatPercent } from '../math/lotusAccounting';
 
@@ -7,7 +7,18 @@ interface RateChartProps {
   productiveDebtRate: number;
 }
 
+interface HoverInfo {
+  x: number;
+  y: number;
+  lltv: number;
+  borrowRate: number;
+  supplyRate: number | null;
+  type: 'borrow' | 'supply';
+}
+
 export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
+
   const chartData = useMemo(() => {
     let maxRate = 0;
     tranches.forEach(t => {
@@ -73,7 +84,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
         </div>
       </div>
 
-      <div className="w-full">
+      <div className="w-full relative">
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
           className="w-full h-auto overflow-visible"
@@ -158,33 +169,86 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
           )}
 
           {/* Borrow rate points */}
-          {borrowPoints.map((p, i) => (
-            <g key={`borrow-${i}`}>
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r={5}
-                fill="#f97316"
-                className="cursor-pointer"
-              />
-              <title>Total Borrow Rate: {formatPercent(p.totalRate)}</title>
-            </g>
-          ))}
+          {borrowPoints.map((p, i) => {
+            const t = tranches[i];
+            const supplyRate = t.supplyRate !== null ? productiveDebtRate + t.supplyRate : null;
+            return (
+              <g key={`borrow-${i}`}>
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={hoverInfo?.lltv === t.lltv ? 8 : 5}
+                  fill="#f97316"
+                  className="cursor-pointer transition-all"
+                  onMouseEnter={() => setHoverInfo({
+                    x: p.x,
+                    y: p.y,
+                    lltv: t.lltv,
+                    borrowRate: p.totalRate,
+                    supplyRate,
+                    type: 'borrow'
+                  })}
+                  onMouseLeave={() => setHoverInfo(null)}
+                />
+              </g>
+            );
+          })}
 
           {/* Supply rate points */}
-          {supplyPoints.map((p, i) => (
-            <g key={`supply-${i}`}>
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r={5}
-                fill="#14b8a6"
-                className="cursor-pointer"
-              />
-              <title>Total Supply Rate: {formatPercent(p.totalRate)}</title>
-            </g>
-          ))}
+          {supplyPoints.map((p, i) => {
+            const originalIdx = tranches.findIndex((_, idx) => {
+              const sr = tranches[idx].supplyRate;
+              return sr !== null && productiveDebtRate + sr === p.totalRate;
+            });
+            const t = tranches[originalIdx] || tranches[i];
+            return (
+              <g key={`supply-${i}`}>
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={hoverInfo?.lltv === t.lltv ? 8 : 5}
+                  fill="#14b8a6"
+                  className="cursor-pointer transition-all"
+                  onMouseEnter={() => setHoverInfo({
+                    x: p.x,
+                    y: p.y,
+                    lltv: t.lltv,
+                    borrowRate: productiveDebtRate + t.borrowRate,
+                    supplyRate: p.totalRate,
+                    type: 'supply'
+                  })}
+                  onMouseLeave={() => setHoverInfo(null)}
+                />
+              </g>
+            );
+          })}
         </svg>
+
+        {/* Tooltip */}
+        {hoverInfo && (
+          <div
+            className="absolute bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg px-3 py-2 shadow-xl text-sm pointer-events-none z-10"
+            style={{
+              left: `${(hoverInfo.x / chartWidth) * 100}%`,
+              top: `${(hoverInfo.y / chartHeight) * 100}%`,
+              transform: 'translate(-50%, -120%)',
+            }}
+          >
+            <div className="font-medium text-lotus-grey-100 mb-1">{hoverInfo.lltv}% LLTV</div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="w-2 h-2 rounded-full bg-orange-500" />
+              <span className="text-lotus-grey-300">Borrow:</span>
+              <span className="font-mono text-orange-400">{formatPercent(hoverInfo.borrowRate)}</span>
+            </div>
+            {hoverInfo.supplyRate !== null && (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="w-2 h-2 rounded-full bg-teal-500" />
+                <span className="text-lotus-grey-300">Supply:</span>
+                <span className="font-mono text-teal-400">{formatPercent(hoverInfo.supplyRate)}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

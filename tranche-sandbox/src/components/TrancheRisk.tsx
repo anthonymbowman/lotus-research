@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
+import { FailureModeCallout } from './FailureModeCallout';
 
 interface TrancheRiskProps {
   tranches: { lltv: number; borrowRate: number }[]; // kept for API compatibility
@@ -398,17 +400,29 @@ function RiskReturnConnection() {
 export function TrancheRisk(_props: TrancheRiskProps) {
   return (
     <div className="space-y-8">
-      {/* Intro Explainer */}
-      <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
-        <p className="text-sm text-lotus-purple-200">
-          Different tranches exist because lenders have different risk appetites.
-          Understanding <strong>how liquidations work</strong> and <strong>when bad debt occurs</strong>
-          helps you understand why higher LLTV tranches pay higher spreads.
-        </p>
-      </div>
+      <PageHeader
+        title="Tranche Risk"
+        whatYoullLearn={[
+          "How liquidations protect lenders when borrowers become undercollateralized",
+          "Why higher LLTV means smaller safety buffer and more bad debt risk",
+          "How risk level connects to the spread lenders earn",
+        ]}
+        tryThis="Click different LLTV levels to see how the liquidation bonus changes."
+      />
 
       <LiquidationMechanics />
       <RiskReturnConnection />
+
+      <FailureModeCallout title="Stress Scenario: Oracle Lag & Liquidation Delays">
+        <p>
+          In volatile markets, oracle price updates may lag behind actual market prices.
+          If collateral value drops faster than oracles report, positions may become
+          undercollateralized before liquidators can act. Additionally, high gas prices
+          during market stress can make small liquidations unprofitable, especially for
+          junior tranches with lower LIF (liquidation bonus). This delay increases the
+          risk of bad debt formation.
+        </p>
+      </FailureModeCallout>
     </div>
   );
 }

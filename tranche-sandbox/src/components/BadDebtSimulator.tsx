@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { TrancheData, BadDebtEvent } from '../types';
 import { simulateBadDebt, formatNumber, formatPercent } from '../math/lotusAccounting';
+import { analytics } from '../analytics';
 
 interface BadDebtSimulatorProps {
   /** Computed tranche data */
@@ -36,20 +37,64 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
     return simulateBadDebt(tranches, badDebtEvents.length > 0 ? badDebtEvents : [{ trancheIndex: 0, amount: 0 }]);
   }, [tranches, badDebtEvents]);
 
-  // Reset function
-  const resetBadDebt = () => {
-    setBadDebtAmounts(tranches.map(() => 0));
+  // Preset scenarios
+  const applyPreset = (preset: 'clear' | 'small' | 'moderate' | 'catastrophic') => {
+    if (preset !== 'clear') {
+      analytics.badDebtSimulated(preset);
+    }
+    const maxAmounts = tranches.map(t => t.borrowAssets);
+    let newAmounts: number[];
+
+    switch (preset) {
+      case 'clear':
+        newAmounts = tranches.map(() => 0);
+        break;
+      case 'small':
+        // 1% default at senior tranche
+        newAmounts = tranches.map((_, i) => i === 0 ? Math.round(maxAmounts[0] * 0.01) : 0);
+        break;
+      case 'moderate':
+        // 5% default spread across multiple tranches
+        newAmounts = tranches.map((_, i) => i <= 2 ? Math.round(maxAmounts[i] * 0.05) : 0);
+        break;
+      case 'catastrophic':
+        // 10% default at all tranches
+        newAmounts = tranches.map((t) => Math.round(t.borrowAssets * 0.1));
+        break;
+      default:
+        newAmounts = tranches.map(() => 0);
+    }
+    setBadDebtAmounts(newAmounts);
   };
 
   return (
     <div className="space-y-4">
-      {/* Reset button */}
-      <div className="flex justify-end">
+      {/* Presets */}
+      <div className="flex flex-wrap gap-2">
+        <span className="text-sm text-lotus-grey-400 self-center mr-2">Scenarios:</span>
         <button
-          onClick={resetBadDebt}
-          className="px-3 py-1 text-xs bg-lotus-grey-700 text-lotus-grey-300 rounded hover:bg-lotus-grey-600 transition-colors"
+          onClick={() => applyPreset('clear')}
+          className="px-3 py-1.5 text-sm rounded-lg border bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500 transition-colors"
         >
-          Reset All
+          Clear All
+        </button>
+        <button
+          onClick={() => applyPreset('small')}
+          className="px-3 py-1.5 text-sm rounded-lg border bg-emerald-900/30 border-emerald-700 text-emerald-300 hover:border-emerald-500 transition-colors"
+        >
+          Small Default (1%)
+        </button>
+        <button
+          onClick={() => applyPreset('moderate')}
+          className="px-3 py-1.5 text-sm rounded-lg border bg-amber-900/30 border-amber-700 text-amber-300 hover:border-amber-500 transition-colors"
+        >
+          Moderate (5%)
+        </button>
+        <button
+          onClick={() => applyPreset('catastrophic')}
+          className="px-3 py-1.5 text-sm rounded-lg border bg-red-900/30 border-red-700 text-red-300 hover:border-red-500 transition-colors"
+        >
+          Catastrophic (10%)
         </button>
       </div>
 

@@ -14,6 +14,9 @@ import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
 import { Vaults } from './components/Vaults';
 import { TrancheRisk } from './components/TrancheRisk';
+import { Glossary } from './components/Glossary';
+import { SearchPalette } from './components/SearchPalette';
+import { analytics } from './analytics';
 
 const STORAGE_KEY = 'lotus-docs-visited';
 const TOUR_KEY = 'lotus-docs-tour-completed';
@@ -66,6 +69,7 @@ function App() {
 
   // Navigation handler
   const handleSectionChange = useCallback((section: Section) => {
+    analytics.navClick(section);
     setActiveSection(section);
     setVisitedSections(prev => {
       const updated = new Set(prev);
@@ -83,7 +87,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1) as Section;
-      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults'].includes(hash)) {
+      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults', 'glossary'].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -101,6 +105,7 @@ function App() {
 
   // Tour handlers
   const handleStartTour = () => {
+    analytics.tourStart();
     setShowWelcome(false);
     setShowTour(true);
   };
@@ -111,62 +116,64 @@ function App() {
   };
 
   const handleTourComplete = () => {
+    analytics.tourComplete();
     setShowTour(false);
     localStorage.setItem(TOUR_KEY, 'true');
   };
 
   // Section content mapping
-  const sectionMeta: Record<Section, { number: string; title: string; headline: string; subtitle: string; learningPoints: string[]; transitionText?: string; next?: { id: Section; label: string } }> = {
+  const sectionMeta: Record<Section, { title: string; headline: string; subtitle: string; learningPoints: string[]; transitionText?: string; next?: { id: Section; label: string } }> = {
     intro: {
-      number: '1',
-      title: 'Welcome',
+      title: 'Get Started',
       headline: 'Welcome to Lotus Protocol',
-      subtitle: 'Get started with Lotus Protocol',
+      subtitle: 'Understand how Lotus delivers better rates through connected liquidity',
       learningPoints: [],
-      transitionText: "Let's start with the foundation: LotusUSD and productive debt...",
-      next: { id: 'lotususd', label: 'LotusUSD & Productive Debt' },
+      transitionText: "Let's start with the foundation: how LotusUSD backing creates lower rates...",
+      next: { id: 'lotususd', label: 'Stable Backing' },
     },
     lotususd: {
-      number: '2',
-      title: 'LotusUSD & Productive Debt',
+      title: 'Stable Backing',
       headline: 'LotusUSD & Productive Debt',
-      subtitle: 'Treasury backing, base rates, and spread compression',
+      subtitle: 'Treasury backing creates a lower base rate for all borrowers',
       learningPoints: [],
       transitionText: "Now let's understand why tranches have different risk levels...",
-      next: { id: 'risk', label: 'Tranche Risk' },
+      next: { id: 'risk', label: 'Risk Layers' },
     },
     risk: {
-      number: '3',
-      title: 'Tranche Risk',
+      title: 'Risk Layers',
       headline: 'Understanding Tranche Risk',
-      subtitle: 'Why higher LLTV means higher risk',
+      subtitle: 'Higher LLTV means higher risk — and higher potential returns',
       learningPoints: [],
       transitionText: "With risk understood, let's see how liquidity connects tranches...",
-      next: { id: 'tranches', label: 'Tranches & Liquidity' },
+      next: { id: 'tranches', label: 'Liquidity Flow' },
     },
     tranches: {
-      number: '4',
-      title: 'Tranches',
-      headline: 'Tranches & Connected Liquidity',
-      subtitle: 'The connected liquidity model',
+      title: 'Liquidity Flow',
+      headline: 'Connected Liquidity',
+      subtitle: 'How supply cascades across tranches to maximize utilization',
       learningPoints: [],
       transitionText: "Interest flows through these tranches. Let's trace it...",
-      next: { id: 'interest-bad-debt', label: 'Interest & Bad Debt' },
+      next: { id: 'interest-bad-debt', label: 'Interest & Losses' },
     },
     'interest-bad-debt': {
-      number: '5',
-      title: 'Interest & Bad Debt',
+      title: 'Interest & Losses',
       headline: 'Interest Cascade & Bad Debt',
-      subtitle: 'How interest flows and what happens when things go wrong',
+      subtitle: 'How interest flows through tranches and who absorbs losses',
       learningPoints: [],
       transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
-      next: { id: 'vaults', label: 'Vaults' },
+      next: { id: 'vaults', label: 'Your Strategy' },
     },
     vaults: {
-      number: '6',
-      title: 'Vaults',
-      headline: 'Choose Your Strategy',
-      subtitle: 'Now that you understand tranches, choose how to allocate',
+      title: 'Your Strategy',
+      headline: 'Choose Your Allocation',
+      subtitle: 'Pick the risk/reward profile that matches your goals',
+      learningPoints: [],
+      next: { id: 'glossary', label: 'Glossary' },
+    },
+    glossary: {
+      title: 'Glossary',
+      headline: 'Protocol Terminology',
+      subtitle: 'Look up definitions for all Lotus Protocol terms',
       learningPoints: [],
     },
   };
@@ -188,6 +195,9 @@ function App() {
         <GuidedTour onComplete={handleTourComplete} />
       )}
 
+      {/* Search Palette */}
+      <SearchPalette onNavigate={handleSectionChange} />
+
       {/* Sidebar */}
       <Sidebar
         activeSection={activeSection}
@@ -197,10 +207,9 @@ function App() {
 
       {/* Main Content */}
       <main className="lg:ml-64 min-h-screen">
-        <div className="max-w-6xl mx-auto px-4 py-8 lg:px-8 lg:py-12">
+        <div className="max-w-6xl mx-auto px-4 pt-16 pb-8 lg:pt-12 lg:px-8 lg:py-12">
           <SectionWrapper
             id={activeSection}
-            number={currentMeta.number}
             title={currentMeta.title}
             headline={currentMeta.headline}
             subtitle={currentMeta.subtitle}
@@ -285,6 +294,11 @@ function App() {
                 }))}
                 productiveDebtRate={productiveDebtRate}
               />
+            )}
+
+            {/* Section 7: Glossary */}
+            {activeSection === 'glossary' && (
+              <Glossary />
             )}
           </SectionWrapper>
         </div>
