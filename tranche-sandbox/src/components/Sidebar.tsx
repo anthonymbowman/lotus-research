@@ -126,7 +126,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-lotus-grey-700 bg-lotus-grey-800">
           <a
-            href="https://docs.lotus.finance"
+            href="https://lotus-protocol.gitbook.io/lotus/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-xs text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"

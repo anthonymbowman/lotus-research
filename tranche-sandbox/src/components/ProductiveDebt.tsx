@@ -104,7 +104,7 @@ function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompos
           <div className="text-3xl font-light text-lotus-grey-600">+</div>
 
           <div className="bg-lotus-purple-900/30 border border-lotus-purple-700 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-purple-400 mb-1 font-medium">Spread</div>
+            <div className="text-xs text-lotus-purple-400 mb-1 font-medium">Credit Spread</div>
             <input
               type="number"
               value={(spread * 100).toFixed(1)}
@@ -181,11 +181,12 @@ function SpreadCompressionSection({
           <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">What is Spread Compression?</h4>
           <p className="text-sm text-lotus-purple-300 mb-3">
             The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
+            The <strong>credit spread</strong> is the additional rate set by the Interest Rate Model (IRM) on top of the base rate.
             In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
           </p>
           <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">Why Does It Matter?</h4>
           <p className="text-sm text-lotus-purple-300">
-            Productive debt compresses this spread by ensuring idle liquidity earns the base rate.
+            Productive debt (PD) compresses this spread by ensuring idle liquidity earns the base rate.
             This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
             — especially when utilization is low.
           </p>
@@ -199,11 +200,27 @@ function SpreadCompressionSection({
                 {(utilization * 100).toFixed(0)}%
               </span>
             </div>
+            {/* Preset buttons */}
+            <div className="flex gap-2 mb-3">
+              {[0, 50, 90, 100].map(preset => (
+                <button
+                  key={preset}
+                  onClick={() => onUtilizationChange(preset / 100)}
+                  className={`px-3 py-1 text-xs rounded transition-colors ${
+                    utilization * 100 === preset
+                      ? 'bg-lotus-purple-600 text-white'
+                      : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
+                  }`}
+                >
+                  {preset}%{preset === 0 ? ' (floor)' : preset === 90 ? ' (target)' : ''}
+                </button>
+              ))}
+            </div>
             <input
               type="range"
               value={utilization * 100}
               onChange={(e) => onUtilizationChange(parseFloat(e.target.value) / 100)}
-              min="10"
+              min="0"
               max="100"
               step="5"
               className="w-full"
@@ -236,6 +253,16 @@ function SpreadCompressionSection({
           </div>
         </div>
 
+        {/* 0% Utilization Explanation */}
+        {utilization === 0 && (
+          <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50 mb-4">
+            <p className="text-sm text-emerald-300">
+              At 0% utilization, lenders still earn the <strong>base rate</strong> in LotusUSD markets.
+              Traditional lending: supply rate = 0%.
+            </p>
+          </div>
+        )}
+
         <div className="space-y-6">
           {/* Borrow Rate Comparison */}
           <div>
@@ -248,28 +275,52 @@ function SpreadCompressionSection({
               )}
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
-                <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-lotus-grey-500 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(borrowRateNoPD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-lotus-grey-100 font-medium">{formatPercent(borrowRateNoPD)}</span>
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (borrowRateNoPD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-lotus-grey-500 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-lotus-grey-100 font-medium">{formatPercent(borrowRateNoPD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-lotus-grey-300 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(borrowRateNoPD)}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-blue-400 w-16 font-medium">With PD</span>
-                <div className="flex-1 h-8 bg-blue-900/30 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-blue-500 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(borrowRatePD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-white font-medium">{formatPercent(borrowRatePD)}</span>
+                );
+              })()}
+              {/* With PD bar */}
+              {(() => {
+                const widthPercent = (borrowRatePD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-blue-400 w-16 font-medium">With PD</span>
+                    <div className="flex-1 h-8 bg-blue-900/30 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-blue-500 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-white font-medium">{formatPercent(borrowRatePD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-blue-400 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(borrowRatePD)}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })()}
             </div>
           </div>
 
@@ -284,28 +335,52 @@ function SpreadCompressionSection({
               )}
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
-                <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-lotus-grey-500 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(supplyRateNoPD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-lotus-grey-100 font-medium">{formatPercent(supplyRateNoPD)}</span>
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (supplyRateNoPD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-lotus-grey-500 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-lotus-grey-100 font-medium">{formatPercent(supplyRateNoPD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-lotus-grey-300 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(supplyRateNoPD)}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
-                <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-emerald-500 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(supplyRatePD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-white font-medium">{formatPercent(supplyRatePD)}</span>
+                );
+              })()}
+              {/* With PD bar */}
+              {(() => {
+                const widthPercent = (supplyRatePD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
+                    <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-emerald-500 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-white font-medium">{formatPercent(supplyRatePD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-emerald-400 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(supplyRatePD)}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })()}
             </div>
           </div>
 
@@ -316,31 +391,76 @@ function SpreadCompressionSection({
               <span className="text-xs text-lotus-grey-300">(inefficiency in the market)</span>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
-                <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-red-500/80 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(blSpreadNoPD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-white font-medium">{formatPercent(blSpreadNoPD)}</span>
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (blSpreadNoPD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-300 w-16">No PD</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-red-500/80 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-white font-medium">{formatPercent(blSpreadNoPD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-red-400 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(blSpreadNoPD)}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
+                );
+              })()}
+              {/* With PD bar */}
+              {(() => {
+                const widthPercent = (blSpreadPD / maxRate) * 100;
+                const showLabelInside = widthPercent > 15;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
+                    <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-visible relative">
+                      <div
+                        className={`h-full bg-emerald-500/80 rounded-lg flex items-center ${showLabelInside ? 'justify-end pr-2' : ''}`}
+                        style={{ width: `${widthPercent}%` }}
+                      >
+                        {showLabelInside && (
+                          <span className="text-xs font-mono text-white font-medium">{formatPercent(blSpreadPD)}</span>
+                        )}
+                      </div>
+                      {!showLabelInside && (
+                        <span className="absolute text-xs font-mono text-emerald-400 font-medium top-1/2 -translate-y-1/2" style={{ left: `calc(${widthPercent}% + 8px)` }}>{formatPercent(blSpreadPD)}</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+
+        {/* Efficiency Multiple */}
+        {blSpreadNoPD > 0 && (
+          <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-medium text-emerald-300">Spread Efficiency</span>
+                <p className="text-xs text-emerald-200/70 mt-0.5">How much tighter the borrow-lend spread is with PD</p>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
-                <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-hidden relative">
-                  <div
-                    className="h-full bg-emerald-500/80 rounded-lg flex items-center justify-end pr-2"
-                    style={{ width: `${(blSpreadPD / maxRate) * 100}%` }}
-                  >
-                    <span className="text-xs font-mono text-white font-medium">{formatPercent(blSpreadPD)}</span>
-                  </div>
+              <div className="text-right">
+                <span className="text-2xl font-mono font-bold text-emerald-400">
+                  {blSpreadPD > 0 ? `${(blSpreadNoPD / blSpreadPD).toFixed(1)}x` : '∞'}
+                </span>
+                <span className="text-sm text-emerald-300 ml-2">tighter</span>
+                <div className="text-xs text-emerald-400 mt-1">
+                  ↓ {formatPercent(blSpreadNoPD - blSpreadPD)} spread reduction
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="mt-6 border-t border-lotus-grey-700 pt-4">
           <button

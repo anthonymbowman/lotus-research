@@ -36,26 +36,41 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
     return simulateBadDebt(tranches, badDebtEvents.length > 0 ? badDebtEvents : [{ trancheIndex: 0, amount: 0 }]);
   }, [tranches, badDebtEvents]);
 
+  // Reset function
+  const resetBadDebt = () => {
+    setBadDebtAmounts(tranches.map(() => 0));
+  };
+
   return (
     <div className="space-y-4">
+      {/* Reset button */}
+      <div className="flex justify-end">
+        <button
+          onClick={resetBadDebt}
+          className="px-3 py-1 text-xs bg-lotus-grey-700 text-lotus-grey-300 rounded hover:bg-lotus-grey-600 transition-colors"
+        >
+          Reset All
+        </button>
+      </div>
+
       {/* Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-red-900/30 rounded-lg p-4 border border-red-700/50">
           <div className="text-sm text-red-400">Total Bad Debt</div>
           <div className="text-2xl font-mono font-semibold text-red-300">
-            ${formatNumber(simulation.totalBadDebt, 0)}
+            ${formatNumber(simulation.totalBadDebt, 2)}
           </div>
         </div>
         <div className="bg-emerald-900/30 rounded-lg p-4 border border-emerald-700/50">
           <div className="text-sm text-emerald-400">Total Absorbed</div>
           <div className="text-2xl font-mono font-semibold text-emerald-300">
-            ${formatNumber(simulation.totalAbsorbed, 0)}
+            ${formatNumber(simulation.totalAbsorbed, 2)}
           </div>
         </div>
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
           <div className="text-sm text-lotus-grey-300">Unabsorbed</div>
           <div className={`text-2xl font-mono font-semibold ${simulation.unabsorbedBadDebt > 0 ? 'text-red-400' : 'text-lotus-grey-300'}`}>
-            ${formatNumber(simulation.unabsorbedBadDebt, 0)}
+            ${formatNumber(simulation.unabsorbedBadDebt, 2)}
           </div>
         </div>
       </div>
@@ -98,7 +113,7 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                     {result.lltv}%
                   </td>
                   <td className="py-2 px-2 text-right font-mono text-lotus-grey-300 bg-lotus-grey-800/50">
-                    ${formatNumber(t.borrowAssets, 0)}
+                    ${formatNumber(t.borrowAssets, 2)}
                   </td>
                   <td className="py-2 px-2 bg-red-900/10">
                     <input
@@ -114,11 +129,11 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                   </td>
                   <td className="py-2 px-1 text-lotus-grey-300">+</td>
                   <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/10">
-                    ${formatNumber(result.badDebtCascadedIn, 0)}
+                    ${formatNumber(result.badDebtCascadedIn, 2)}
                   </td>
                   <td className="py-2 px-1 text-lotus-grey-300">=</td>
                   <td className="py-2 px-2 text-right font-mono text-lotus-grey-300 bg-lotus-grey-800/30">
-                    ${formatNumber(totalBadDebt, 0)}
+                    ${formatNumber(totalBadDebt, 2)}
                   </td>
                   <td className="py-2 px-1 text-lotus-grey-300">×</td>
                   <td className="py-2 px-2 text-right font-mono text-lotus-purple-300 bg-lotus-purple-900/10">
@@ -126,16 +141,16 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                   </td>
                   <td className="py-2 px-1 text-lotus-grey-300">=</td>
                   <td className="py-2 px-2 text-right font-mono font-medium text-lotus-purple-300 bg-lotus-purple-900/10">
-                    {result.badDebtAbsorbed > 0 ? `$${formatNumber(result.badDebtAbsorbed, 0)}` : '-'}
+                    {result.badDebtAbsorbed > 0 ? `$${formatNumber(result.badDebtAbsorbed, 2)}` : '-'}
                   </td>
                   <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/10">
                     {!isLast && result.badDebtCascadedOut > 0
-                      ? `$${formatNumber(result.badDebtCascadedOut, 0)}`
+                      ? `$${formatNumber(result.badDebtCascadedOut, 2)}`
                       : '-'}
                   </td>
                   <td className="py-2 px-2 text-right bg-emerald-900/10">
                     <span className={`font-mono ${result.wipedOut ? 'text-red-400 font-medium' : 'text-emerald-400'}`}>
-                      ${formatNumber(result.remainingSupply, 0)}
+                      ${formatNumber(result.remainingSupply, 2)}
                     </span>
                     {result.wipedOut && (
                       <span className="ml-1 text-xs text-red-400">(wiped)</span>

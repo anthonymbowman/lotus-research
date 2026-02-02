@@ -42,6 +42,10 @@ function LiquidationMechanics() {
   const seizedCollateral = debtAtMaxBorrow * lif;
   const liquidatorProfit = seizedCollateral - debtAtMaxBorrow;
 
+  // Step-by-step bad debt math
+  const buffer = 100 - selectedLLTV; // 1 - LLTV as percentage
+  const badDebtThreshold = calculateBadDebtThreshold(selectedLLTV);
+
   return (
     <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
       <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">How Liquidations Work</h3>
@@ -49,23 +53,6 @@ function LiquidationMechanics() {
         When a borrower's LTV exceeds the tranche LLTV, liquidators can <strong>seize collateral</strong> and <strong>repay debt</strong>.
         The Liquidation Incentive Factor (LIF) determines how much collateral the liquidator receives per unit of debt repaid.
       </p>
-
-      {/* LIF Formula - Collapsible */}
-      <details className="bg-lotus-grey-900/50 rounded-lg border border-lotus-grey-700 mb-6">
-        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
-          Show LIF Formula
-        </summary>
-        <div className="px-4 pb-4">
-          <div className="text-center">
-            <div className="font-mono text-lg text-lotus-grey-100 mb-2">
-              LIF = min(M, 1 / (β × LLTV + (1 - β)))
-            </div>
-            <div className="text-xs text-lotus-grey-500">
-              where β = 0.3, M = 1.15 (max bonus capped at 15%)
-            </div>
-          </div>
-        </div>
-      </details>
 
       {/* Interactive LLTV selector */}
       <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600 mb-6">
@@ -134,6 +121,61 @@ function LiquidationMechanics() {
           </div>
         </div>
       </div>
+
+      {/* Step-by-step Bad Debt Math */}
+      <div className="mt-6 bg-red-900/20 rounded-lg p-4 border border-red-700/50">
+        <h4 className="text-sm font-medium text-red-300 mb-3">Step-by-Step: When Does Bad Debt Occur?</h4>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between items-center py-1 border-b border-red-700/30">
+            <span className="text-lotus-grey-300">1. Buffer (1 - LLTV):</span>
+            <span className="font-mono font-medium text-lotus-grey-100">{buffer.toFixed(1)}%</span>
+          </div>
+          <div className="flex justify-between items-center py-1 border-b border-red-700/30">
+            <span className="text-lotus-grey-300">2. Liquidation bonus (LIF - 1):</span>
+            <span className="font-mono font-medium text-lotus-purple-300">+{lifPercent.toFixed(1)}%</span>
+          </div>
+          <div className="flex justify-between items-center py-1">
+            <span className="text-lotus-grey-300">3. Drop-to-bad-debt buffer:</span>
+            <span className={`font-mono font-bold ${badDebtThreshold < 10 ? 'text-red-400' : badDebtThreshold < 15 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              {badDebtThreshold.toFixed(1)}%
+            </span>
+          </div>
+        </div>
+        <p className="text-xs text-red-200/70 mt-3">
+          Bad debt occurs when collateral drops more than {badDebtThreshold.toFixed(1)}% before liquidators can act.
+        </p>
+      </div>
+
+      {/* Why LIF changes with LLTV */}
+      <div className="mt-4 p-4 bg-lotus-purple-900/20 rounded-lg border border-lotus-purple-700/50">
+        <h4 className="text-sm font-medium text-lotus-purple-300 mb-2">Why LIF Changes with LLTV</h4>
+        <p className="text-sm text-lotus-purple-200/80">
+          Higher LLTV means less buffer between borrow amount and collateral. With less buffer,
+          there's less room for liquidation bonus while still covering debt. This is why junior
+          tranches (higher LLTV) have lower LIF and higher bad debt risk.
+        </p>
+      </div>
+
+      {/* Advanced - Collapsible */}
+      <details className="mt-4 bg-lotus-grey-900/50 rounded-lg border border-lotus-grey-700">
+        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
+          Advanced: LIF Formula Details
+        </summary>
+        <div className="px-4 pb-4">
+          <div className="text-center mb-4">
+            <div className="font-mono text-lg text-lotus-grey-100 mb-2">
+              LIF = min(M, 1 / (β × LLTV + (1 - β)))
+            </div>
+            <div className="text-xs text-lotus-grey-500">
+              where β = 0.3, M = 1.15 (max bonus capped at 15%)
+            </div>
+          </div>
+          <p className="text-xs text-lotus-grey-400">
+            The formula ensures liquidators always have incentive (capped at 15%), while scaling
+            down the bonus for higher LLTV tranches where there's less collateral buffer.
+          </p>
+        </div>
+      </details>
 
       {/* Key Insight */}
       <div className="mt-6 p-4 bg-amber-900/20 rounded-lg border border-amber-700/50">
@@ -273,6 +315,31 @@ function RiskReturnConnection() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Rate Decomposition */}
+      <div className="mt-6 bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
+        <h4 className="text-sm font-medium text-emerald-300 mb-3">Borrow Rate = Base Rate + Credit Spread</h4>
+        <p className="text-sm text-emerald-200/80 mb-4">
+          Each tranche has the same base rate (from LotusUSD), but different credit spreads based on risk.
+        </p>
+        <div className="grid grid-cols-5 gap-2 text-xs">
+          {TRANCHE_LLTV.map((lltv, i) => {
+            // Example spreads that increase with LLTV
+            const exampleSpread = [1.0, 1.5, 2.5, 4.0, 6.0][i];
+            const baseRate = 3.0; // Example base rate
+            return (
+              <div key={lltv} className="bg-lotus-grey-800 rounded p-2 text-center">
+                <div className="font-mono font-medium text-lotus-grey-100">{lltv}%</div>
+                <div className="text-lotus-grey-400 mt-1">{baseRate}% + {exampleSpread}%</div>
+                <div className="font-mono text-emerald-400 font-medium">{(baseRate + exampleSpread).toFixed(1)}%</div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-xs text-emerald-200/60 mt-2 italic">
+          Example rates shown. Actual rates depend on market conditions.
+        </p>
       </div>
 
       {/* Connection to Rates */}

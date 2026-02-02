@@ -44,7 +44,7 @@ export function TrancheTable({
                 Borrow
               </th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                Spread
+                Credit Spread
               </th>
               <th className="text-right py-2 px-2 font-semibold text-orange-300 bg-orange-900/30">
                 Borrow Rate

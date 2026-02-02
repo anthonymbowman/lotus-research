@@ -67,15 +67,19 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                   <th className="text-right py-2 px-2 font-semibold text-blue-300 bg-blue-900/30">
                     Cascaded In
                   </th>
-                  <th className="text-center py-2 px-1 text-lotus-grey-500">+</th>
+                  <th className="text-center py-2 px-1 text-lotus-grey-300">+</th>
                   <th className="text-right py-2 px-2 font-semibold text-emerald-300 bg-emerald-900/30">
                     Generated
                   </th>
-                  <th className="text-center py-2 px-1 text-lotus-grey-500">×</th>
+                  <th className="text-center py-2 px-1 text-lotus-grey-300">=</th>
+                  <th className="text-right py-2 px-2 font-semibold text-yellow-300 bg-yellow-900/30">
+                    Total
+                  </th>
+                  <th className="text-center py-2 px-1 text-lotus-grey-300">×</th>
                   <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
                     Supply Util
                   </th>
-                  <th className="text-center py-2 px-1 text-lotus-grey-500">=</th>
+                  <th className="text-center py-2 px-1 text-lotus-grey-300">=</th>
                   <th className="text-right py-2 px-2 font-semibold text-teal-300 bg-teal-900/30">
                     Received
                   </th>
@@ -85,31 +89,50 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((result, i) => (
-                  <tr key={result.index} className="border-b border-lotus-grey-700/50 hover:bg-lotus-grey-700/30">
-                    <td className="py-2 px-2 font-medium text-lotus-grey-200 bg-lotus-grey-800">
-                      {result.lltv}%
-                    </td>
-                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                      ${formatNumber(result.cascadeIn, 2)}
-                    </td>
-                    <td className="text-center text-lotus-grey-600">+</td>
-                    <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
-                      ${formatNumber(result.interestGenerated, 2)}
-                    </td>
-                    <td className="text-center text-lotus-grey-600">×</td>
-                    <td className="py-2 px-2 text-right font-mono text-lotus-purple-400 bg-lotus-purple-900/20">
-                      {formatPercent(result.supplyUtil, 2)}
-                    </td>
-                    <td className="text-center text-lotus-grey-600">=</td>
-                    <td className="py-2 px-2 text-right font-mono font-medium text-teal-300 bg-teal-900/20">
-                      ${formatNumber(result.interestReceived, 2)}
-                    </td>
-                    <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/20">
-                      {i < tableData.length - 1 ? `$${formatNumber(result.cascadeOut, 2)}` : '-'}
-                    </td>
-                  </tr>
-                ))}
+                {tableData.map((result, i) => {
+                  const isFirst = i === 0;
+                  const isLast = i === tableData.length - 1;
+                  const total = result.cascadeIn + result.interestGenerated;
+                  return (
+                    <tr key={result.index} className="border-b border-lotus-grey-700/50 hover:bg-lotus-grey-700/30">
+                      <td className="py-2 px-2 font-medium text-lotus-grey-200 bg-lotus-grey-800">
+                        {result.lltv}%
+                      </td>
+                      <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                        {isFirst ? (
+                          <span className="cursor-help" title="Nothing cascades into the most senior tranche">
+                            ${formatNumber(result.cascadeIn, 2)}
+                          </span>
+                        ) : (
+                          `$${formatNumber(result.cascadeIn, 2)}`
+                        )}
+                      </td>
+                      <td className="text-center text-lotus-grey-300">+</td>
+                      <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
+                        ${formatNumber(result.interestGenerated, 2)}
+                      </td>
+                      <td className="text-center text-lotus-grey-300">=</td>
+                      <td className="py-2 px-2 text-right font-mono font-medium text-yellow-400 bg-yellow-900/20">
+                        ${formatNumber(total, 2)}
+                      </td>
+                      <td className="text-center text-lotus-grey-300">×</td>
+                      <td className="py-2 px-2 text-right font-mono text-lotus-purple-400 bg-lotus-purple-900/20">
+                        {formatPercent(result.supplyUtil, 2)}
+                      </td>
+                      <td className="text-center text-lotus-grey-300">=</td>
+                      <td className="py-2 px-2 text-right font-mono font-medium text-teal-300 bg-teal-900/20">
+                        ${formatNumber(result.interestReceived, 2)}
+                      </td>
+                      <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/20">
+                        {isLast ? (
+                          <span className="cursor-help" title="Most junior tranche keeps all remaining interest">-</span>
+                        ) : (
+                          `$${formatNumber(result.cascadeOut, 2)}`
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           );

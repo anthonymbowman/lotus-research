@@ -105,6 +105,13 @@ function polarToCartesian(cx: number, cy: number, radius: number, angle: number)
   };
 }
 
+const ALLOCATION_PRESETS = [
+  { value: 0.1, label: 'Liquidity-first', description: 'Low treasury exposure, maximum liquidity' },
+  { value: 0.5, label: 'Balanced', description: 'Equal USDC and Treasury allocation' },
+  { value: 0.8, label: 'Yield-first', description: 'Higher treasury exposure for yield' },
+  { value: 0.95, label: 'Max yield', description: 'Maximum treasury exposure' },
+];
+
 function AllocationSlider({
   value,
   onChange,
@@ -117,6 +124,23 @@ function AllocationSlider({
       <div className="flex justify-between items-center">
         <label className="block text-sm font-medium text-lotus-grey-300">Treasury Allocation</label>
         <span className="text-sm font-mono text-emerald-400">{(value * 100).toFixed(0)}%</span>
+      </div>
+      {/* Preset buttons */}
+      <div className="flex flex-wrap gap-2 mb-2">
+        {ALLOCATION_PRESETS.map(preset => (
+          <button
+            key={preset.value}
+            onClick={() => onChange(preset.value)}
+            title={preset.description}
+            className={`px-2 py-1 text-xs rounded transition-colors ${
+              Math.abs(value - preset.value) < 0.01
+                ? 'bg-emerald-600 text-white'
+                : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
+            }`}
+          >
+            {preset.label}
+          </button>
+        ))}
       </div>
       <input
         type="range"
@@ -152,8 +176,8 @@ export function LotusUSDAllocation({
     <div className="space-y-6">
       <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
         <p className="text-sm text-emerald-200">
-          <TermDefinition term="lotususd">LotusUSD</TermDefinition> is backed by USDC and US Treasuries. The treasury yield generates the base rate
-          for <TermDefinition term="productive-debt">productive debt</TermDefinition>, allowing idle liquidity to earn yield even when not being borrowed.
+          <TermDefinition term="lotususd">LotusUSD</TermDefinition> is a yield-bearing vault token backed by USDC and short-term Treasuries.
+          Its yield becomes the market's base rate, allowing idle liquidity to earn yield even when not being borrowed.
         </p>
       </div>
 

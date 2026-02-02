@@ -12,7 +12,6 @@ import { LotusUSDAllocation } from './components/LotusUSDAllocation';
 import { TrancheLiquidity } from './components/TrancheLiquidity';
 import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
-import { FundingMatrix } from './components/FundingMatrix';
 import { Vaults } from './components/Vaults';
 import { TrancheRisk } from './components/TrancheRisk';
 
@@ -250,25 +249,11 @@ function App() {
 
             {/* Section 4: Tranches & Liquidity */}
             {activeSection === 'tranches' && (
-              <div className="space-y-8">
-                <TrancheLiquidity
-                  tranches={computedTranches}
-                  productiveDebtRate={productiveDebtRate}
-                  onTrancheChange={handleTrancheChange}
-                />
-
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Dynamic Loan Mix</h3>
-                  <p className="text-lotus-grey-300 mb-4">
-                    The metrics above determine how liquidity flows across tranches and which lenders are supplying to which borrowers.
-                  </p>
-                  <p className="text-lotus-grey-300 mb-6">
-                    <strong className="text-lotus-purple-300">Lenders</strong> ultimately supply to multiple tranches (their own and more senior tranches).
-                    <strong className="text-blue-300"> Borrowers</strong> draw from multiple tranches (their own and more junior tranches).
-                  </p>
-                  <FundingMatrix tranches={computedTranches} includePendingInterest={false} />
-                </div>
-              </div>
+              <TrancheLiquidity
+                tranches={computedTranches}
+                productiveDebtRate={productiveDebtRate}
+                onTrancheChange={handleTrancheChange}
+              />
             )}
 
             {/* Section 5: Interest & Bad Debt (merged from Interest Cascade + Liquidations) */}
@@ -311,7 +296,7 @@ function App() {
               This is an interactive educational simulator.
               See the{' '}
               <a
-                href="https://docs.lotus.finance"
+                href="https://lotus-protocol.gitbook.io/lotus/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lotus-purple-400 hover:text-lotus-purple-300 transition-colors"

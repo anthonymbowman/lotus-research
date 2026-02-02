@@ -68,20 +68,20 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   },
 
   spread: {
-    term: 'Spread',
-    shortDef: 'The gap between what borrowers pay and what lenders earn — protocol overhead.',
-    fullDef: 'In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
-    formula: 'Spread = Borrow Rate - Supply Rate',
-    example: 'Borrowers pay 8%, lenders earn 6% → spread = 2%',
+    term: 'Credit Spread',
+    shortDef: 'The additional rate set by the IRM on top of the base rate — determines the gap between borrow and supply rates.',
+    fullDef: 'The credit spread is set by the Interest Rate Model (IRM) based on utilization. In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt (PD) mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
+    formula: 'Borrow Rate = Base Rate + Credit Spread',
+    example: 'Base rate 3%, credit spread 2% → borrow rate = 5%',
     related: ['supply-rate', 'borrow-rate', 'productive-debt'],
   },
 
   'productive-debt': {
-    term: 'Productive Debt',
+    term: 'Productive Debt (PD)',
     shortDef: 'Yield earned by idle supply from treasury-backed assets, even when not being borrowed.',
-    fullDef: 'Unlike traditional lending where unborrowed funds earn nothing, Lotus backs its stablecoin with US Treasuries. This treasury yield flows to all lenders as a base rate, meaning your deposits earn yield even when utilization is low.',
-    formula: 'Productive Debt Rate = Treasury Rate × Treasury Allocation',
-    example: 'Treasury rate 4%, allocation 80% → base rate = 3.2% for all lenders',
+    fullDef: 'Productive debt (PD) is Lotus\'s mechanism where unborrowed funds continue earning yield. Unlike traditional lending where unborrowed funds earn nothing, Lotus backs its stablecoin with US Treasuries. This treasury yield flows to all lenders as a base rate, meaning your deposits earn yield even when utilization is low.',
+    formula: 'PD Rate = Treasury Rate × Treasury Allocation',
+    example: 'Treasury rate 4%, allocation 80% → PD base rate = 3.2% for all lenders',
     related: ['lotususd', 'spread', 'supply-rate'],
   },
 

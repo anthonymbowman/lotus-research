@@ -82,7 +82,11 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
 export const FORMULAS = {
   jrSupply: {
     formula: 'jrSupply[i] = Σ(supply[j]) for j ≥ i',
-    description: 'Sum of supply from this tranche and all junior tranches.',
+    description: 'Sum of supply from this tranche and all junior tranches. Includes both direct supply and cascaded supply from more junior tranches.',
+  },
+  cascadingSupply: {
+    formula: 'cascadedSupply[i] = jrSupply[i] - supply[i]',
+    description: 'Supply drawn from more junior tranches to support borrowers at this tranche.',
   },
   jrBorrow: {
     formula: 'jrBorrow[i] = Σ(borrow[j]) for j ≥ i',

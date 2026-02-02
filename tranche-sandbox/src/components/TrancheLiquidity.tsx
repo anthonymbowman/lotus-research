@@ -5,6 +5,7 @@ import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
 import { TermDefinition } from './TermDefinition';
 import { RateChart } from './RateChart';
+import { DynamicLoanMix } from './DynamicLoanMix';
 
 interface TrancheLiquidityProps {
   tranches: TrancheData[];
@@ -150,6 +151,15 @@ export function TrancheLiquidity({
         <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
       </div>
 
+      {/* Dynamic Loan Mix */}
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Dynamic Loan Mix</h3>
+        <p className="text-sm text-lotus-grey-400 mb-4">
+          See how each tranche's capital is allocated across the system. The mix changes dynamically based on supply and borrow activity.
+        </p>
+        <DynamicLoanMix tranches={tranches} />
+      </div>
+
       <CollapsibleSection
         title="Understanding Junior Metrics"
         icon="📊"
@@ -161,21 +171,43 @@ export function TrancheLiquidity({
             <p className="text-sm text-lotus-grey-300 mb-3">
               Junior Supply at tranche i = Sum of all supply from this tranche and more junior tranches.
             </p>
+            {/* Legend for stacked bars */}
+            <div className="flex gap-4 mb-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded" />
+                <span className="text-lotus-grey-300">Direct supply (this tranche)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-400/50 rounded" />
+                <span className="text-lotus-grey-300">Cascaded from junior</span>
+              </div>
+            </div>
             <div className="space-y-2">
-              {tranches.map((t) => (
-                <div key={t.id} className="flex items-center gap-2">
-                  <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
-                  <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
-                    <div
-                      className="h-full bg-blue-500 transition-all"
-                      style={{ width: `${maxJrSupply > 0 ? (t.jrSupply / maxJrSupply) * 100 : 0}%` }}
-                    />
+              {tranches.map((t) => {
+                const cascadedSupply = t.jrSupply - t.supplyAssets;
+                const directPercent = maxJrSupply > 0 ? (t.supplyAssets / maxJrSupply) * 100 : 0;
+                const cascadedPercent = maxJrSupply > 0 ? (cascadedSupply / maxJrSupply) * 100 : 0;
+                return (
+                  <div key={t.id} className="flex items-center gap-2">
+                    <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
+                    <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden flex">
+                      {/* Direct supply bar */}
+                      <div
+                        className="h-full bg-blue-500 transition-all"
+                        style={{ width: `${directPercent}%` }}
+                      />
+                      {/* Cascaded supply bar */}
+                      <div
+                        className="h-full bg-blue-400/50 transition-all"
+                        style={{ width: `${cascadedPercent}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
+                      {t.jrSupply.toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
-                    {t.jrSupply.toLocaleString()}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -184,44 +216,72 @@ export function TrancheLiquidity({
             <p className="text-sm text-lotus-grey-300 mb-3">
               Junior Borrow at tranche i = Sum of all borrows at or above this risk level.
             </p>
+            {/* Legend for stacked bars */}
+            <div className="flex gap-4 mb-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-orange-500 rounded" />
+                <span className="text-lotus-grey-300">Direct borrow (this tranche)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-orange-400/50 rounded" />
+                <span className="text-lotus-grey-300">Cascaded from senior</span>
+              </div>
+            </div>
             <div className="space-y-2">
-              {tranches.map((t) => (
-                <div key={t.id} className="flex items-center gap-2">
-                  <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
-                  <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden">
-                    <div
-                      className="h-full bg-orange-500 transition-all"
-                      style={{ width: `${maxJrBorrow > 0 ? (t.jrBorrow / maxJrBorrow) * 100 : 0}%` }}
-                    />
+              {tranches.map((t) => {
+                const cascadedBorrow = t.jrBorrow - t.borrowAssets;
+                const directPercent = maxJrBorrow > 0 ? (t.borrowAssets / maxJrBorrow) * 100 : 0;
+                const cascadedPercent = maxJrBorrow > 0 ? (cascadedBorrow / maxJrBorrow) * 100 : 0;
+                return (
+                  <div key={t.id} className="flex items-center gap-2">
+                    <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
+                    <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden flex">
+                      {/* Direct borrow bar (this tranche, appears first/left) */}
+                      <div
+                        className="h-full bg-orange-500 transition-all"
+                        style={{ width: `${directPercent}%` }}
+                      />
+                      {/* Cascaded borrow bar (from senior) */}
+                      <div
+                        className="h-full bg-orange-400/50 transition-all"
+                        style={{ width: `${cascadedPercent}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
+                      {t.jrBorrow.toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-xs font-mono text-lotus-grey-300 w-16 text-right">
-                    {t.jrBorrow.toLocaleString()}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Net Supply</h4>
             <p className="text-sm text-lotus-grey-300 mb-3">
-              Jr Net = Jr Supply - Jr Borrow. This shows the "excess" supply available at each level.
+              Jr Net = Jr Supply − Jr Borrow. This shows the "excess" supply available at each level.
             </p>
+            {/* Math columns display */}
             <div className="space-y-2">
               {tranches.map((t) => {
                 const isPositive = t.jrNetSupply >= 0;
                 return (
                   <div key={t.id} className="flex items-center gap-2">
                     <span className="text-xs text-lotus-grey-300 w-12">{t.lltv}%</span>
+                    {/* Inline math: Jr Supply - Jr Borrow = Jr Net Supply */}
+                    <span className="text-xs font-mono text-blue-400 w-14 text-right">{t.jrSupply.toLocaleString()}</span>
+                    <span className="text-xs text-lotus-grey-300">−</span>
+                    <span className="text-xs font-mono text-orange-400 w-14 text-right">{t.jrBorrow.toLocaleString()}</span>
+                    <span className="text-xs text-lotus-grey-300">=</span>
+                    <span className={`text-xs font-mono w-14 text-right font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {t.jrNetSupply.toLocaleString()}
+                    </span>
                     <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden relative">
                       <div
                         className={`h-full transition-all ${isPositive ? 'bg-emerald-500' : 'bg-red-500'}`}
                         style={{ width: `${maxJrNetSupply > 0 ? (Math.abs(t.jrNetSupply) / maxJrNetSupply) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className={`text-xs font-mono w-16 text-right ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {t.jrNetSupply.toLocaleString()}
-                    </span>
                   </div>
                 );
               })}
@@ -280,7 +340,7 @@ export function TrancheLiquidity({
                       <span className="text-xs font-mono text-blue-400">
                         {Math.max(0, t.jrNetSupply).toLocaleString()}
                       </span>
-                      <span className="text-xs text-lotus-grey-500">/</span>
+                      <span className="text-xs text-lotus-grey-300">/</span>
                       <span className="text-xs font-mono text-emerald-400">
                         {t.freeSupply.toLocaleString()}
                       </span>
@@ -365,13 +425,10 @@ export function TrancheLiquidity({
                   <tr className="border-b border-lotus-purple-700/50">
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
                     <th className="text-right py-2 px-3 text-blue-300 font-medium">Supply</th>
+                    <th className="text-center py-2 px-1 text-lotus-grey-300">÷</th>
                     <th className="text-right py-2 px-3 text-emerald-300 font-medium">Available</th>
-                    <th className="text-right py-2 px-3 text-lotus-purple-300 font-medium group relative cursor-help">
-                      Supply Util
-                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg text-xs font-mono text-lotus-purple-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
-                        Supply / AvailableSupply
-                      </span>
-                    </th>
+                    <th className="text-center py-2 px-1 text-lotus-grey-300">=</th>
+                    <th className="text-right py-2 px-3 text-lotus-purple-300 font-medium">Supply Util</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -381,7 +438,9 @@ export function TrancheLiquidity({
                       <tr key={t.id} className="border-b border-lotus-purple-800/30 hover:bg-lotus-purple-900/20">
                         <td className="py-2 px-3 font-medium text-white">{t.lltv}%</td>
                         <td className="py-2 px-3 text-right font-mono text-blue-200">{t.supplyAssets.toLocaleString()}</td>
+                        <td className="text-center text-lotus-grey-300">÷</td>
                         <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.availableSupply.toLocaleString()}</td>
+                        <td className="text-center text-lotus-grey-300">=</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-lotus-purple-200">{(supplyUtil * 100).toFixed(1)}%</td>
                       </tr>
                     );
@@ -402,14 +461,12 @@ export function TrancheLiquidity({
                 <thead>
                   <tr className="border-b border-orange-700/50">
                     <th className="text-left py-2 px-3 text-lotus-grey-200 font-medium">LLTV</th>
+                    <th className="text-center py-2 px-1 text-lotus-grey-300">1 −</th>
                     <th className="text-right py-2 px-3 text-emerald-300 font-medium">Free Supply</th>
+                    <th className="text-center py-2 px-1 text-lotus-grey-300">÷</th>
                     <th className="text-right py-2 px-3 text-blue-300 font-medium">Jr Supply</th>
-                    <th className="text-right py-2 px-3 text-orange-300 font-medium group relative cursor-help">
-                      Borrow Util
-                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg text-xs font-mono text-orange-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
-                        1 - (FreeSupply / JrSupply)
-                      </span>
-                    </th>
+                    <th className="text-center py-2 px-1 text-lotus-grey-300">=</th>
+                    <th className="text-right py-2 px-3 text-orange-300 font-medium">Borrow Util</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -418,8 +475,11 @@ export function TrancheLiquidity({
                     return (
                       <tr key={t.id} className="border-b border-orange-800/30 hover:bg-orange-900/20">
                         <td className="py-2 px-3 font-medium text-white">{t.lltv}%</td>
+                        <td className="text-center text-lotus-grey-300">1 −</td>
                         <td className="py-2 px-3 text-right font-mono text-emerald-200">{t.freeSupply.toLocaleString()}</td>
+                        <td className="text-center text-lotus-grey-300">÷</td>
                         <td className="py-2 px-3 text-right font-mono text-blue-200">{t.jrSupply.toLocaleString()}</td>
+                        <td className="text-center text-lotus-grey-300">=</td>
                         <td className="py-2 px-3 text-right font-mono font-semibold text-orange-200">{(borrowUtil * 100).toFixed(1)}%</td>
                       </tr>
                     );
