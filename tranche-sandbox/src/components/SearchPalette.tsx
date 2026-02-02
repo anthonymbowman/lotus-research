@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { GLOSSARY } from '../glossary';
 import type { Section } from './Sidebar';
 import { analytics } from '../analytics';
 
@@ -9,11 +8,11 @@ interface SearchPaletteProps {
 }
 
 interface SearchResult {
-  type: 'page' | 'term';
+  type: 'page';
   id: string;
   title: string;
   description: string;
-  section?: Section;
+  section: Section;
 }
 
 const PAGES: SearchResult[] = [
@@ -23,18 +22,7 @@ const PAGES: SearchResult[] = [
   { type: 'page', id: 'tranches', title: 'Liquidity Flow', description: 'Connected supply across tranches', section: 'tranches' },
   { type: 'page', id: 'interest-bad-debt', title: 'Interest & Losses', description: 'How value and bad debt cascade', section: 'interest-bad-debt' },
   { type: 'page', id: 'vaults', title: 'Your Strategy', description: 'Choose your allocation approach', section: 'vaults' },
-  { type: 'page', id: 'glossary', title: 'Glossary', description: 'Look up protocol terms A-Z', section: 'glossary' },
 ];
-
-const TERM_RESULTS: SearchResult[] = Object.entries(GLOSSARY).map(([key, entry]) => ({
-  type: 'term',
-  id: key,
-  title: entry.term,
-  description: entry.shortDef,
-  section: 'glossary' as Section,
-}));
-
-const ALL_RESULTS = [...PAGES, ...TERM_RESULTS];
 
 export function SearchPalette({ onNavigate }: SearchPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,12 +33,12 @@ export function SearchPalette({ onNavigate }: SearchPaletteProps) {
 
   // Filter results based on query
   const filteredResults = query.trim()
-    ? ALL_RESULTS.filter(
+    ? PAGES.filter(
         (result) =>
           result.title.toLowerCase().includes(query.toLowerCase()) ||
           result.description.toLowerCase().includes(query.toLowerCase())
       )
-    : PAGES; // Show pages by default when no query
+    : PAGES;
 
   // Keyboard shortcut to open
   useEffect(() => {
@@ -91,15 +79,7 @@ export function SearchPalette({ onNavigate }: SearchPaletteProps) {
 
   const handleSelect = useCallback((result: SearchResult) => {
     analytics.searchUsed(query, result.title);
-    if (result.section) {
-      onNavigate(result.section);
-      if (result.type === 'term') {
-        // Navigate to glossary with the term hash
-        setTimeout(() => {
-          window.location.hash = `glossary-${result.id}`;
-        }, 100);
-      }
-    }
+    onNavigate(result.section);
     setIsOpen(false);
   }, [onNavigate, query]);
 
@@ -151,7 +131,7 @@ export function SearchPalette({ onNavigate }: SearchPaletteProps) {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search pages and terms..."
+            placeholder="Search pages..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -182,7 +162,7 @@ export function SearchPalette({ onNavigate }: SearchPaletteProps) {
                 const isSelected = index === selectedIndex;
                 return (
                   <button
-                    key={`${result.type}-${result.id}`}
+                    key={result.id}
                     data-index={index}
                     onClick={() => handleSelect(result)}
                     onMouseEnter={() => setSelectedIndex(index)}
@@ -190,20 +170,10 @@ export function SearchPalette({ onNavigate }: SearchPaletteProps) {
                       isSelected ? 'bg-lotus-purple-900/30' : 'hover:bg-lotus-grey-700/50'
                     }`}
                   >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      result.type === 'page'
-                        ? 'bg-lotus-purple-900/50 text-lotus-purple-400'
-                        : 'bg-emerald-900/50 text-emerald-400'
-                    }`}>
-                      {result.type === 'page' ? (
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                      )}
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-lotus-purple-900/50 text-lotus-purple-400">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className={`font-medium truncate ${isSelected ? 'text-lotus-grey-100' : 'text-lotus-grey-200'}`}>

@@ -14,7 +14,6 @@ import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
 import { Vaults } from './components/Vaults';
 import { TrancheRisk } from './components/TrancheRisk';
-import { Glossary } from './components/Glossary';
 import { SearchPalette } from './components/SearchPalette';
 import { analytics } from './analytics';
 
@@ -87,7 +86,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1) as Section;
-      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults', 'glossary'].includes(hash)) {
+      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults'].includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -167,13 +166,6 @@ function App() {
       title: 'Your Strategy',
       headline: 'Choose Your Allocation',
       subtitle: 'Pick the risk/reward profile that matches your goals',
-      learningPoints: [],
-      next: { id: 'glossary', label: 'Glossary' },
-    },
-    glossary: {
-      title: 'Glossary',
-      headline: 'Protocol Terminology',
-      subtitle: 'Look up definitions for all Lotus Protocol terms',
       learningPoints: [],
     },
   };
@@ -294,11 +286,6 @@ function App() {
                 }))}
                 productiveDebtRate={productiveDebtRate}
               />
-            )}
-
-            {/* Section 7: Glossary */}
-            {activeSection === 'glossary' && (
-              <Glossary />
             )}
           </SectionWrapper>
         </div>

@@ -9,7 +9,6 @@ export type AnalyticsEvent =
   | { name: 'nav_click'; props: { section: string } }
   | { name: 'cta_next_click'; props: { from: string; to: string } }
   | { name: 'simulator_interact'; props: { simulator: string; input: string; value: number } }
-  | { name: 'glossary_open'; props: { term: string } }
   | { name: 'search_used'; props: { query: string; result?: string } }
   | { name: 'strategy_selected'; props: { strategy: string } }
   | { name: 'bad_debt_simulated'; props: { scenario: string } }
@@ -50,7 +49,6 @@ export const analytics = {
   ctaNextClick: (from: string, to: string) => track('cta_next_click', { from, to }),
   simulatorInteract: (simulator: string, input: string, value: number) =>
     track('simulator_interact', { simulator, input, value }),
-  glossaryOpen: (term: string) => track('glossary_open', { term }),
   searchUsed: (query: string, result?: string) => track('search_used', { query, result }),
   strategySelected: (strategy: string) => track('strategy_selected', { strategy }),
   badDebtSimulated: (scenario: string) => track('bad_debt_simulated', { scenario }),
