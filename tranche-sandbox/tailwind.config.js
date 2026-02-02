@@ -8,6 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Constraint Colors (for constraint visualization system)
+        'constraint': {
+          active: '#f59e0b',    // amber-500 - constraint is binding
+          near: '#fcd34d',      // amber-300 - approaching constraint
+          border: '#d97706',    // amber-600 - dashed borders
+          bg: 'rgba(245, 158, 11, 0.1)',  // amber with low opacity for backgrounds
+          'bg-hover': 'rgba(245, 158, 11, 0.2)',
+        },
         // Lotus Brand Colors
         'lotus-grey': {
           900: '#0D0A14', // --dark-grey (main background)

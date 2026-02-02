@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { TrancheData, TrancheInput } from '../types';
 import { TrancheTable } from './TrancheTable';
 import { CollapsibleSection } from './ConceptExplainer';
@@ -7,6 +7,58 @@ import { RateChart } from './RateChart';
 import { DynamicLoanMix } from './DynamicLoanMix';
 import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
+
+/**
+ * FreeSupplyWhyButton - Inline explainer for the Free Supply concept
+ */
+function FreeSupplyWhyButton() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="text-xs text-lotus-purple-400 hover:text-lotus-purple-300 transition-colors flex items-center gap-1"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Why?
+      </button>
+
+      {isExpanded && (
+        <div className="absolute right-0 top-full mt-2 z-20 w-80 bg-lotus-grey-800 border border-lotus-grey-600 rounded-lg shadow-xl p-4">
+          <div className="flex items-start justify-between mb-2">
+            <h5 className="font-medium text-emerald-300">Why Free Supply Matters</h5>
+            <button
+              onClick={() => setIsExpanded(false)}
+              className="text-lotus-grey-400 hover:text-lotus-grey-200"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="space-y-3 text-xs text-lotus-grey-300">
+            <p>
+              <strong className="text-emerald-400">Free supply is the amount that can be borrowed or withdrawn</strong> from a tranche.
+            </p>
+            <p>
+              It's limited by the <strong className="text-amber-400">tightest junior net supply</strong> along the senior path.
+              Even if a junior tranche has lots of liquidity, it can only be accessed if all senior tranches also have liquidity available.
+            </p>
+            <div className="bg-amber-900/20 border border-amber-700/50 rounded p-2 mt-2">
+              <p className="text-amber-200">
+                <strong>Why can borrow &gt; supply?</strong> This is valid because liquidity cascades from junior tranches.
+                The true limit is Free Supply, not direct supply.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface TrancheLiquidityProps {
   tranches: TrancheData[];
@@ -302,7 +354,10 @@ export function TrancheLiquidity({
       >
         <div className="space-y-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-grey-100 mb-2">Free Supply</h4>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-medium text-lotus-grey-100">Free Supply</h4>
+              <FreeSupplyWhyButton />
+            </div>
             <p className="text-sm text-lotus-grey-300 mb-3">
               The amount of liquidity that can be <strong className="text-emerald-400">borrowed or withdrawn</strong> from the tranche.
             </p>
@@ -498,13 +553,12 @@ export function TrancheLiquidity({
         </div>
       </CollapsibleSection>
 
-      <FailureModeCallout title="Stress Scenario: Withdrawal Queues">
+      <FailureModeCallout title="Stress Scenario: Withdrawal Limits">
         <p>
-          Free Supply determines how much can be withdrawn instantly. During high-stress
-          periods, if many lenders attempt to withdraw simultaneously, withdrawals may
-          be delayed until borrowers repay loans or new supply enters the system. Junior
-          lenders are particularly affected as their Free Supply depends on senior
-          tranches maintaining liquidity buffers.
+          Free Supply determines how much can be withdrawn instantly. There is no withdrawal
+          queue—if Free Supply is insufficient, lenders must wait until borrowers repay loans
+          or new supply enters the system. Junior lenders are particularly affected as their
+          Free Supply depends on senior tranches maintaining liquidity buffers.
         </p>
       </FailureModeCallout>
     </div>

@@ -1,49 +1,144 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
+interface CalculationValues {
+  /** The values to substitute into the formula */
+  values: Record<string, number | string>;
+  /** The computed result */
+  result: number | string;
+  /** Optional format function for the result */
+  formatResult?: (val: number | string) => string;
+}
+
 interface FormulaTooltipProps {
   formula: string;
   description?: string;
   children: React.ReactNode;
+  /** Optional current values to show calculation */
+  currentValues?: CalculationValues;
 }
 
-export function FormulaTooltip({ formula, description, children }: FormulaTooltipProps) {
+export function FormulaTooltip({ formula, description, children, currentValues }: FormulaTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [showCalculation, setShowCalculation] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLSpanElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isVisible && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const showBelow = rect.top < 120;
+      const showBelow = rect.top < 150;
 
       setTooltipPosition({
         top: showBelow ? rect.bottom + 8 : rect.top - 8,
-        left: rect.left + rect.width / 2,
+        left: Math.min(Math.max(rect.left + rect.width / 2, 160), window.innerWidth - 160),
       });
     }
   }, [isVisible]);
 
+  // Close on outside click when showing calculation
+  useEffect(() => {
+    if (!isVisible || !showCalculation) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        tooltipRef.current &&
+        !tooltipRef.current.contains(e.target as Node)
+      ) {
+        setIsVisible(false);
+        setShowCalculation(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isVisible, showCalculation]);
+
+  const formatValue = (val: number | string): string => {
+    if (typeof val === 'number') {
+      if (val < 1 && val > 0) {
+        return (val * 100).toFixed(1) + '%';
+      }
+      return val.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+    return val;
+  };
+
   const tooltip = isVisible && (
     <div
-      className="fixed z-[9999] px-3 py-2 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl max-w-xs border border-lotus-grey-700"
+      ref={tooltipRef}
+      className="fixed z-[9999] px-3 py-2 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl border border-lotus-grey-700"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,
-        transform: tooltipPosition.top < 120
+        transform: tooltipPosition.top < 150
           ? 'translateX(-50%)'
           : 'translate(-50%, -100%)',
+        maxWidth: '320px',
       }}
     >
+      {/* Formula */}
       <code className="font-mono text-xs text-lotus-purple-300 block">{formula}</code>
+
+      {/* Description */}
       {description && (
         <p className="mt-1 text-xs text-lotus-grey-300">
           {description}
         </p>
       )}
+
+      {/* Show Calculation Toggle */}
+      {currentValues && (
+        <div className="mt-2 pt-2 border-t border-lotus-grey-700">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowCalculation(!showCalculation);
+            }}
+            className="text-xs text-lotus-purple-400 hover:text-lotus-purple-300 transition-colors flex items-center gap-1"
+          >
+            <svg
+              className={`w-3 h-3 transition-transform ${showCalculation ? 'rotate-90' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+            {showCalculation ? 'Hide calculation' : 'Show calculation'}
+          </button>
+
+          {showCalculation && (
+            <div className="mt-2 p-2 bg-lotus-grey-800 rounded text-xs font-mono space-y-1">
+              {/* Show substituted values */}
+              {Object.entries(currentValues.values).map(([key, value]) => (
+                <div key={key} className="flex justify-between gap-4">
+                  <span className="text-lotus-grey-400">{key}</span>
+                  <span className="text-lotus-grey-200">{formatValue(value)}</span>
+                </div>
+              ))}
+              {/* Show result */}
+              <div className="flex justify-between gap-4 pt-1 border-t border-lotus-grey-700 font-medium">
+                <span className="text-lotus-purple-400">=</span>
+                <span className="text-lotus-purple-300">
+                  {currentValues.formatResult
+                    ? currentValues.formatResult(currentValues.result)
+                    : formatValue(currentValues.result)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Arrow */}
       <div
         className="absolute left-1/2 -translate-x-1/2 border-8 border-transparent"
-        style={tooltipPosition.top < 120
+        style={tooltipPosition.top < 150
           ? { bottom: '100%', borderBottomColor: '#0D0A14' }
           : { top: '100%', borderTopColor: '#0D0A14' }
         }
@@ -51,13 +146,25 @@ export function FormulaTooltip({ formula, description, children }: FormulaToolti
     </div>
   );
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (currentValues) {
+      e.preventDefault();
+      setIsVisible(!isVisible);
+    }
+  };
+
   return (
     <>
       <span
         ref={triggerRef}
         className="inline-flex items-center cursor-help"
         onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
+        onMouseLeave={() => {
+          if (!showCalculation) {
+            setIsVisible(false);
+          }
+        }}
+        onClick={handleClick}
       >
         {children}
         <svg

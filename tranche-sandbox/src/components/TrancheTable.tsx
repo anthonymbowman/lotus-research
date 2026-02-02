@@ -125,38 +125,56 @@ export function TrancheTable({
             {tranches.map((tranche, index) => {
               const hasCascadingSupply = tranche.borrowAssets > tranche.supplyAssets;
               const isBindingConstraint = tranche.isBindingConstraint;
+              // Illegal: at most junior tranche, borrow cannot exceed supply (no junior liquidity to draw from)
+              // At other tranches: if Jr Net Supply is 0, the system is at capacity
+              const isMostJunior = index === tranches.length - 1;
+              const isOverBorrowed = isMostJunior && tranche.borrowAssets > tranche.supplyAssets;
 
               return (
                 <tr
                   key={tranche.id}
                   className={`border-b transition-colors cursor-pointer ${
-                    isBindingConstraint
+                    isOverBorrowed
+                      ? 'border-red-600/50 bg-red-900/20 hover:bg-red-900/30'
+                      : isBindingConstraint
                       ? 'border-amber-600/50 bg-amber-900/10 hover:bg-amber-900/20'
                       : 'border-lotus-grey-700/50 hover:bg-lotus-grey-700/30'
                   }`}
                   onClick={() => setInspectedTranche(index)}
                 >
                   <td className={`py-2 px-2 border-r border-lotus-grey-700 sticky left-0 z-10 ${
-                    isBindingConstraint ? 'bg-amber-900/20' : 'bg-lotus-grey-800'
+                    isOverBorrowed ? 'bg-red-900/30' : isBindingConstraint ? 'bg-amber-900/20' : 'bg-lotus-grey-800'
                   }`}>
-                    <span className="font-medium text-lotus-grey-200">{tranche.lltv}%</span>
+                    <span className={`font-medium ${isOverBorrowed ? 'text-red-300' : 'text-lotus-grey-200'}`}>{tranche.lltv}%</span>
+                    {isOverBorrowed && <span className="ml-1 text-red-400 text-xs">!</span>}
                   </td>
 
-                  <td className="py-2 px-2" onClick={(e) => e.stopPropagation()}>
+                  <td className="py-2 px-2 text-right" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="number"
                       value={tranche.supplyAssets}
                       onChange={(e) => onTrancheChange(tranche.id, 'supplyAssets', parseFloat(e.target.value) || 0)}
                       min={0}
                       step={100}
-                      className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
-                        focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
+                      className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border rounded font-mono text-lotus-grey-100
+                        focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500 ${
+                        isOverBorrowed ? 'border-red-500' : 'border-lotus-grey-600'
+                      }`}
                     />
                   </td>
 
                   <td className="py-2 px-2" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
-                      {hasCascadingSupply && (
+                      {isOverBorrowed ? (
+                        <ConstraintTooltip
+                          title="Illegal: Borrow Exceeds Available"
+                          why="This borrow amount exceeds the available liquidity. In the real protocol, this state would not be possible."
+                          scope="tranche"
+                          trancheIndex={index}
+                        >
+                          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                        </ConstraintTooltip>
+                      ) : hasCascadingSupply && (
                         <ConstraintTooltip
                           title="Borrow Exceeds Direct Supply"
                           why="This is normal! This tranche borrows more than its direct supply by drawing from junior tranche liquidity. The actual limit is Free Supply (which includes junior liquidity), not direct supply."
@@ -173,8 +191,10 @@ export function TrancheTable({
                         onChange={(e) => onTrancheChange(tranche.id, 'borrowAssets', parseFloat(e.target.value) || 0)}
                         min={0}
                         step={100}
-                        className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
-                          focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
+                        className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border rounded font-mono
+                          focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500 ${
+                          isOverBorrowed ? 'border-red-500 text-red-300' : 'border-lotus-grey-600 text-lotus-grey-100'
+                        }`}
                       />
                     </div>
                   </td>
@@ -183,7 +203,7 @@ export function TrancheTable({
                     <div className="flex items-center justify-end">
                       <input
                         type="number"
-                        value={(tranche.borrowRate * 100).toFixed(1)}
+                        value={Math.round(tranche.borrowRate * 1000) / 10}
                         onChange={(e) => onTrancheChange(tranche.id, 'borrowRate', (parseFloat(e.target.value) || 0) / 100)}
                         min={0}
                         max={100}

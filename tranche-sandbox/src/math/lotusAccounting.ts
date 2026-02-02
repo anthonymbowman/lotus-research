@@ -86,7 +86,10 @@ export function computeJrNetSupply(jrSupply: number[], jrBorrow: number[]): numb
  * This implements the "connected liquidity" model where senior tranches can
  * access junior liquidity, but are limited by any bottleneck in between.
  *
- * Also identifies which tranche(s) are the binding constraint.
+ * Also identifies which tranche(s) are binding constraints.
+ * A tranche is "binding" if its Jr Net Supply constrains ANY junior tranche's
+ * Free Supply (i.e., a junior tranche has higher Jr Net Supply but is limited
+ * by this tranche's Jr Net Supply).
  *
  * @param jrNetSupply - Array of junior net supply values
  * @returns Object with freeSupply array and bindingIndices
@@ -97,31 +100,28 @@ export function computeFreeSupply(jrNetSupply: number[]): {
 } {
   const n = jrNetSupply.length;
   const freeSupply: number[] = new Array(n).fill(0);
-  const bindingIndices: number[] = [];
+  const bindingIndicesSet = new Set<number>();
 
   let runningMin = Infinity;
-  let minIndices: number[] = [];
+  let currentBindingIndex = -1;
 
   for (let i = 0; i < n; i++) {
+    // Check if this tranche establishes a new minimum
     if (jrNetSupply[i] < runningMin) {
       runningMin = jrNetSupply[i];
-      minIndices = [i];
-    } else if (jrNetSupply[i] === runningMin) {
-      minIndices.push(i);
+      currentBindingIndex = i;
     }
+
     freeSupply[i] = runningMin;
+
+    // If this tranche's Jr Net Supply is greater than its Free Supply,
+    // it means this tranche is constrained by the currentBindingIndex tranche
+    if (jrNetSupply[i] > freeSupply[i] && currentBindingIndex >= 0) {
+      bindingIndicesSet.add(currentBindingIndex);
+    }
   }
 
-  // The binding constraint(s) are the tranche(s) with the minimum jrNetSupply
-  // that actually constrain liquidity (only if there's actual supply)
-  if (runningMin < Infinity && runningMin >= 0) {
-    bindingIndices.push(...minIndices.filter(i => i === minIndices[0]));
-    // Actually, the binding tranche is the first one that achieves the minimum
-    // because that's where the bottleneck occurs
-    return { freeSupply, bindingIndices: [minIndices[0]] };
-  }
-
-  return { freeSupply, bindingIndices };
+  return { freeSupply, bindingIndices: Array.from(bindingIndicesSet) };
 }
 
 /**

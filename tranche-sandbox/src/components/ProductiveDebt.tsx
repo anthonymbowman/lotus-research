@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { generateScenario2ChartData } from '../math/scenario2';
 import type { ChartPoint } from '../types';
+import { DefinitionBadge } from './DefinitionBadge';
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -195,7 +196,13 @@ function SpreadCompressionSection({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-lotus-grey-300">Utilization</span>
+              <DefinitionBadge
+                label="Borrow Utilization"
+                formula="1 - (Free Supply / Jr Supply)"
+                note="This is the utilization that drives IRM rates. Higher utilization = higher borrow rates."
+                textColor="text-lotus-grey-300"
+                className="text-sm font-medium"
+              />
               <span className="text-lg font-mono font-semibold text-lotus-grey-100">
                 {(utilization * 100).toFixed(0)}%
               </span>
