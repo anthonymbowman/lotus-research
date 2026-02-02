@@ -3,6 +3,9 @@ import type { TrancheInput, TrancheData } from '../types';
 import { formatNumber, formatPercent } from '../math/lotusAccounting';
 import { FormulaTooltip, FORMULAS } from './FormulaTooltip';
 import { TermDefinition } from './TermDefinition';
+import { ConstraintTooltip } from './ConstraintTooltip';
+import { TrancheConstraintInspector } from './TrancheConstraintInspector';
+import { DefinitionBadge } from './DefinitionBadge';
 
 interface TrancheTableProps {
   tranches: TrancheData[];
@@ -16,6 +19,7 @@ export function TrancheTable({
   productiveDebtRate,
 }: TrancheTableProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [inspectedTranche, setInspectedTranche] = useState<number | null>(null);
 
   return (
     <div>
@@ -67,7 +71,12 @@ export function TrancheTable({
                 Borrow
               </th>
               <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                Credit Spread
+                <DefinitionBadge
+                  label="Credit Spread"
+                  formula="Determined by IRM"
+                  note="Set by the Interest Rate Model based on borrow utilization. Rates increase monotonically with risk (junior tranches always have higher rates)."
+                  textColor="text-lotus-purple-300"
+                />
               </th>
               <th className="text-right py-2 px-2 font-semibold text-orange-300 bg-orange-900/30">
                 Borrow Rate
@@ -90,10 +99,20 @@ export function TrancheTable({
                     <FormulaTooltip {...FORMULAS.availableSupply}>Available</FormulaTooltip>
                   </th>
                   <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                    <FormulaTooltip {...FORMULAS.supplyUtil}>Supply Util</FormulaTooltip>
+                    <DefinitionBadge
+                      label="Supply Util"
+                      formula="Supply / Available Supply"
+                      note="Determines how much interest stays at this tranche vs cascading to junior tranches"
+                      textColor="text-lotus-purple-300"
+                    />
                   </th>
                   <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                    <FormulaTooltip {...FORMULAS.borrowUtil}>Borrow Util</FormulaTooltip>
+                    <DefinitionBadge
+                      label="Borrow Util"
+                      formula="1 - (Free Supply / Jr Supply)"
+                      note="This drives IRM rates. Higher utilization = higher borrow rates."
+                      textColor="text-lotus-purple-300"
+                    />
                   </th>
                 </>
               )}
@@ -103,106 +122,146 @@ export function TrancheTable({
             </tr>
           </thead>
           <tbody>
-            {tranches.map((tranche) => (
-              <tr
-                key={tranche.id}
-                className="border-b border-lotus-grey-700/50 hover:bg-lotus-grey-700/30 transition-colors"
-              >
-                <td className="py-2 px-2 bg-lotus-grey-800 border-r border-lotus-grey-700 sticky left-0 z-10">
-                  <span className="font-medium text-lotus-grey-200">{tranche.lltv}%</span>
-                </td>
+            {tranches.map((tranche, index) => {
+              const hasCascadingSupply = tranche.borrowAssets > tranche.supplyAssets;
+              const isBindingConstraint = tranche.isBindingConstraint;
 
-                <td className="py-2 px-2">
-                  <input
-                    type="number"
-                    value={tranche.supplyAssets}
-                    onChange={(e) => onTrancheChange(tranche.id, 'supplyAssets', parseFloat(e.target.value) || 0)}
-                    min={0}
-                    step={100}
-                    className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
-                      focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
-                  />
-                </td>
+              return (
+                <tr
+                  key={tranche.id}
+                  className={`border-b transition-colors cursor-pointer ${
+                    isBindingConstraint
+                      ? 'border-amber-600/50 bg-amber-900/10 hover:bg-amber-900/20'
+                      : 'border-lotus-grey-700/50 hover:bg-lotus-grey-700/30'
+                  }`}
+                  onClick={() => setInspectedTranche(index)}
+                >
+                  <td className={`py-2 px-2 border-r border-lotus-grey-700 sticky left-0 z-10 ${
+                    isBindingConstraint ? 'bg-amber-900/20' : 'bg-lotus-grey-800'
+                  }`}>
+                    <span className="font-medium text-lotus-grey-200">{tranche.lltv}%</span>
+                  </td>
 
-                <td className="py-2 px-2">
-                  <input
-                    type="number"
-                    value={tranche.borrowAssets}
-                    onChange={(e) => onTrancheChange(tranche.id, 'borrowAssets', parseFloat(e.target.value) || 0)}
-                    min={0}
-                    step={100}
-                    className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
-                      focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
-                  />
-                </td>
-
-                <td className="py-2 px-2 bg-lotus-purple-900/20">
-                  <div className="flex items-center justify-end">
+                  <td className="py-2 px-2" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="number"
-                      value={(tranche.borrowRate * 100).toFixed(1)}
-                      onChange={(e) => onTrancheChange(tranche.id, 'borrowRate', (parseFloat(e.target.value) || 0) / 100)}
+                      value={tranche.supplyAssets}
+                      onChange={(e) => onTrancheChange(tranche.id, 'supplyAssets', parseFloat(e.target.value) || 0)}
                       min={0}
-                      max={100}
-                      step={0.5}
-                      className="w-16 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-purple-600 rounded font-mono text-lotus-purple-200
+                      step={100}
+                      className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
                         focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
                     />
-                    <span className="ml-1 text-lotus-grey-300">%</span>
-                  </div>
-                </td>
+                  </td>
 
-                <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/20">
-                  {formatPercent(productiveDebtRate + tranche.borrowRate, 2)}
-                </td>
+                  <td className="py-2 px-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-1">
+                      {hasCascadingSupply && (
+                        <ConstraintTooltip
+                          title="Borrow Exceeds Direct Supply"
+                          why="This is normal! This tranche borrows more than its direct supply by drawing from junior tranche liquidity. The actual limit is Free Supply (which includes junior liquidity), not direct supply."
+                          primitive="cascadingSupply"
+                          scope="tranche"
+                          trancheIndex={index}
+                        >
+                          <span className="w-2 h-2 rounded-full bg-blue-400" title="B > S" />
+                        </ConstraintTooltip>
+                      )}
+                      <input
+                        type="number"
+                        value={tranche.borrowAssets}
+                        onChange={(e) => onTrancheChange(tranche.id, 'borrowAssets', parseFloat(e.target.value) || 0)}
+                        min={0}
+                        step={100}
+                        className="w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-grey-600 rounded font-mono text-lotus-grey-100
+                          focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
+                      />
+                    </div>
+                  </td>
 
-                {showAdvanced && (
-                  <>
-                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                      {formatNumber(tranche.jrSupply, 0)}
-                    </td>
+                  <td className="py-2 px-2 bg-lotus-purple-900/20" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end">
+                      <input
+                        type="number"
+                        value={(tranche.borrowRate * 100).toFixed(1)}
+                        onChange={(e) => onTrancheChange(tranche.id, 'borrowRate', (parseFloat(e.target.value) || 0) / 100)}
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        className="w-16 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-purple-600 rounded font-mono text-lotus-purple-200
+                          focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
+                      />
+                      <span className="ml-1 text-lotus-grey-300">%</span>
+                    </div>
+                  </td>
 
-                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                      {formatNumber(tranche.jrBorrow, 0)}
-                    </td>
+                  <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/20">
+                    {formatPercent(productiveDebtRate + tranche.borrowRate, 2)}
+                  </td>
 
-                    <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
-                      {formatNumber(tranche.jrNetSupply, 0)}
-                    </td>
+                  {showAdvanced && (
+                    <>
+                      <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                        {formatNumber(tranche.jrSupply, 0)}
+                      </td>
 
-                    <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
-                      {formatNumber(tranche.freeSupply, 0)}
-                    </td>
+                      <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
+                        {formatNumber(tranche.jrBorrow, 0)}
+                      </td>
 
-                    <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
-                      {formatNumber(tranche.availableSupply, 0)}
-                    </td>
+                      <td className={`py-2 px-2 text-right font-mono bg-blue-900/20 ${
+                        isBindingConstraint ? 'text-amber-400 font-semibold' : 'text-blue-400'
+                      }`}>
+                        {formatNumber(tranche.jrNetSupply, 0)}
+                      </td>
 
-                    <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
-                      <UtilizationBar value={tranche.supplyUtilization} color="purple" />
-                    </td>
+                      <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
+                        {formatNumber(tranche.freeSupply, 0)}
+                      </td>
 
-                    <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
-                      <UtilizationBar value={tranche.borrowUtilization} color="blue" />
-                    </td>
-                  </>
-                )}
+                      <td className="py-2 px-2 text-right font-mono text-emerald-400 bg-emerald-900/20">
+                        {formatNumber(tranche.availableSupply, 0)}
+                      </td>
 
-                <td className="py-2 px-2 text-right font-mono text-teal-400 bg-teal-900/20">
-                  {tranche.supplyRate !== null
-                    ? formatPercent(productiveDebtRate + tranche.supplyRate, 2)
-                    : '-'}
-                </td>
-              </tr>
-            ))}
+                      <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
+                        <UtilizationBar value={tranche.supplyUtilization} color="purple" />
+                      </td>
+
+                      <td className="py-2 px-2 text-right bg-lotus-purple-900/20">
+                        <UtilizationBar value={tranche.borrowUtilization} color="blue" />
+                      </td>
+                    </>
+                  )}
+
+                  <td className="py-2 px-2 text-right font-mono text-teal-400 bg-teal-900/20">
+                    {tranche.supplyRate !== null
+                      ? formatPercent(productiveDebtRate + tranche.supplyRate, 2)
+                      : '-'}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-4 px-3 py-2 bg-lotus-grey-800 rounded text-xs text-lotus-grey-300">
-        <span className="font-medium">Lower LLTV = More Senior</span> |
-        Higher LLTV = More Junior (higher risk, higher yield)
+      <div className="mt-4 px-3 py-2 bg-lotus-grey-800 rounded text-xs text-lotus-grey-300 flex items-center justify-between">
+        <span>
+          <span className="font-medium">Lower LLTV = More Senior</span> |
+          Higher LLTV = More Junior (higher risk, higher yield)
+        </span>
+        <span className="text-lotus-grey-400">Click any row for constraint details</span>
       </div>
+
+      {/* Constraint Inspector Modal */}
+      {inspectedTranche !== null && (
+        <TrancheConstraintInspector
+          tranche={tranches[inspectedTranche]}
+          allTranches={tranches}
+          trancheIndex={inspectedTranche}
+          onClose={() => setInspectedTranche(null)}
+        />
+      )}
     </div>
   );
 }

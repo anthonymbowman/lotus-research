@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { TrancheInput } from './types';
-import { computeAllTranches } from './math/lotusAccounting';
+import { computeAllTranches, computeJrSupply, computeJrBorrow, computeJrNetSupply, computeFreeSupply } from './math/lotusAccounting';
 import { createDefaultTranches } from './presets';
 import { Sidebar, type Section } from './components/Sidebar';
 import { SectionWrapper } from './components/SectionWrapper';
@@ -55,15 +55,37 @@ function App() {
     return computeAllTranches(tranches, false);
   }, [tranches]);
 
-  // Handle tranche input changes
+
+  // Handle tranche input changes with validation
   const handleTrancheChange = useCallback((
     id: number,
     field: keyof TrancheInput,
     value: number
   ) => {
-    setTranches(prev => prev.map(t =>
-      t.id === id ? { ...t, [field]: value } : t
-    ));
+    setTranches(prev => {
+      // Create the proposed new state
+      const proposed = prev.map(t =>
+        t.id === id ? { ...t, [field]: value } : t
+      );
+
+      // Validate: check if any free supply would go negative
+      if (field === 'supplyAssets' || field === 'borrowAssets') {
+        const jrSupply = computeJrSupply(proposed, false);
+        const jrBorrow = computeJrBorrow(proposed);
+        const jrNetSupply = computeJrNetSupply(jrSupply, jrBorrow);
+        const { freeSupply } = computeFreeSupply(jrNetSupply);
+
+        // Check if any borrow exceeds free supply (illegal state)
+        for (let i = 0; i < proposed.length; i++) {
+          if (proposed[i].borrowAssets > freeSupply[i] + 0.01) {
+            // Reject the change - return previous state
+            return prev;
+          }
+        }
+      }
+
+      return proposed;
+    });
   }, []);
 
   // Navigation handler

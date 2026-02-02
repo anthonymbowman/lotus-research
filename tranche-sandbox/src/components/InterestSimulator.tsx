@@ -5,6 +5,9 @@ import {
   formatNumber,
   formatPercent,
 } from '../math/lotusAccounting';
+import { DefinitionBadge } from './DefinitionBadge';
+import { ConstraintTooltip } from './ConstraintTooltip';
+import { AssumptionsPanel, MODULE_ASSUMPTIONS } from './AssumptionsPanel';
 
 interface InterestSimulatorProps {
   tranches: TrancheData[];
@@ -77,7 +80,12 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                   </th>
                   <th className="text-center py-2 px-1 text-lotus-grey-300">×</th>
                   <th className="text-right py-2 px-2 font-semibold text-lotus-purple-300 bg-lotus-purple-900/30">
-                    Supply Util
+                    <DefinitionBadge
+                      label="Supply Util"
+                      formula="Supply / Available Supply"
+                      note="Determines how much interest stays at this tranche vs cascading to junior tranches"
+                      textColor="text-lotus-purple-300"
+                    />
                   </th>
                   <th className="text-center py-2 px-1 text-lotus-grey-300">=</th>
                   <th className="text-right py-2 px-2 font-semibold text-teal-300 bg-teal-900/30">
@@ -93,6 +101,8 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                   const isFirst = i === 0;
                   const isLast = i === tableData.length - 1;
                   const total = result.cascadeIn + result.interestGenerated;
+                  const supplyUtilHigh = result.supplyUtil >= 0.99;
+
                   return (
                     <tr key={result.index} className="border-b border-lotus-grey-700/50 hover:bg-lotus-grey-700/30">
                       <td className="py-2 px-2 font-medium text-lotus-grey-200 bg-lotus-grey-800">
@@ -100,9 +110,14 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                       </td>
                       <td className="py-2 px-2 text-right font-mono text-blue-400 bg-blue-900/20">
                         {isFirst ? (
-                          <span className="cursor-help" title="Nothing cascades into the most senior tranche">
-                            ${formatNumber(result.cascadeIn, 2)}
-                          </span>
+                          <ConstraintTooltip
+                            title="No Cascade In"
+                            why="This is the most senior tranche. Interest only flows downward in the cascade, so nothing cascades into the first tranche."
+                            scope="tranche"
+                            trancheIndex={i}
+                          >
+                            <span className="text-lotus-grey-500">$0.00</span>
+                          </ConstraintTooltip>
                         ) : (
                           `$${formatNumber(result.cascadeIn, 2)}`
                         )}
@@ -116,8 +131,25 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                         ${formatNumber(total, 2)}
                       </td>
                       <td className="text-center text-lotus-grey-300">×</td>
-                      <td className="py-2 px-2 text-right font-mono text-lotus-purple-400 bg-lotus-purple-900/20">
-                        {formatPercent(result.supplyUtil, 2)}
+                      <td
+                        className={`py-2 px-2 text-right font-mono ${
+                          supplyUtilHigh
+                            ? 'bg-amber-900/30 text-amber-300'
+                            : 'bg-lotus-purple-900/20 text-lotus-purple-400'
+                        }`}
+                      >
+                        {supplyUtilHigh ? (
+                          <ConstraintTooltip
+                            title="100% Supply Utilization"
+                            why="This tranche keeps all interest at this level. No further cascade to junior tranches."
+                            scope="tranche"
+                            trancheIndex={i}
+                          >
+                            <span>{formatPercent(result.supplyUtil, 2)}</span>
+                          </ConstraintTooltip>
+                        ) : (
+                          formatPercent(result.supplyUtil, 2)
+                        )}
                       </td>
                       <td className="text-center text-lotus-grey-300">=</td>
                       <td className="py-2 px-2 text-right font-mono font-medium text-teal-300 bg-teal-900/20">
@@ -125,7 +157,14 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                       </td>
                       <td className="py-2 px-2 text-right font-mono text-orange-400 bg-orange-900/20">
                         {isLast ? (
-                          <span className="cursor-help" title="Most junior tranche keeps all remaining interest">-</span>
+                          <ConstraintTooltip
+                            title="No Cascade Out"
+                            why="This is the most junior tranche. It receives 100% of any remaining interest that cascaded down, regardless of its supply utilization."
+                            scope="tranche"
+                            trancheIndex={i}
+                          >
+                            <span className="text-lotus-grey-500">—</span>
+                          </ConstraintTooltip>
                         ) : (
                           `$${formatNumber(result.cascadeOut, 2)}`
                         )}
@@ -163,6 +202,8 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
           <li><strong>Final:</strong> Most junior tranche receives 100% of remaining interest</li>
         </ol>
       </div>
+
+      <AssumptionsPanel assumptions={MODULE_ASSUMPTIONS.interestSimulator} />
     </div>
   );
 }
