@@ -25,7 +25,7 @@ export function TrancheTable({
   return (
     <div>
       {/* Exportable Section */}
-      <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-4 relative">
+      <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-4 pb-6 relative">
         <ExportButton targetRef={exportRef} filename="liquidity-flow-table" />
 
         {/* Title for standalone export */}

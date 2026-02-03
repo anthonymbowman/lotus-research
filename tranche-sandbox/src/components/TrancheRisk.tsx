@@ -19,10 +19,11 @@ function calculateLIF(lltv: number): number {
 }
 
 // Calculate bad debt threshold - price drop where bad debt starts
+// Formula: 1 - LLTV × LIF (assumes health factor = 1 at liquidation)
 function calculateBadDebtThreshold(lltv: number): number {
   const lif = calculateLIF(lltv);
   const lltvDecimal = lltv / 100;
-  const badDebtThreshold = (1 - (lltvDecimal - (1 - lif))) * 100;
+  const badDebtThreshold = (1 - lltvDecimal * lif) * 100;
   return Math.max(0, badDebtThreshold);
 }
 
@@ -137,7 +138,7 @@ function LiquidationsAndRisk() {
                       tranche.badDebtThreshold < 10 ? 'text-red-400' :
                       tranche.badDebtThreshold < 15 ? 'text-amber-400' : 'text-emerald-400'
                     }`}>
-                      ~{tranche.badDebtThreshold.toFixed(0)}% drop
+                      {tranche.badDebtThreshold.toFixed(2)}% drop
                     </span>
                   </td>
                   <td className="text-center py-2 px-2">
@@ -164,27 +165,45 @@ function LiquidationsAndRisk() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Collateral:</span>
-                <span className="font-mono text-lotus-grey-200">${collateralValue}</span>
+                <span className="font-mono text-lotus-grey-200">${collateralValue.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Debt ({selectedLLTV}% LLTV):</span>
-                <span className="font-mono text-lotus-grey-200">${debtAtMaxBorrow.toFixed(0)}</span>
+                <span className="font-mono text-lotus-grey-200">${debtAtMaxBorrow.toFixed(2)}</span>
               </div>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Seized by liquidator:</span>
-                <span className="font-mono text-emerald-400">${seizedCollateral.toFixed(0)}</span>
+                <span className="font-mono text-emerald-400">${seizedCollateral.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Liquidator profit:</span>
-                <span className="font-mono text-emerald-400">${liquidatorProfit.toFixed(0)}</span>
+                <span className="font-mono text-emerald-400">${liquidatorProfit.toFixed(2)}</span>
               </div>
             </div>
           </div>
+
+          {/* Bad Debt Calculation */}
+          <div className="mt-4 pt-3 border-t border-lotus-grey-600">
+            <div className="flex justify-between items-center text-sm mb-2">
+              <span className="text-lotus-grey-400">Bad debt starts after:</span>
+              <span className="font-mono font-medium text-amber-400">{selectedData.badDebtThreshold.toFixed(2)}% price drop</span>
+            </div>
+            <div className="text-xs text-lotus-grey-500 space-y-1">
+              <p>
+                <span className="text-lotus-grey-400">Formula:</span>{' '}
+                <span className="font-mono">1 - LLTV × LIF = 1 - {(selectedLLTV / 100).toFixed(2)} × {selectedData.lif.toFixed(4)} = {(selectedData.badDebtThreshold / 100).toFixed(4)}</span>
+              </p>
+              <p className="text-lotus-grey-500 mt-2">
+                This assumes the loan's health factor is 1 (at the liquidation threshold) and that gas conditions enable a profitable liquidation.
+                In practice, oracle lag or high gas costs may delay liquidations, increasing bad debt risk.
+              </p>
+            </div>
+          </div>
+
           <p className="text-xs text-lotus-grey-500 mt-3">
-            Liquidators receive a {formatPercent(selectedData.liquidationBonus)} bonus as incentive.
-            Bad debt occurs if collateral drops ~{selectedData.badDebtThreshold.toFixed(0)}% before liquidation.
+            Liquidators receive a {formatPercent(selectedData.liquidationBonus, 2)} bonus as incentive.
           </p>
         </div>
       </details>

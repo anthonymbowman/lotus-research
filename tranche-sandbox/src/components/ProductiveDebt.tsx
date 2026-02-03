@@ -279,7 +279,7 @@ function SpreadCompressionSection({
         </div>
 
         {/* Section 2: Exportable Visual */}
-        <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-6 relative">
+        <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-6 pb-8 relative">
           {/* Export Button - top right */}
           <ExportButton targetRef={exportRef} filename="spread-compression-comparison" />
 

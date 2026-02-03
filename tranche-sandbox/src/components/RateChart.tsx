@@ -70,7 +70,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => f * chartData.maxRate);
 
   return (
-    <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700 relative">
+    <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded-xl p-4 pb-6 border border-lotus-grey-700 relative">
       <ExportButton targetRef={exportRef} filename="rates-by-lltv" />
 
       {/* Title for standalone export */}
@@ -125,7 +125,8 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
                 y={getY(tick)}
                 textAnchor="end"
                 alignmentBaseline="middle"
-                className="text-xs fill-lotus-grey-500"
+                style={{ fontSize: '12px' }}
+                fill="#6b7280"
               >
                 {formatPercent(tick)}
               </text>
@@ -139,7 +140,8 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
               x={getX(i)}
               y={chartHeight - paddingBottom + 20}
               textAnchor="middle"
-              className="text-xs fill-lotus-grey-400 font-medium"
+              style={{ fontSize: '12px', fontWeight: 500 }}
+              fill="#9ca3af"
             >
               {t.lltv}%
             </text>
@@ -150,7 +152,8 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
             x={paddingLeft + graphWidth / 2}
             y={chartHeight - 5}
             textAnchor="middle"
-            className="text-xs fill-lotus-grey-500"
+            style={{ fontSize: '12px' }}
+            fill="#6b7280"
           >
             LLTV
           </text>

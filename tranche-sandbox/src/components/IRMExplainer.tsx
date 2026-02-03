@@ -136,18 +136,31 @@ export function IRMExplainer() {
               {(utilization * 100).toFixed(0)}%
             </span>
           </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={utilization * 100}
-            onChange={(e) => setUtilization(Number(e.target.value) / 100)}
-            className="w-full accent-lotus-purple-500"
-          />
-          <div className="flex justify-between text-xs text-lotus-grey-500 mt-1">
-            <span>0%</span>
-            <span className="text-amber-400">90% target</span>
-            <span>100%</span>
+          <div className="relative">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={utilization * 100}
+              onChange={(e) => setUtilization(Number(e.target.value) / 100)}
+              className="w-full accent-lotus-purple-500"
+            />
+            {/* Tick mark at 90% - account for slider thumb padding (~8px each side) */}
+            <div
+              className="absolute top-0 w-0.5 h-2 bg-amber-400"
+              style={{ left: 'calc(8px + (100% - 16px) * 0.9)', transform: 'translateX(-50%)' }}
+            />
+          </div>
+          {/* Labels aligned with slider track */}
+          <div className="relative text-xs mt-1">
+            <span className="ml-2 text-lotus-grey-500">0%</span>
+            <span
+              className="absolute text-amber-400"
+              style={{ left: 'calc(8px + (100% - 16px) * 0.9)', transform: 'translateX(-50%)' }}
+            >
+              90% target
+            </span>
+            <span className="absolute right-0 mr-2 text-lotus-grey-500">100%</span>
           </div>
         </div>
 

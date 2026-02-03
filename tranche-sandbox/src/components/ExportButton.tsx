@@ -39,9 +39,13 @@ export function ExportButton({ targetRef, filename = 'chart-export' }: ExportBut
     if (button) button.style.display = 'none';
 
     try {
-      const dataUrl = await toPng(targetRef.current, {
+      // Capture full scrollable content, not just visible area
+      const element = targetRef.current;
+      const dataUrl = await toPng(element, {
         backgroundColor: '#1a1625',
         pixelRatio: 2,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
       });
 
       const link = document.createElement('a');
