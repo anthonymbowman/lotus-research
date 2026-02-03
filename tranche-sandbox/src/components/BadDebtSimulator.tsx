@@ -2,7 +2,6 @@ import { useState, useMemo, useRef } from 'react';
 import type { TrancheData, BadDebtEvent } from '../types';
 import { simulateBadDebt, formatNumber, formatPercent } from '../math/lotusAccounting';
 import { ConstraintBadge } from './ConstraintBadge';
-import { ConstraintTooltip } from './ConstraintTooltip';
 import { DefinitionBadge } from './DefinitionBadge';
 import { AssumptionsPanel, MODULE_ASSUMPTIONS } from './AssumptionsPanel';
 import { ExportButton } from './ExportButton';

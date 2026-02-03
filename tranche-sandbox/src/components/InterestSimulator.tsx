@@ -6,7 +6,6 @@ import {
   formatPercent,
 } from '../math/lotusAccounting';
 import { DefinitionBadge } from './DefinitionBadge';
-import { ConstraintTooltip } from './ConstraintTooltip';
 import { AssumptionsPanel, MODULE_ASSUMPTIONS } from './AssumptionsPanel';
 import { ExportButton } from './ExportButton';
 
