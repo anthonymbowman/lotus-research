@@ -5,7 +5,6 @@ import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
 import { RateChart } from './RateChart';
 import { DynamicLoanMix } from './DynamicLoanMix';
-import { SankeyDiagram } from './SankeyDiagram';
 import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
 
@@ -204,9 +203,6 @@ export function TrancheLiquidity({
 
       {/* Rates by LLTV */}
       <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
-
-      {/* Liquidity Flow Diagram (Sankey) */}
-      <SankeyDiagram tranches={tranches} />
 
       {/* Dynamic Loan Mix */}
       <DynamicLoanMix tranches={tranches} />
