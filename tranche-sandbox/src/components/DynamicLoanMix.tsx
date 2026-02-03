@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { TrancheData } from '../types';
 import { computeFundingMatrix } from '../math/fundingMatrix';
 import { formatPercent } from '../math/lotusAccounting';
+import { ExportButton } from './ExportButton';
 
 interface DynamicLoanMixProps {
   tranches: TrancheData[];
@@ -28,6 +29,7 @@ type ViewMode = 'lender' | 'borrower';
 
 export function DynamicLoanMix({ tranches }: DynamicLoanMixProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('lender');
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const fundingData = useMemo(() => {
     return computeFundingMatrix(tranches, false);
@@ -84,9 +86,16 @@ export function DynamicLoanMix({ tranches }: DynamicLoanMixProps) {
   }, [tranches, fundingData]);
 
   return (
-    <div className="space-y-4">
+    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded-lg p-4 pb-6">
+      <ExportButton targetRef={exportRef} filename="dynamic-loan-mix" />
+
+      {/* Title for standalone export */}
+      <h4 className="text-lg font-semibold text-lotus-grey-100 text-center pr-10">
+        Dynamic Loan Mix
+      </h4>
+
       {/* View Toggle */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-center">
         <button
           onClick={() => setViewMode('lender')}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${

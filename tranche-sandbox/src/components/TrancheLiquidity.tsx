@@ -5,6 +5,7 @@ import { CollapsibleSection } from './ConceptExplainer';
 import { RoleDiagramCompact } from './RoleDiagram';
 import { RateChart } from './RateChart';
 import { DynamicLoanMix } from './DynamicLoanMix';
+import { SankeyDiagram } from './SankeyDiagram';
 import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
 
@@ -201,20 +202,14 @@ export function TrancheLiquidity({
         />
       </div>
 
-      {/* Rates by LLTV - moved up to be right after main table */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Rates by LLTV</h3>
-        <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
-      </div>
+      {/* Rates by LLTV */}
+      <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />
+
+      {/* Liquidity Flow Diagram (Sankey) */}
+      <SankeyDiagram tranches={tranches} />
 
       {/* Dynamic Loan Mix */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Dynamic Loan Mix</h3>
-        <p className="text-sm text-lotus-grey-400 mb-4">
-          See how each tranche's capital is allocated across the system. The mix changes dynamically based on supply and borrow activity.
-        </p>
-        <DynamicLoanMix tranches={tranches} />
-      </div>
+      <DynamicLoanMix tranches={tranches} />
 
       <CollapsibleSection
         title="Understanding Junior Metrics"

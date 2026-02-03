@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { TrancheData } from '../types';
 import { formatPercent } from '../math/lotusAccounting';
+import { ExportButton } from './ExportButton';
 
 interface RateChartProps {
   tranches: TrancheData[];
@@ -18,6 +19,7 @@ interface HoverInfo {
 
 export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const chartData = useMemo(() => {
     let maxRate = 0;
@@ -68,9 +70,16 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => f * chartData.maxRate);
 
   return (
-    <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700">
+    <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700 relative">
+      <ExportButton targetRef={exportRef} filename="rates-by-lltv" />
+
+      {/* Title for standalone export */}
+      <h4 className="text-lg font-semibold text-lotus-grey-100 mb-4 text-center pr-10">
+        Rates by LLTV
+      </h4>
+
       {/* Legend at top */}
-      <div className="flex gap-6 items-center justify-end mb-4 text-xs">
+      <div className="flex gap-6 items-center justify-center mb-4 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
           <span className="text-lotus-grey-300">Total Borrow Rate</span>
