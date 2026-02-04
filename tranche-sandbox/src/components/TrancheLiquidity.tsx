@@ -133,8 +133,8 @@ export function TrancheLiquidity({
             </div>
             <div>
               <p className="text-sm text-lotus-grey-200">
-                <strong className="text-lotus-purple-400">No idle capital:</strong> Your supply earns yield even when borrowers at your
-                tranche level aren't active, because it supports borrowers at more senior tranches.
+                <strong className="text-lotus-purple-400">Idle capital still earns:</strong> Your supply earns the base rate even when
+                borrowers at your tranche level aren't active, and it can support borrowers at more senior tranches.
               </p>
             </div>
           </div>

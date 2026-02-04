@@ -17,7 +17,7 @@ export interface TrancheInput {
   borrowAssets: number;
   /** Pending interest accrued but not yet distributed */
   pendingInterest: number;
-  /** Borrow rate (APR as decimal, e.g., 0.05 = 5%) */
+  /** Credit spread (APR as decimal, e.g., 0.05 = 5%). Total borrow rate = base rate + credit spread. */
   borrowRate: number;
 }
 
@@ -37,7 +37,7 @@ export interface TrancheComputed {
   availableSupply: number;
   /** Whether this tranche is the binding constraint for free supply */
   isBindingConstraint: boolean;
-  /** Supply utilization: borrowAssets / (supplyAssets + pendingInterest) */
+  /** Supply utilization: supply / availableSupply (most junior is 100% in valid states) */
   supplyUtilization: number | null;
   /** Borrow utilization: (jrSupply - freeSupply) / jrSupply (if jrSupply > 0) */
   borrowUtilization: number | null;

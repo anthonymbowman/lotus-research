@@ -43,8 +43,8 @@ const DEFAULT_STRATEGIES: AllocationStrategy[] = [
     riskScore: 5,
   },
   {
-    name: 'Aggressive',
-    description: 'Maximizes yield by concentrating in junior tranches.',
+    name: 'Boost',
+    description: 'Targets higher yield with increased junior tranche exposure.',
     allocations: [
       { lltv: 75, percent: 10 },
       { lltv: 80, percent: 15 },
@@ -55,6 +55,50 @@ const DEFAULT_STRATEGIES: AllocationStrategy[] = [
     riskScore: 8,
   },
 ];
+
+function WstEthMark() {
+  return (
+    <div className="relative w-12 h-12 rounded-full bg-emerald-900/40 border border-emerald-600/60 flex items-center justify-center">
+      <svg className="w-6 h-6 text-emerald-300" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l6 10-6 10-6-10 6-10z" stroke="currentColor" strokeWidth={1.5} />
+        <path d="M12 2l6 10-6 4-6-4 6-10z" fill="currentColor" opacity="0.25" />
+      </svg>
+      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-lotus-purple-600 text-[9px] font-bold text-white flex items-center justify-center">
+        w
+      </span>
+    </div>
+  );
+}
+
+function CbBtcMark() {
+  return (
+    <div className="relative w-12 h-12 rounded-full bg-amber-900/40 border border-amber-600/60 flex items-center justify-center ring-2 ring-blue-500/30">
+      <span className="text-amber-300 text-lg font-bold">B</span>
+      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-blue-500 text-[8px] font-bold text-white flex items-center justify-center">
+        cb
+      </span>
+    </div>
+  );
+}
+
+const LAUNCH_MARKETS = [
+  {
+    id: 'wstETH',
+    name: 'Wrapped Staked ETH',
+    symbol: 'wstETH',
+    description: 'Liquid-staked ETH collateral with deep onchain liquidity.',
+    icon: WstEthMark,
+    accent: 'text-emerald-300',
+  },
+  {
+    id: 'cbBTC',
+    name: 'Coinbase Bitcoin',
+    symbol: 'cbBTC',
+    description: 'Coinbase-wrapped BTC designed for institutional-grade custody.',
+    icon: CbBtcMark,
+    accent: 'text-amber-300',
+  },
+] as const;
 
 export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   const [selectedStrategy, setSelectedStrategy] = useState<string>('Balanced');
@@ -97,7 +141,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         title="Vault Strategies"
         whatYoullLearn={[
           "How vaults aggregate deposits and allocate across tranches",
-          "The tradeoffs between conservative and aggressive strategies",
+          "The tradeoffs between conservative and boost strategies",
           "How expected APY and risk score relate to allocation",
         ]}
         tryThis="Click each strategy card below to compare their allocations, APY, and risk profiles."
@@ -143,6 +187,11 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               Interest earned accrues to the vault. Vault shares appreciate in value over time.
             </p>
           </div>
+        </div>
+
+        <div className="mb-6 rounded-lg border border-amber-700/50 bg-amber-900/20 p-3 text-xs text-amber-200">
+          Withdrawals can be constrained when assets are deployed across tranches. If liquidity is tight,
+          users may need to wait for borrows to unwind or for new supply to enter.
         </div>
 
         {/* Flow Diagram - Vertical Layout */}
@@ -228,6 +277,42 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               </div>
             </div>
           </div>
+          <p className="text-xs text-lotus-grey-400 mt-4 text-center">
+            Users deposit and withdraw in USDC. The vault and protocol account in LotusUSD under the hood (the loan asset).
+          </p>
+        </div>
+      </div>
+
+      {/* Launch Markets */}
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+          <div>
+            <h3 className="text-lg font-medium text-lotus-grey-100 mb-1">Launch Markets</h3>
+            <p className="text-sm text-lotus-grey-300">
+              Vaults can allocate across multiple markets with high-quality collateral — not a single pool.
+            </p>
+          </div>
+          <div className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-900/30 text-emerald-300 border border-emerald-700/50">
+            High-quality collateral
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {LAUNCH_MARKETS.map((market) => {
+            const Icon = market.icon;
+            return (
+              <div key={market.id} className="bg-lotus-grey-700/40 rounded-xl p-4 border border-lotus-grey-600 flex items-center gap-4">
+                <Icon />
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="text-sm font-semibold text-lotus-grey-100">{market.name}</h4>
+                    <span className={`text-xs font-mono ${market.accent}`}>{market.symbol}</span>
+                  </div>
+                  <p className="text-xs text-lotus-grey-400">{market.description}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

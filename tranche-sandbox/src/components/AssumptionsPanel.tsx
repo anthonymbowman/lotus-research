@@ -130,7 +130,7 @@ export const MODULE_ASSUMPTIONS = {
     },
     {
       label: 'Fixed borrow rates',
-      description: 'Borrow rates are set manually. In practice, rates adjust dynamically based on utilization.',
+      description: 'Borrow rates are fixed by the scenario in this simulator. In practice, rates adjust dynamically via the IRM.',
     },
   ],
   badDebtSimulator: [

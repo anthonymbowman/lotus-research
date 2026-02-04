@@ -11,7 +11,7 @@ interface SceneData {
 const SCENE_DATA: Record<number, SceneData> = {
   1: {
     title: 'Isolated Market Baseline',
-    copy: 'One market, one risk configuration, everyone shares the same terms.',
+    copy: 'In a single isolated market, one risk configuration means everyone shares the same terms.',
   },
   2: {
     title: 'Risk Curve',
@@ -23,7 +23,7 @@ const SCENE_DATA: Record<number, SceneData> = {
   },
   4: {
     title: 'Borrower Subsidy Problem',
-    copy: 'All borrowers pay the same rate.',
+    copy: 'In a single isolated market, all borrowers pay the same rate.',
   },
   5: {
     title: 'Borrower That Cannot Exist',
@@ -503,7 +503,7 @@ function Scene6() {
           <Arrow direction="right" color="text-lotus-purple-400" />
           <span className="text-xs text-lotus-purple-400 mt-1 font-medium">Capital flows</span>
         </div>
-        <PoolCard title="ALT / USDC" subtitle="Risky collateral" metrics={[{ label: 'Yield', value: '12%', color: 'text-emerald-400' }]} variant="highlight" size="small" />
+        <PoolCard title="x / USD" subtitle="Risky collateral" metrics={[{ label: 'Yield', value: '12%', color: 'text-emerald-400' }]} variant="highlight" size="small" />
       </div>
       <Callout variant="warning">
         <span className="font-semibold text-amber-300">Risk migrates — it doesn't disappear.</span>

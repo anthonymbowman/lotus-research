@@ -50,7 +50,7 @@ export function TrancheTable({
                 <DefinitionBadge
                   label="Credit Spread"
                   formula="Determined by IRM"
-                  note="Set by the Interest Rate Model based on borrow utilization. Rates increase monotonically with risk (junior tranches always have higher rates)."
+                  note="Set by the Interest Rate Model based on borrow utilization. In LLTV-ordered markets, the IRM enforces monotonic credit spreads. Total borrow rate = base rate + credit spread."
                   textColor="text-lotus-purple-300"
                 />
               </th>
@@ -174,19 +174,11 @@ export function TrancheTable({
                   </td>
 
                   <td className="py-1 px-1 bg-lotus-purple-900/20" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-end">
-                      <input
-                        type="number"
-                        value={Math.round(tranche.borrowRate * 1000) / 10}
-                        onChange={(e) => onTrancheChange(tranche.id, 'borrowRate', (parseFloat(e.target.value) || 0) / 100)}
-                        min={0}
-                        max={100}
-                        step={0.5}
-                        aria-label={`Credit spread for ${tranche.lltv}% LLTV`}
-                        className="w-16 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-purple-600 rounded font-mono text-lotus-purple-200
-                          focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
-                      />
-                      <span className="ml-1 text-lotus-grey-300">%</span>
+                    <div className="flex items-center justify-end gap-2">
+                      <span className="font-mono text-lotus-purple-200">
+                        {formatPercent(tranche.borrowRate, 1)}
+                      </span>
+                      <span className="text-[10px] text-lotus-grey-400 uppercase tracking-wide">IRM</span>
                     </div>
                   </td>
 

@@ -27,7 +27,8 @@ export function Liquidations({ computedTranches }: LiquidationsProps) {
             <h4 className="font-medium text-red-300 mb-1">What is <TermDefinition term="bad-debt">Bad Debt</TermDefinition>?</h4>
             <p className="text-sm text-red-200">
               Bad debt occurs when a position's collateral value is less than the debt owed after liquidation.
-              This shortfall is absorbed by lenders through the cascade mechanism.
+              This shortfall is allocated to the tranches that funded the borrow, proportional to their funding share,
+              and cascades to more junior tranches as needed.
             </p>
           </div>
         </div>
@@ -39,7 +40,7 @@ export function Liquidations({ computedTranches }: LiquidationsProps) {
           <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Bad Debt Simulation</h3>
           <p className="text-lotus-grey-300 mb-6">
             Explore how bad debt is absorbed by tranches. Enter bad debt amounts to see
-            how losses cascade from senior to junior tranches.
+            how losses allocate to the lenders who funded a tranche and cascade to more junior tranches.
           </p>
           <BadDebtSimulator tranches={computedTranches} />
         </div>

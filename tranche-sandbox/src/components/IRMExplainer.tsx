@@ -57,8 +57,9 @@ export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Rate Monotonicity</h3>
         <p className="text-sm text-lotus-grey-300 mb-4">
-          Rates <strong className="text-lotus-grey-100">always increase with LLTV</strong>. Junior tranches (higher LLTV)
-          have higher rates than senior tranches because lenders face more risk and need compensation.
+          In <strong className="text-lotus-grey-100">LLTV-ordered markets</strong>, the IRM enforces monotonic
+          credit spreads so junior tranches (higher LLTV) are priced higher to compensate for risk. This
+          simulator uses a simplified IRM for illustration and does not expose manual spread overrides.
         </p>
 
         {/* Monotonicity visualization */}

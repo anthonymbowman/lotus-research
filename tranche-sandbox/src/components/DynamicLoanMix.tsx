@@ -87,7 +87,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
   }, [tranches, fundingData]);
 
   return (
-    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded-lg p-4 pb-6">
+    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded-lg p-4 pb-10">
       <ExportButton targetRef={exportRef} filename="dynamic-loan-mix" />
 
       {/* Title for standalone export */}
@@ -127,6 +127,23 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
           <>Due to cascading supply, a borrower at a senior tranche draws liquidity from multiple tranches (their own and more junior).</>
         )}
       </p>
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-4 pb-2 border-b border-lotus-grey-700">
+        <span className="text-xs text-lotus-grey-400">Tranches:</span>
+        {tranches.map((t, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            <div className={`w-3 h-3 rounded ${SEGMENT_COLORS[i]}`} />
+            <span className={`text-xs ${SEGMENT_TEXT_COLORS[i]}`}>{t.lltv}%</span>
+          </div>
+        ))}
+        {viewMode === 'lender' && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded bg-lotus-grey-600" />
+            <span className="text-xs text-lotus-grey-400">Idle</span>
+          </div>
+        )}
+      </div>
 
       {/* Bars */}
       <div className="space-y-2">
@@ -226,22 +243,6 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
         )}
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-4 pt-2 border-t border-lotus-grey-700">
-        <span className="text-xs text-lotus-grey-400">Tranches:</span>
-        {tranches.map((t, i) => (
-          <div key={i} className="flex items-center gap-1.5">
-            <div className={`w-3 h-3 rounded ${SEGMENT_COLORS[i]}`} />
-            <span className={`text-xs ${SEGMENT_TEXT_COLORS[i]}`}>{t.lltv}%</span>
-          </div>
-        ))}
-        {viewMode === 'lender' && (
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-lotus-grey-600" />
-            <span className="text-xs text-lotus-grey-400">Idle</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

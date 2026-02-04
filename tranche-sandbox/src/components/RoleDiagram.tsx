@@ -188,7 +188,7 @@ export function RoleDiagramCompact() {
             <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-            <span className="px-2 py-0.5 bg-blue-900/50 rounded text-xs font-mono">USDC</span>
+            <span className="px-2 py-0.5 bg-blue-900/50 rounded text-xs font-mono">USDC (via LotusUSD)</span>
           </div>
           <div className="text-xs text-blue-400">
             Choose tranche based on desired leverage level.
@@ -203,7 +203,7 @@ export function RoleDiagramCompact() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-lotus-grey-300">
-            <span className="text-lotus-grey-300 font-medium">USDC auto-conversion:</span> When you deposit or withdraw, USDC is automatically converted to/from LotusUSD by the protocol. You always interact with USDC.
+            <span className="text-lotus-grey-300 font-medium">USDC auto-conversion:</span> Users deposit, withdraw, and receive loans in USDC while the protocol accounts in LotusUSD under the hood (the loan asset).
           </p>
         </div>
       </div>

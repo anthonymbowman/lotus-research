@@ -71,8 +71,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   'tranche-seniority': {
     term: 'Tranche Seniority',
-    shortDef: 'Senior tranches (lower LLTV) are safer and earn less. Junior tranches (higher LLTV) earn more but absorb losses first.',
-    fullDef: 'Think of tranches like floors in a building during a flood. Senior tranches are higher floors — water (losses) reaches them last. Junior tranches are ground floor — they absorb losses first, but earn higher yields to compensate for this risk.',
+    shortDef: 'Senior tranches (lower LLTV) are safer and earn less. Junior tranches (higher LLTV) earn more and face higher loss risk; losses are allocated by supply utilization and cascade to junior tranches.',
+    fullDef: 'Think of tranches like floors in a building during a flood. Senior tranches are higher floors — water (losses) reaches them later. Losses are allocated by supply utilization at each level and cascade from senior to junior, so junior tranches face higher loss risk and earn higher yields to compensate.',
     example: '75% LLTV = senior (safer, ~4% yield), 95% LLTV = junior (riskier, ~8% yield)',
     related: ['lltv', 'cascade', 'bad-debt'],
   },
@@ -88,7 +88,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   'bad-debt': {
     term: 'Bad Debt',
     shortDef: 'Debt that cannot be fully recovered from liquidation — the shortfall is absorbed by lenders.',
-    fullDef: 'Bad debt occurs when collateral value drops so fast that even after liquidation, there\'s not enough to cover the debt. This shortfall cascades through tranches from senior to junior, with junior tranches absorbing whatever senior tranches couldn\'t.',
+    fullDef: 'Bad debt occurs when collateral value drops so fast that even after liquidation, there\'s not enough to cover the debt. This shortfall is allocated by supply utilization at each tranche and cascades from senior to junior; the most junior tranche absorbs whatever remains if supply is still available.',
     example: 'Borrower owes $10,000, collateral liquidates for $9,000 → $1,000 bad debt absorbed by tranches',
     related: ['liquidation', 'cascade', 'tranche-seniority'],
   },
@@ -103,17 +103,26 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   'supply-utilization': {
     term: 'Supply Utilization',
-    shortDef: 'The percentage of lender deposits that are currently being borrowed.',
-    fullDef: 'Supply utilization determines how much of each tranche\'s supply is actually being used. Higher utilization means more of your deposit is earning the full borrow rate. Lower utilization means more is earning only the productive debt base rate.',
-    formula: 'Supply Utilization = Borrowed Amount / Available Supply',
-    example: 'If $8M is borrowed from $10M supplied, utilization = 80%',
-    related: ['supply-rate', 'cascade'],
+    shortDef: 'The share of a tranche\'s available supply that comes from its own lenders.',
+    fullDef: 'Supply utilization is supply divided by available supply. It determines how much interest and bad debt stays at a tranche vs cascading to junior tranches. In valid LLTV-ordered markets, the most junior tranche has 100% supply utilization.',
+    formula: 'Supply Utilization = Supply / Available Supply',
+    example: 'If $8M is supplied and available supply is $10M, utilization = 80%',
+    related: ['supply-rate', 'cascade', 'borrow-utilization'],
+  },
+
+  'borrow-utilization': {
+    term: 'Borrow Utilization',
+    shortDef: 'The share of junior supply that is currently utilized by borrows.',
+    fullDef: 'Borrow utilization is one minus free supply divided by junior supply. This is the utilization signal that drives IRM credit spreads and borrow rates.',
+    formula: 'Borrow Utilization = 1 − (Free Supply / Jr Supply)',
+    example: 'If Jr Supply is 10,000 and Free Supply is 2,000 → borrow utilization = 80%',
+    related: ['borrow-rate', 'spread', 'supply-utilization'],
   },
 
   spread: {
     term: 'Credit Spread',
     shortDef: 'The additional rate set by the IRM on top of the base rate — determines the gap between borrow and supply rates.',
-    fullDef: 'The credit spread is set by the Interest Rate Model (IRM) based on utilization. In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt (PD) mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
+    fullDef: 'The credit spread is set by the Interest Rate Model (IRM) based on borrow utilization. In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt (PD) mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
     formula: 'Borrow Rate = Base Rate + Credit Spread',
     example: 'Base rate 3%, credit spread 2% → borrow rate = 5%',
     related: ['supply-rate', 'borrow-rate', 'productive-debt'],
@@ -146,8 +155,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   lotususd: {
     term: 'LotusUSD',
-    shortDef: 'Lotus\'s stablecoin, backed by USDC and US Treasuries.',
-    fullDef: 'LotusUSD is the loan token used in Lotus Protocol. It\'s backed by a mix of USDC (for instant redemptions) and US Treasury bills (for yield generation). The treasury portion generates the productive debt base rate that benefits all lenders.',
+    shortDef: 'Lotus\'s loan asset, backed by USDC and US Treasuries.',
+    fullDef: 'LotusUSD is the loan token used in Lotus Protocol. It\'s backed by a mix of USDC (for instant redemptions) and US Treasury bills (for yield generation). Users deposit and withdraw in USDC; the protocol converts to and from LotusUSD under the hood. The treasury portion generates the productive debt base rate that benefits all lenders.',
     example: '80% treasury allocation + 4% treasury rate = 3.2% base rate for all supply',
     related: ['productive-debt'],
   },
@@ -155,16 +164,16 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   'supply-rate': {
     term: 'Supply Rate',
     shortDef: 'The yield lenders earn on their deposits.',
-    fullDef: 'Supply rate combines the productive debt base rate (from treasury yields) plus a share of borrow interest based on utilization. Higher utilization means more of your deposit earns the full borrow rate.',
-    formula: 'Supply Rate = Productive Debt Rate + (Spread × Utilization)',
+    fullDef: 'Supply rate combines the productive debt base rate plus interest allocated through the cascade based on supply utilization at each tranche. In an isolated market, a simplified approximation is base rate + spread × utilization.',
+    formula: 'Simplified (isolated market): Supply Rate = Productive Debt Rate + (Spread × Utilization)',
     related: ['borrow-rate', 'productive-debt', 'spread'],
   },
 
   'borrow-rate': {
     term: 'Borrow Rate',
     shortDef: 'The interest rate borrowers pay on their loans.',
-    fullDef: 'Borrow rate is determined by the Interest Rate Model (IRM) based on utilization. In Lotus, the borrow rate builds on top of the productive debt base rate, with the spread adjusting based on demand.',
-    formula: 'Borrow Rate = Productive Debt Rate + Spread',
+    fullDef: 'Borrow rate is determined by the Interest Rate Model (IRM) based on borrow utilization. In Lotus, the total borrow rate is the productive debt base rate plus the credit spread.',
+    formula: 'Borrow Rate = Productive Debt Rate + Credit Spread',
     related: ['supply-rate', 'productive-debt', 'spread'],
   },
 
