@@ -11,7 +11,6 @@ export function Introduction() {
     <div className="space-y-8">
       <PageHeader
         whatYoullLearn={intro.pageHeader.whatYoullLearn}
-        tryThis={intro.pageHeader.tryThis}
       />
 
       {/* Interactive Protocol Explainer */}
