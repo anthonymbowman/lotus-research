@@ -66,7 +66,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         <div>
           <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Borrow Experience</h3>
           <p className="text-sm text-lotus-grey-300">
-            Higher LLTV tranches unlock more borrowing power. Senior borrowers also access deeper liquidity because
+            Higher LLTV tranches unlock more borrowing power. Senior borrowers can access deeper liquidity because
             junior supply cascades upward.
           </p>
         </div>
@@ -89,7 +89,9 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-xs uppercase tracking-wide text-lotus-grey-400">Borrow Amount (USDC)</label>
+                <label className="text-xs uppercase tracking-wide text-lotus-grey-400">
+                  Borrow Amount (USDC received)
+                </label>
               </div>
               <input
                 type="number"
@@ -106,6 +108,9 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                 {isOverSelectedMax
                   ? `Over the max borrow for ${selectedLLTV}% LLTV. Choose a higher LLTV or reduce borrow.`
                   : `Max borrow at ${selectedLLTV}% LLTV: $${selectedMaxBorrow.toLocaleString()}`}
+              </p>
+              <p className="text-xs text-lotus-grey-500 mt-1">
+                Loan balances are denominated in LotusUSD. USDC conversion happens automatically.
               </p>
             </div>
           </div>
@@ -141,7 +146,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                 <th className="text-left py-2 px-2">LLTV</th>
                 <th className="text-left py-2 px-2">Max Borrow</th>
                 <th className="text-left py-2 px-2">Max Leverage</th>
-                <th className="text-left py-2 px-2">Borrow Rate</th>
+                <th className="text-left py-2 px-2">Borrow Rate (Base + Spread)</th>
                 <th className="text-left py-2 px-2">Health Factor</th>
                 <th className="text-left py-2 px-2">Liq. Price (wstETH)</th>
               </tr>
@@ -199,13 +204,15 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         </div>
 
         <div className="text-xs text-lotus-grey-400">
-          Tranches that would put your health factor below 1.05 are disabled.
+          Tranches that would put your health factor below 1.05 are disabled. Liquidation occurs at health factor 1.0
+          (LTV = LLTV); 1.05 is a simulator safety buffer.
         </div>
 
       </div>
 
       <TeachingPrompt title="Key takeaway:">
-        Borrowing conservatively gives you both the productive-debt base rate and deeper liquidity from cascaded supply.
+        Borrowing conservatively can lower your credit spread, so your total borrow rate (base + spread) is lower, while
+        senior tranches can still draw on cascaded liquidity.
       </TeachingPrompt>
     </div>
   );
