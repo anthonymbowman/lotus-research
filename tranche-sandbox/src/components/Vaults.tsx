@@ -288,39 +288,6 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         </div>
       </div>
 
-      {/* Launch Markets */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-          <div>
-            <h3 className="text-lg font-medium text-lotus-grey-100 mb-1">Launch Markets</h3>
-            <p className="text-sm text-lotus-grey-300">
-              Vaults can allocate across multiple markets with high-quality collateral — not a single pool.
-            </p>
-          </div>
-          <div className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-900/30 text-emerald-300 border border-emerald-700/50">
-            High-quality collateral
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {LAUNCH_MARKETS.map((market) => {
-            const Icon = market.icon;
-            return (
-              <div key={market.id} className="bg-lotus-grey-700/40 rounded-xl p-4 border border-lotus-grey-600 flex items-center gap-4">
-                <Icon />
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-sm font-semibold text-lotus-grey-100">{market.name}</h4>
-                    <span className={`text-xs font-mono ${market.accent}`}>{market.symbol}</span>
-                  </div>
-                  <p className="text-xs text-lotus-grey-400">{market.description}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Strategy Selector */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Allocation Strategies</h3>
