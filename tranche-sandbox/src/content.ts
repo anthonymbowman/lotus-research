@@ -16,7 +16,7 @@ export const sectionMeta: Record<
 > = {
   intro: {
     title: 'Get Started',
-    headline: 'Welcome to Lotus Protocol',
+    headline: 'Welcome to Lotus',
     subtitle: 'Understand how Lotus delivers better rates through connected liquidity',
     transitionText: "Let's start with the foundation: how LotusUSD backing creates lower rates...",
     next: { id: 'lotususd', label: 'Stable Backing' },
@@ -24,42 +24,42 @@ export const sectionMeta: Record<
   lotususd: {
     title: 'Stable Backing',
     headline: 'LotusUSD & Productive Debt',
-    subtitle: 'Treasury backing creates a lower base rate for all borrowers',
+    subtitle: 'Every dollar supplied earns yield, even when not borrowed',
     transitionText: "Now let's see what that base rate unlocks for borrowers...",
     next: { id: 'borrower-benefits', label: 'Borrower Outcomes' },
   },
   'borrower-benefits': {
     title: 'Borrower Outcomes',
     headline: 'Better Borrowing, By Design',
-    subtitle: 'Lower rates, deeper access, and more predictable terms',
+    subtitle: 'Low predictable rates or more borrowing power — your choice',
     transitionText: 'Next up: how tranches layer risk and rewards across the market.',
     next: { id: 'risk', label: 'Risk Layers' },
   },
   risk: {
     title: 'Risk Layers',
     headline: 'Understanding Tranche Risk',
-    subtitle: 'Higher LTV means higher risk for lenders — and higher potential returns',
+    subtitle: 'A higher LLTV means higher risk for lenders — and higher potential returns',
     transitionText: "With risk understood, let's see how liquidity connects tranches...",
     next: { id: 'tranches', label: 'Liquidity Flow' },
   },
   tranches: {
     title: 'Liquidity Flow',
     headline: 'Connected Liquidity',
-    subtitle: 'How supply cascades across tranches to maximize efficiency',
+    subtitle: 'Unused liquidity flows across tranches, maximizing efficiency while maintaining risk segmentation',
     transitionText: "Interest flows through these tranches. Let's trace it...",
     next: { id: 'interest-bad-debt', label: 'Interest & Losses' },
   },
   'interest-bad-debt': {
     title: 'Interest & Losses',
     headline: 'Interest Cascade & Bad Debt',
-    subtitle: 'How interest flows through tranches and who absorbs losses',
+    subtitle: 'Risk and reward stay aligned as interest and losses flow through across tranches',
     transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
     next: { id: 'vaults', label: 'Your Strategy' },
   },
   vaults: {
     title: 'Your Strategy',
     headline: 'Choose Your Allocation',
-    subtitle: 'Pick the risk/reward profile that matches your goals',
+    subtitle: 'Select a vault tailored to your risk tolerance and goals',
     transitionText: 'Need a quick reference? Review the key terms and formulas.',
     next: { id: 'glossary', label: 'Glossary' },
   },
@@ -81,9 +81,9 @@ export const content = {
   intro: {
     pageHeader: {
       whatYoullLearn: [
-        'What problem Lotus solves for DeFi lending',
+        'What Lotus solves for DeFi lending',
         'How tranches create different risk/reward options',
-        'Why connected liquidity beats isolated pools',
+        'Why connected liquidity beats isolated markets',
       ],
       tryThis: 'Scan the problem summary below to see how traditional lending fails borrowers and lenders.',
     },
@@ -98,11 +98,11 @@ export const content = {
         },
         {
           title: 'Connected Liquidity',
-          description: 'Unlike isolated pools, liquidity flows between tranches, creating deeper markets and more efficient rates while maintaining risk segmentation.',
+          description: 'Liquidity and information are shared across tranches, creating deeper, more efficient markets.',
         },
         {
           title: 'Productive Debt',
-          description: 'Idle liquidity earns yield from treasury-backed assets, giving lenders a base rate floor even when utilization is low and compressing spreads.',
+          description: 'Unutilized capital earns yield from treasury-backed assets, compressing borrow-lend spreads.',
         },
       ],
     },
@@ -120,8 +120,14 @@ export const content = {
       badge: 'The Problem',
       heading: 'Why Isolated Markets Break',
       intro: [
-        'Traditional lending markets force everyone into a single risk setting. When collateral risk changes, the market can\'t adapt — pricing breaks, liquidity fragments, and borrowers and lenders end up mismatched.',
-        'The result is a set of predictable failure modes that show up across isolated pools.',
+        'Traditional lending markets force everyone into a single set of risk parameters. ' +
+        'When collateral risk rises, the market responds with higher interest rates. ' +
+        'This forces conservative lenders into taking on added risk. Conservative borrowers end up subsidizing the aggressive ones. ', 
+        'The naive solution is to have multiple markets with different. Unfortunately, this fragments liquidity. ' +
+        'In practice, isolated markets find one equilibrium risk setting per lending pair. ' + 
+        'On volatile markets, the parameters are conservative. On correlated markets, they are aggressive. ',
+        'As a result, the only way to get high-yield with isolated markets, is to lend against risky correlated asset pairs. ' +
+        'This results in high-yield with high amounts of opaque tail risk.'
       ],
       points: [
         {
@@ -149,6 +155,7 @@ export const content = {
           copy: 'Risk-seeking lenders move to riskier collateral markets in search of higher yield.',
         },
       ],
+      learnMoreUrl: 'https://www.lotuslabs.net/blog/introducing-lotus',
     },
     solution: {
       badge: 'The Solution',
@@ -156,8 +163,22 @@ export const content = {
       overview: [
         'Lotus is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate pools for every risk setting, Lotus uses tranches to offer multiple risk levels while keeping liquidity connected.',
         'A market contains multiple tranches ordered by risk (senior to junior). Unused liquidity from junior tranches can support more senior borrowers. This keeps markets deep without forcing everyone into the same risk profile.',
+        'The Lotus flagship markets order tranches by liquidation loan-to-value (LLTV) threshold. Higher LLTV tranches (junior) carry higher risk for lenders, but earn higher yields.',
       ],
-      terminologyNote: 'Senior means lower LLTV and lower risk; junior means higher LLTV and higher risk.',
+      terminologyNote: {
+        title: 'A Note on Terminology',
+        paragraphs: [
+          'Lotus uses the terms "junior" and "senior" differently than traditional finance. ' +
+          'In conventional debt structures, seniority refers to payment priority—senior creditors are repaid before junior creditors, and junior creditors absorb losses first.',
+          'In Lotus, these terms refer to the relative riskiness of a tranche for lenders. A junior tranche has a higher LLTV threshold, meaning lenders there are willing to back riskier loans. ' +
+          'A senior tranche has a lower LLTV threshold, serving only borrowers with more conservative collateral ratios. ' +
+          'The distinction is about which risk parameters a lender accepts, not about who gets paid first.',
+          'When junior capital cascades to senior tranches, it is treated equally with capital supplied directly there. ' +
+          'Interest earned and losses absorbed are allocated proportionally based on actual exposure, not based on where the capital originated. ' +
+          'Junior lenders do not automatically absorb losses before senior lenders; both absorb losses in proportion to their share of the liquidity backing a given tranche.',
+          'This proportional treatment applies throughout the system. Readers familiar with traditional capital stack logic should set aside those assumptions before proceeding.',
+        ],
+      },
       interestNote: 'Interest and loss allocation follow the tranche structure, so risk and reward stay aligned.',
       lotusUSD: {
         heading: 'LotusUSD',

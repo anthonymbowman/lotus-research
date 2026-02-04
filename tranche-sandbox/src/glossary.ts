@@ -121,11 +121,19 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   spread: {
     term: 'Credit Spread',
-    shortDef: 'The additional rate set by the IRM on top of the base rate — determines the gap between borrow and supply rates.',
-    fullDef: 'The credit spread is set by the Interest Rate Model (IRM) based on borrow utilization. In traditional lending, the spread is "lost" value — borrowers pay more than lenders receive. Lotus\'s productive debt (PD) mechanism compresses this spread by ensuring idle supply earns treasury yields, reducing the gap between borrow and supply rates.',
+    shortDef: 'The additional rate set by the IRM on top of the base rate.',
+    fullDef: 'The credit spread is set by the Interest Rate Model (IRM) based on borrow utilization. It represents the premium borrowers pay above the base rate to compensate lenders for risk and to incentivize liquidity provision.',
     formula: 'Borrow Rate = Base Rate + Credit Spread',
     example: 'Base rate 3%, credit spread 2% → borrow rate = 5%',
-    related: ['supply-rate', 'borrow-rate', 'productive-debt'],
+    related: ['supply-rate', 'borrow-rate', 'borrow-lend-spread'],
+  },
+
+  'borrow-lend-spread': {
+    term: 'Borrow-Lend Spread',
+    shortDef: 'The gap between what borrowers pay and what lenders receive.',
+    fullDef: 'In traditional lending, the borrow-lend spread is "lost" value — borrowers pay more than lenders receive due to low utilization. Lotus\'s productive debt mechanism compresses this spread by ensuring idle supply earns treasury yields, so lenders earn even when their funds aren\'t actively borrowed.',
+    example: 'If borrowers pay 5% but lenders only earn 3%, the borrow-lend spread is 2%.',
+    related: ['spread', 'productive-debt', 'supply-rate', 'borrow-rate'],
   },
 
   'productive-debt': {

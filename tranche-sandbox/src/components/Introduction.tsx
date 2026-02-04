@@ -66,7 +66,7 @@ export function Introduction() {
               <span className="font-medium text-lotus-purple-300">
                 <TermDefinition term="productive-debt">{intro.lotusDifference.features[2].title}</TermDefinition>
               </span>
-              <span className="text-lotus-grey-300"> — {intro.lotusDifference.features[2].description.replace('spreads', '')}<TermDefinition term="spread">spreads</TermDefinition>.</span>
+              <span className="text-lotus-grey-300"> — {intro.lotusDifference.features[2].description.split('spreads')[0]}<TermDefinition term="borrow-lend-spread">spreads</TermDefinition>{intro.lotusDifference.features[2].description.split('spreads')[1]}</span>
             </div>
           </li>
         </ul>

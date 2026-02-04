@@ -21,21 +21,20 @@ export function ProtocolExplainer() {
           <p className="mb-4">
             {problem.intro[0]}
           </p>
-          <p>
+          <p className="mb-4">
             {problem.intro[1]}
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {problem.points.map((point, index) => (
-            <div key={point.title} className="bg-lotus-grey-900/50 rounded-lg px-4 py-4 border border-lotus-grey-700">
-              <div className="text-[10px] uppercase tracking-wide text-lotus-grey-500 mb-1">
-                Problem {index + 1}
-              </div>
-              <h4 className="text-sm font-semibold text-lotus-grey-100 mb-1">{point.title}</h4>
-              <p className="text-sm text-lotus-grey-300">{point.copy}</p>
-            </div>
-          ))}
+          <p>
+            {problem.intro[2]}{' '}
+            <a
+              href={problem.learnMoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lotus-purple-400 hover:text-lotus-purple-300 underline"
+            >
+              Learn more
+            </a>.
+          </p>
         </div>
       </div>
     </div>
@@ -64,41 +63,60 @@ export function LotusSolution() {
           <p className="mb-4">
             <span className="text-lotus-purple-400 font-semibold">Lotus</span> is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate pools for every risk setting, Lotus uses <span className="text-emerald-400 font-medium">tranches</span> to offer multiple risk levels while keeping liquidity connected.
           </p>
-          <p>
-            {solution.overview[1]}
+          <p className="mb-4">
+            {solution.overview[1]} {solution.interestNote}
           </p>
-          <div className="mt-4 bg-lotus-grey-900/50 rounded-lg px-4 py-3 border border-lotus-grey-700">
-            <p className="text-xs text-lotus-grey-300">
-              <span className="font-semibold text-lotus-grey-200">Terminology note:</span> {solution.terminologyNote}
-            </p>
-          </div>
+          <p className="mb-4">
+            {solution.overview[2]}
+          </p>
+          <details className="bg-blue-900/20 rounded-lg border border-blue-700/40 group hover:border-blue-600/50 transition-colors">
+            <summary className="px-4 py-3 cursor-pointer list-none flex items-center gap-3 text-sm font-medium text-blue-300 hover:text-blue-200 transition-colors">
+              <svg
+                className="w-5 h-5 text-blue-400 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="flex-1">{solution.terminologyNote.title}</span>
+              <svg
+                className="w-4 h-4 text-blue-400 transition-transform group-open:rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div className="px-4 pb-4 space-y-3 text-sm text-lotus-grey-300 leading-relaxed border-t border-lotus-grey-700/50 pt-3">
+              {solution.terminologyNote.paragraphs.map((p: string, i: number) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+          </details>
         </div>
 
         {/* Tranche visualization */}
-        <div className="flex items-center justify-center gap-2 py-4">
-          {[
-            { lltv: 75, color: 'bg-emerald-500', label: 'Senior' },
-            { lltv: 80, color: 'bg-emerald-400' },
-            { lltv: 85, color: 'bg-amber-500' },
-            { lltv: 90, color: 'bg-orange-500' },
-            { lltv: 95, color: 'bg-red-500', label: 'Junior' },
-          ].map((t, i) => (
-            <div key={t.lltv} className="flex flex-col items-center gap-1">
-              {i === 0 && <span className="text-xs text-emerald-400 font-semibold">Senior</span>}
-              {i === 4 && <span className="text-xs text-red-400 font-semibold">Junior</span>}
-              {i !== 0 && i !== 4 && <span className="text-xs text-transparent">-</span>}
-              <div className={`${t.color} rounded-lg px-3 py-2`}>
-                <span className="font-mono text-sm font-bold text-white">{t.lltv}%</span>
-              </div>
+        <div className="bg-lotus-grey-900/50 rounded-xl border border-lotus-grey-700 p-4">
+          <div className="flex items-center justify-center gap-6">
+            <span className="text-xs text-emerald-400 font-medium whitespace-nowrap">Senior<br/><span className="text-lotus-grey-300 font-normal">Lower LLTV</span></span>
+            <div className="flex items-center gap-1.5">
+              {[
+                { lltv: 75, color: 'bg-emerald-500' },
+                { lltv: 80, color: 'bg-emerald-400' },
+                { lltv: 85, color: 'bg-amber-500' },
+                { lltv: 90, color: 'bg-orange-500' },
+                { lltv: 95, color: 'bg-red-500' },
+              ].map((t) => (
+                <div key={t.lltv} className={`${t.color} rounded px-2.5 py-1.5`}>
+                  <span className="font-mono text-xs font-bold text-white">{t.lltv}%</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Interest and Loss Allocation */}
-        <div className="text-sm text-lotus-grey-200 leading-relaxed">
-          <p>
-            {solution.interestNote}
-          </p>
+            <span className="text-xs text-red-400 font-medium whitespace-nowrap text-right">Junior<br/><span className="text-lotus-grey-300 font-normal">Higher LLTV</span></span>
+          </div>
+          <p className="text-center text-xs text-lotus-grey-300 mt-3">Tranches in a single market · wstETH / LotusUSD</p>
         </div>
 
         {/* LotusUSD Section */}
