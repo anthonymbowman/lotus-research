@@ -79,7 +79,6 @@ export function TrancheLiquidity({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Connected Liquidity"
         whatYoullLearn={[
           "How lenders and borrowers interact with different tranches",
           "Why liquidity cascades from junior to senior and interest cascades from senior to junior",

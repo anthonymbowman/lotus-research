@@ -7,7 +7,6 @@ export function Introduction() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Welcome to Lotus"
         whatYoullLearn={[
           "What problem Lotus solves for DeFi lending",
           "How tranches create different risk/reward options",

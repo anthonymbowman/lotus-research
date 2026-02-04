@@ -1,5 +1,4 @@
 interface PageHeaderProps {
-  title: string;
   whatYoullLearn: string[];
   tryThis?: string;
 }

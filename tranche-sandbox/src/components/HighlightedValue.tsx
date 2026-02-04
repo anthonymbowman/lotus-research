@@ -114,46 +114,4 @@ export function HighlightedValue({
   );
 }
 
-/**
- * Hook to track previous values for delta calculation
- */
-export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}
-
-/**
- * Hook to track which input caused the last change
- */
-export function useActiveInput() {
-  const [activeInput, setActiveInput] = useState<string | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const trackInput = (inputName: string) => {
-    setActiveInput(inputName);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      setActiveInput(null);
-    }, 3000);
-  };
-
-  const clearActiveInput = () => {
-    setActiveInput(null);
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-  };
-
-  return { activeInput, trackInput, clearActiveInput };
-}
-
 export default HighlightedValue;

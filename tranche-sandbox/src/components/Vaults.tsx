@@ -113,7 +113,6 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Vault Strategies"
         whatYoullLearn={[
           "How vaults aggregate deposits and allocate across tranches",
           "The tradeoffs between conservative and boost strategies",

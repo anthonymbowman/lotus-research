@@ -52,7 +52,6 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Borrower Outcomes"
         whatYoullLearn={[
           'How to choose a tranche for your borrowing goals',
           'How higher LTVs unlock more borrowing power, higher leverage, and lower liquidation prices',

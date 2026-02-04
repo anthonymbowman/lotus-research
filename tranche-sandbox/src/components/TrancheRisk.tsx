@@ -241,7 +241,6 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Tranche Risk"
         whatYoullLearn={[
           "How liquidations protect lenders",
           "Why higher LTV means higher risk for lenders and higher potential returns",
