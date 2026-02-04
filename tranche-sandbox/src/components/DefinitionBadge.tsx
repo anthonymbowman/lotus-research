@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 
 interface DefinitionBadgeProps {
@@ -30,6 +30,7 @@ export function DefinitionBadge({
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const badgeRef = useRef<HTMLSpanElement>(null);
+  const tooltipId = useId();
 
   useEffect(() => {
     if (showTooltip && badgeRef.current) {
@@ -45,6 +46,8 @@ export function DefinitionBadge({
 
   const tooltipElement = showTooltip && (
     <div
+      id={tooltipId}
+      role="tooltip"
       className="fixed z-[9999] px-3 py-2 bg-lotus-grey-900 rounded-lg shadow-xl border border-lotus-grey-700 max-w-xs"
       style={{
         top: tooltipPosition.top,
@@ -77,6 +80,20 @@ export function DefinitionBadge({
         className={`inline-flex items-center gap-1 cursor-help ${textColor} ${className}`}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        onFocus={() => setShowTooltip(true)}
+        onBlur={() => setShowTooltip(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setShowTooltip((prev) => !prev);
+          }
+          if (e.key === 'Escape') {
+            setShowTooltip(false);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-describedby={showTooltip ? tooltipId : undefined}
       >
         {label}
         <svg

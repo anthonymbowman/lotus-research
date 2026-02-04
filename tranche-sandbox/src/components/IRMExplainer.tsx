@@ -1,34 +1,25 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-const TRANCHE_LLTV = [75, 80, 85, 90, 95];
-
-// Example rate calculation for visualization
-// In reality, the IRM computes this from utilization
-function getExampleSpread(lltv: number, utilization: number): number {
-  // Base spread increases with LLTV (monotonicity)
-  const baseSpread = {
-    75: 1.0,
-    80: 1.5,
-    85: 2.5,
-    90: 4.0,
-    95: 6.0,
-  }[lltv] || 2.0;
-
-  // Utilization multiplier (kink effect)
-  const targetUtil = 0.9;
-  if (utilization <= targetUtil) {
-    // Gentle slope below target
-    return baseSpread * (0.5 + 0.5 * (utilization / targetUtil));
-  } else {
-    // Steep slope above target
-    const excess = (utilization - targetUtil) / (1 - targetUtil);
-    return baseSpread * (1 + excess * 2);
-  }
+interface IRMExplainerProps {
+  tranches: { lltv: number; borrowRate: number }[];
+  baseRate: number;
 }
 
-export function IRMExplainer() {
+function spreadFromTarget(targetSpread: number, utilization: number): number {
+  const targetUtil = 0.9;
+  if (utilization <= targetUtil) {
+    return targetSpread * (0.2 + 0.8 * (utilization / targetUtil));
+  }
+  const excess = (utilization - targetUtil) / (1 - targetUtil);
+  return targetSpread * (1 + excess * 2);
+}
+
+export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
   const [utilization, setUtilization] = useState(0.7);
-  const baseRate = 3.0; // Example base rate from productive debt
+  const trancheRates = useMemo(() => {
+    return [...tranches].sort((a, b) => a.lltv - b.lltv);
+  }, [tranches]);
+  const baseRatePct = baseRate * 100;
 
   return (
     <div className="space-y-6">
@@ -58,7 +49,7 @@ export function IRMExplainer() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Simplified model. Actual IRM (Adaptive Linear Kink) has additional parameters.</span>
+          <span>Simplified model. Target spreads at 90% utilization are pulled from the tranche table.</span>
         </div>
       </div>
 
@@ -72,10 +63,11 @@ export function IRMExplainer() {
 
         {/* Monotonicity visualization */}
         <div className="space-y-2">
-          {TRANCHE_LLTV.map((lltv, i) => {
-            const spread = getExampleSpread(lltv, utilization);
-            const totalRate = baseRate + spread;
-            const maxRate = baseRate + getExampleSpread(95, 1.0);
+          {trancheRates.map((tranche, i) => {
+            const targetSpread = tranche.borrowRate * 100;
+            const spread = spreadFromTarget(targetSpread, utilization);
+            const totalRate = baseRatePct + spread;
+            const maxRate = baseRatePct + spreadFromTarget(Math.max(...trancheRates.map((t) => t.borrowRate * 100)), 1.0);
             const barWidth = (totalRate / maxRate) * 100;
 
             const colors = [
@@ -87,8 +79,8 @@ export function IRMExplainer() {
             ][i];
 
             return (
-              <div key={lltv} className="flex items-center gap-3">
-                <div className="w-12 text-sm font-mono text-lotus-grey-300">{lltv}%</div>
+              <div key={tranche.lltv} className="flex items-center gap-3">
+                <div className="w-12 text-sm font-mono text-lotus-grey-300">{tranche.lltv}%</div>
                 <div className="flex-1 h-6 bg-lotus-grey-700 rounded overflow-hidden">
                   <div
                     className={`h-full ${colors.bg} flex items-center justify-end pr-2 transition-all duration-300`}

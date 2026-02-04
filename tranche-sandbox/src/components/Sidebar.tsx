@@ -3,18 +3,22 @@ import { useState } from 'react';
 export type Section =
   | 'intro'
   | 'lotususd'
+  | 'borrower-benefits'
   | 'risk'
   | 'tranches'
   | 'interest-bad-debt'
-  | 'vaults';
+  | 'vaults'
+  | 'glossary';
 
 interface SidebarProps {
   activeSection: Section;
   onSectionChange: (section: Section) => void;
   visitedSections: Set<Section>;
+  onRestartTour: () => void;
+  onResetProgress: () => void;
 }
 
-const SECTIONS: { id: Section; label: string; icon: React.ReactNode; description: string }[] = [
+export const SECTIONS: { id: Section; label: string; icon: React.ReactNode; description: string }[] = [
   {
     id: 'intro',
     label: 'Get Started',
@@ -26,6 +30,12 @@ const SECTIONS: { id: Section; label: string; icon: React.ReactNode; description
     label: 'Stable Backing',
     icon: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
     description: 'Treasury rates & productive debt'
+  },
+  {
+    id: 'borrower-benefits',
+    label: 'Borrower Outcomes',
+    icon: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+    description: 'Lower rates, deeper access'
   },
   {
     id: 'risk',
@@ -51,9 +61,15 @@ const SECTIONS: { id: Section; label: string; icon: React.ReactNode; description
     icon: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
     description: 'Choose your allocation approach'
   },
+  {
+    id: 'glossary',
+    label: 'Glossary',
+    icon: <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>,
+    description: 'Key definitions & formulas'
+  },
 ];
 
-export function Sidebar({ activeSection, onSectionChange, visitedSections }: SidebarProps) {
+export function Sidebar({ activeSection, onSectionChange, visitedSections, onRestartTour, onResetProgress }: SidebarProps) {
   // Start collapsed on mobile (under 1024px/lg breakpoint)
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -119,6 +135,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
                       ? 'bg-lotus-purple-900/50 border border-lotus-purple-500'
                       : 'hover:bg-lotus-grey-700 border border-transparent'
                   }`}
+                  aria-current={isActive ? 'page' : undefined}
                 >
                   <div className="flex items-start gap-3">
                     {/* Section icon / checkmark */}
@@ -161,17 +178,33 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections }: Sid
 
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-lotus-grey-700 bg-lotus-grey-800">
-          <a
-            href="https://lotus-protocol.gitbook.io/lotus/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            View full documentation
-          </a>
+          <div className="space-y-3">
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={onRestartTour}
+                className="text-left text-xs text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"
+              >
+                Restart guided tour
+              </button>
+              <button
+                onClick={onResetProgress}
+                className="text-left text-xs text-lotus-grey-300 hover:text-red-300 transition-colors"
+              >
+                Reset progress
+              </button>
+            </div>
+            <a
+              href="https://lotus-protocol.gitbook.io/lotus/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs text-lotus-grey-300 hover:text-lotus-purple-400 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              View full documentation
+            </a>
+          </div>
         </div>
       </aside>
 

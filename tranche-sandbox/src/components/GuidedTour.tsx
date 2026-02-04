@@ -1,36 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useFocusTrap } from './useFocusTrap';
 
 interface TourStep {
   title: string;
   description: string;
-  highlight?: string;
 }
 
 const TOUR_STEPS: TourStep[] = [
   {
     title: 'Welcome to Lotus Protocol',
     description: 'This interactive documentation will help you understand how Lotus\'s lending protocol works. You can explore at your own pace.',
-    highlight: 'welcome',
   },
   {
     title: 'Navigate by Section',
     description: 'Use the sidebar to jump between topics. Each section builds on the previous one, but you can explore in any order.',
-    highlight: 'sidebar',
   },
   {
     title: 'Start with LotusUSD',
     description: 'LotusUSD is the foundation. It generates a base rate from treasury backing that powers the entire system.',
-    highlight: 'lotususd',
   },
   {
     title: 'Interactive Simulators',
     description: 'Adjust values and see real-time calculations. The simulators help you understand the math behind the protocol.',
-    highlight: 'simulator',
   },
   {
     title: 'Ready to Explore',
     description: 'You\'re all set! Start with the Introduction or jump to any section that interests you.',
-    highlight: 'done',
   },
 ];
 
@@ -41,6 +36,7 @@ interface GuidedTourProps {
 export function GuidedTour({ onComplete }: GuidedTourProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const step = TOUR_STEPS[currentStep];
   const isLastStep = currentStep === TOUR_STEPS.length - 1;
@@ -59,18 +55,20 @@ export function GuidedTour({ onComplete }: GuidedTourProps) {
     setTimeout(() => onComplete(), 300);
   };
 
+  useFocusTrap(modalRef, isVisible, handleSkip);
+
   useEffect(() => {
-    // Prevent body scroll while modal is open
+    if (!isVisible) return;
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
-  }, []);
+  }, [isVisible]);
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="guided-tour-title">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
@@ -78,7 +76,11 @@ export function GuidedTour({ onComplete }: GuidedTourProps) {
       />
 
       {/* Modal */}
-      <div className="relative bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl p-8 max-w-md w-full mx-4 shadow-lotus-lg animate-slideIn">
+      <div
+        ref={modalRef}
+        className="relative bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl p-8 max-w-md w-full mx-4 shadow-lotus-lg animate-slideIn focus:outline-none"
+        tabIndex={-1}
+      >
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-6">
           {TOUR_STEPS.map((_, index) => (
@@ -130,7 +132,7 @@ export function GuidedTour({ onComplete }: GuidedTourProps) {
 
         {/* Content */}
         <div className="text-center mb-8">
-          <h3 className="text-xl font-medium text-lotus-grey-100 mb-3">
+          <h3 id="guided-tour-title" className="text-xl font-medium text-lotus-grey-100 mb-3 font-heading">
             {step.title}
           </h3>
           <p className="text-lotus-grey-400 leading-relaxed">

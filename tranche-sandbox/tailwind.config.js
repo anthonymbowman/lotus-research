@@ -57,7 +57,7 @@ export default {
         },
       },
       fontFamily: {
-        'heading': ['"Neue Machina"', 'Inter', 'system-ui', 'sans-serif'],
+        'heading': ['"Space Grotesk"', 'Roboto', 'system-ui', 'sans-serif'],
         'body': ['Roboto', 'system-ui', 'sans-serif'],
       },
       lineHeight: {

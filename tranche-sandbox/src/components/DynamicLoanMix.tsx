@@ -6,6 +6,7 @@ import { ExportButton } from './ExportButton';
 
 interface DynamicLoanMixProps {
   tranches: TrancheData[];
+  defaultView?: ViewMode;
 }
 
 // Colors for bar segments (one per tranche)
@@ -27,8 +28,8 @@ const SEGMENT_TEXT_COLORS = [
 
 type ViewMode = 'lender' | 'borrower';
 
-export function DynamicLoanMix({ tranches }: DynamicLoanMixProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('lender');
+export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoanMixProps) {
+  const [viewMode, setViewMode] = useState<ViewMode>(defaultView);
   const exportRef = useRef<HTMLDivElement>(null);
 
   const fundingData = useMemo(() => {

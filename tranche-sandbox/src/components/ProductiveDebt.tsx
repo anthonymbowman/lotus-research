@@ -3,6 +3,7 @@ import { generateScenario2ChartData } from '../math/scenario2';
 import type { ChartPoint } from '../types';
 import { DefinitionBadge } from './DefinitionBadge';
 import { ExportButton } from './ExportButton';
+import { TeachingPrompt } from './TeachingPrompt';
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -700,7 +701,11 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
 
   return (
     <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700">
-      <svg width={width} height={height} className="overflow-visible mx-auto block">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full h-auto max-w-[680px] mx-auto block overflow-visible"
+        preserveAspectRatio="xMidYMid meet"
+      >
         <rect
           x={padding.left}
           y={padding.top}
@@ -875,6 +880,9 @@ export function ProductiveDebt({
         utilization={utilization}
         onUtilizationChange={onUtilizationChange}
       />
+      <TeachingPrompt title="Key takeaway:">
+        Productive debt compresses the borrow-lend spread most when utilization is low, because idle supply still earns the base rate.
+      </TeachingPrompt>
     </div>
   );
 }

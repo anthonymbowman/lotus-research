@@ -7,6 +7,7 @@ import { RateChart } from './RateChart';
 import { DynamicLoanMix } from './DynamicLoanMix';
 import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
+import { TeachingPrompt } from './TeachingPrompt';
 
 /**
  * FreeSupplyWhyButton - Inline explainer for the Free Supply concept
@@ -206,6 +207,10 @@ export function TrancheLiquidity({
 
       {/* Dynamic Loan Mix */}
       <DynamicLoanMix tranches={tranches} />
+
+      <TeachingPrompt title="Key takeaway:">
+        Liquidity cascades upward to support senior borrowers, while interest cascades downward so junior lenders are compensated for providing that liquidity.
+      </TeachingPrompt>
 
       <CollapsibleSection
         title="Understanding Junior Metrics"

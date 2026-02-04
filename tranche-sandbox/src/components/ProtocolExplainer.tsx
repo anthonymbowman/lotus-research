@@ -84,7 +84,11 @@ function generateCurvePath(shift = 0): string {
 function ChartContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-lotus-grey-900 rounded-xl p-5 border border-lotus-grey-700 shadow-lg">
-      <svg width={CHART.width} height={CHART.height} className="overflow-visible block mx-auto">
+      <svg
+        viewBox={`0 0 ${CHART.width} ${CHART.height}`}
+        className="w-full h-auto max-w-[520px] overflow-visible block mx-auto"
+        preserveAspectRatio="xMidYMid meet"
+      >
         {/* Background */}
         <defs>
           <linearGradient id="chartBg" x1="0%" y1="0%" x2="0%" y2="100%">

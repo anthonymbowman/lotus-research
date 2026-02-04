@@ -2,23 +2,27 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { TrancheInput } from './types';
 import { computeAllTranches } from './math/lotusAccounting';
 import { createDefaultTranches } from './presets';
-import { Sidebar, type Section } from './components/Sidebar';
+import { Sidebar, SECTIONS, type Section } from './components/Sidebar';
 import { SectionWrapper } from './components/SectionWrapper';
 import { GuidedTour } from './components/GuidedTour';
 import { WelcomeModal } from './components/WelcomeModal';
 import { Introduction } from './components/Introduction';
 import { ProductiveDebt } from './components/ProductiveDebt';
 import { LotusUSDAllocation } from './components/LotusUSDAllocation';
+import { BorrowerBenefits } from './components/BorrowerBenefits';
 import { TrancheLiquidity } from './components/TrancheLiquidity';
 import { Liquidations } from './components/Liquidations';
 import { InterestSimulator } from './components/InterestSimulator';
 import { Vaults } from './components/Vaults';
 import { TrancheRisk } from './components/TrancheRisk';
 import { SearchPalette } from './components/SearchPalette';
+import { Glossary } from './components/Glossary';
 import { analytics } from './analytics';
 
 const STORAGE_KEY = 'lotus-docs-visited';
 const TOUR_KEY = 'lotus-docs-tour-completed';
+const SECTION_ORDER: Section[] = SECTIONS.map((section) => section.id);
+const SECTION_SET = new Set(SECTION_ORDER);
 
 function App() {
   // Navigation state
@@ -33,6 +37,7 @@ function App() {
     return !localStorage.getItem(TOUR_KEY);
   });
   const [showTour, setShowTour] = useState(false);
+  const [glossaryFocusTerm, setGlossaryFocusTerm] = useState<string | null>(null);
 
   // LotusUSD Allocation state
   const [treasuryAllocation, setTreasuryAllocation] = useState(0.8);
@@ -67,41 +72,45 @@ function App() {
     ));
   }, []);
 
-  // Navigation handler
-  const handleSectionChange = useCallback((section: Section) => {
-    analytics.navClick(section);
-    setActiveSection(section);
+  const markVisited = useCallback((section: Section) => {
     setVisitedSections(prev => {
+      if (prev.has(section)) return prev;
       const updated = new Set(prev);
       updated.add(section);
       localStorage.setItem(STORAGE_KEY, JSON.stringify([...updated]));
       return updated;
     });
+  }, []);
+
+  // Navigation handler
+  const handleSectionChange = useCallback((section: Section) => {
+    analytics.navClick(section);
+    setActiveSection(section);
+    markVisited(section);
+    if (section !== 'glossary') {
+      setGlossaryFocusTerm(null);
+    }
     // Update URL hash
     window.location.hash = section;
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [markVisited]);
 
   // Handle URL hash navigation
   useEffect(() => {
-    const handleHashChange = () => {
+    const applyHash = () => {
       const hash = window.location.hash.slice(1) as Section;
-      if (hash && ['intro', 'lotususd', 'risk', 'tranches', 'interest-bad-debt', 'vaults'].includes(hash)) {
+      if (hash && SECTION_SET.has(hash)) {
         setActiveSection(hash);
+        markVisited(hash);
+        return;
       }
-    };
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  // Mark intro as visited on load
-  useEffect(() => {
-    if (!visitedSections.has('intro')) {
       handleSectionChange('intro');
-    }
-  }, []);
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, [handleSectionChange, markVisited]);
 
   // Tour handlers
   const handleStartTour = () => {
@@ -121,13 +130,33 @@ function App() {
     localStorage.setItem(TOUR_KEY, 'true');
   };
 
+  const handleRestartTour = () => {
+    localStorage.removeItem(TOUR_KEY);
+    setShowTour(false);
+    setShowWelcome(true);
+  };
+
+  const handleResetProgress = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOUR_KEY);
+    setVisitedSections(new Set<Section>());
+    setShowTour(false);
+    setShowWelcome(true);
+    setGlossaryFocusTerm(null);
+    handleSectionChange('intro');
+  };
+
+  const handleGlossarySelect = (termKey: string) => {
+    setGlossaryFocusTerm(termKey);
+    handleSectionChange('glossary');
+  };
+
   // Section content mapping
-  const sectionMeta: Record<Section, { title: string; headline: string; subtitle: string; learningPoints: string[]; transitionText?: string; next?: { id: Section; label: string } }> = {
+  const sectionMeta: Record<Section, { title: string; headline: string; subtitle: string; transitionText?: string; next?: { id: Section; label: string } }> = {
     intro: {
       title: 'Get Started',
       headline: 'Welcome to Lotus Protocol',
       subtitle: 'Understand how Lotus delivers better rates through connected liquidity',
-      learningPoints: [],
       transitionText: "Let's start with the foundation: how LotusUSD backing creates lower rates...",
       next: { id: 'lotususd', label: 'Stable Backing' },
     },
@@ -135,15 +164,20 @@ function App() {
       title: 'Stable Backing',
       headline: 'LotusUSD & Productive Debt',
       subtitle: 'Treasury backing creates a lower base rate for all borrowers',
-      learningPoints: [],
-      transitionText: "Now let's understand why tranches have different risk levels...",
+      transitionText: "Now let's see what that base rate unlocks for borrowers...",
+      next: { id: 'borrower-benefits', label: 'Borrower Outcomes' },
+    },
+    'borrower-benefits': {
+      title: 'Borrower Outcomes',
+      headline: 'Better Borrowing, By Design',
+      subtitle: 'Lower rates, deeper access, and more predictable terms',
+      transitionText: "These outcomes come from how risk is layered — let's unpack the tranches.",
       next: { id: 'risk', label: 'Risk Layers' },
     },
     risk: {
       title: 'Risk Layers',
       headline: 'Understanding Tranche Risk',
       subtitle: 'Higher LLTV means higher risk — and higher potential returns',
-      learningPoints: [],
       transitionText: "With risk understood, let's see how liquidity connects tranches...",
       next: { id: 'tranches', label: 'Liquidity Flow' },
     },
@@ -151,7 +185,6 @@ function App() {
       title: 'Liquidity Flow',
       headline: 'Connected Liquidity',
       subtitle: 'How supply cascades across tranches to maximize utilization',
-      learningPoints: [],
       transitionText: "Interest flows through these tranches. Let's trace it...",
       next: { id: 'interest-bad-debt', label: 'Interest & Losses' },
     },
@@ -159,7 +192,6 @@ function App() {
       title: 'Interest & Losses',
       headline: 'Interest Cascade & Bad Debt',
       subtitle: 'How interest flows through tranches and who absorbs losses',
-      learningPoints: [],
       transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
       next: { id: 'vaults', label: 'Your Strategy' },
     },
@@ -167,14 +199,25 @@ function App() {
       title: 'Your Strategy',
       headline: 'Choose Your Allocation',
       subtitle: 'Pick the risk/reward profile that matches your goals',
-      learningPoints: [],
+      transitionText: 'Need a quick reference? Review the key terms and formulas.',
+      next: { id: 'glossary', label: 'Glossary' },
+    },
+    glossary: {
+      title: 'Glossary',
+      headline: 'Key Terms & Formulas',
+      subtitle: 'Search definitions, formulas, and examples across the protocol',
     },
   };
 
   const currentMeta = sectionMeta[activeSection];
+  const currentIndex = Math.max(0, SECTION_ORDER.indexOf(activeSection));
+  const progress = {
+    current: currentIndex + 1,
+    total: SECTION_ORDER.length,
+  };
 
   return (
-    <div className="min-h-screen bg-lotus-grey-900">
+    <div className="min-h-screen bg-lotus-gradient-subtle">
       {/* Welcome Modal */}
       {showWelcome && (
         <WelcomeModal
@@ -189,13 +232,15 @@ function App() {
       )}
 
       {/* Search Palette */}
-      <SearchPalette onNavigate={handleSectionChange} />
+      <SearchPalette onNavigate={handleSectionChange} onGlossarySelect={handleGlossarySelect} />
 
       {/* Sidebar */}
       <Sidebar
         activeSection={activeSection}
         onSectionChange={handleSectionChange}
         visitedSections={visitedSections}
+        onRestartTour={handleRestartTour}
+        onResetProgress={handleResetProgress}
       />
 
       {/* Main Content */}
@@ -206,10 +251,10 @@ function App() {
             title={currentMeta.title}
             headline={currentMeta.headline}
             subtitle={currentMeta.subtitle}
-            learningPoints={currentMeta.learningPoints}
             transitionText={currentMeta.transitionText}
             nextSection={currentMeta.next}
             onNavigate={handleSectionChange}
+            progress={progress}
           >
             {/* Section 1: Introduction */}
             {activeSection === 'intro' && (
@@ -239,17 +284,26 @@ function App() {
               </div>
             )}
 
-            {/* Section 3: Tranche Risk */}
+            {/* Section 3: Borrower Outcomes */}
+            {activeSection === 'borrower-benefits' && (
+              <BorrowerBenefits
+                tranches={computedTranches}
+                productiveDebtRate={productiveDebtRate}
+              />
+            )}
+
+            {/* Section 4: Tranche Risk */}
             {activeSection === 'risk' && (
               <TrancheRisk
                 tranches={computedTranches.map(t => ({
                   lltv: t.lltv,
                   borrowRate: t.borrowRate,
                 }))}
+                baseRate={productiveDebtRate}
               />
             )}
 
-            {/* Section 4: Tranches & Liquidity */}
+            {/* Section 5: Tranches & Liquidity */}
             {activeSection === 'tranches' && (
               <TrancheLiquidity
                 tranches={computedTranches}
@@ -258,7 +312,7 @@ function App() {
               />
             )}
 
-            {/* Section 5: Interest & Bad Debt (merged from Interest Cascade + Liquidations) */}
+            {/* Section 6: Interest & Bad Debt (merged from Interest Cascade + Liquidations) */}
             {activeSection === 'interest-bad-debt' && (
               <div className="space-y-8">
                 <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
@@ -277,7 +331,7 @@ function App() {
               </div>
             )}
 
-            {/* Section 6: Vaults */}
+            {/* Section 7: Vaults */}
             {activeSection === 'vaults' && (
               <Vaults
                 tranches={computedTranches.map(t => ({
@@ -287,6 +341,11 @@ function App() {
                 }))}
                 productiveDebtRate={productiveDebtRate}
               />
+            )}
+
+            {/* Section 7: Glossary */}
+            {activeSection === 'glossary' && (
+              <Glossary focusTerm={glossaryFocusTerm} />
             )}
           </SectionWrapper>
         </div>

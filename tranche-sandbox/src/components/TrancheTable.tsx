@@ -33,8 +33,8 @@ export function TrancheTable({
           Liquidity Flow by Tranche
         </h4>
 
-      <div>
-        <table className="w-full text-xs">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[860px] text-[11px] sm:text-xs">
           <thead>
             <tr className="border-b border-lotus-grey-700">
               <th className="text-left py-1 px-1 font-semibold text-lotus-grey-300 bg-lotus-grey-800 border-r border-lotus-grey-700 sticky left-0 z-10">
@@ -128,6 +128,7 @@ export function TrancheTable({
                       onChange={(e) => onTrancheChange(tranche.id, 'supplyAssets', parseFloat(e.target.value) || 0)}
                       min={0}
                       step={100}
+                      aria-label={`Supply for ${tranche.lltv}% LLTV`}
                       className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border rounded font-mono text-lotus-grey-100
                         focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500 ${
                         isOverBorrowed ? 'border-red-500' : 'border-lotus-grey-600'
@@ -163,6 +164,7 @@ export function TrancheTable({
                         onChange={(e) => onTrancheChange(tranche.id, 'borrowAssets', parseFloat(e.target.value) || 0)}
                         min={0}
                         step={100}
+                        aria-label={`Borrow for ${tranche.lltv}% LLTV`}
                         className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-700 border rounded font-mono
                           focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500 ${
                           isOverBorrowed ? 'border-red-500 text-red-300' : 'border-lotus-grey-600 text-lotus-grey-100'
@@ -180,6 +182,7 @@ export function TrancheTable({
                         min={0}
                         max={100}
                         step={0.5}
+                        aria-label={`Credit spread for ${tranche.lltv}% LLTV`}
                         className="w-16 px-2 py-1 text-sm text-right bg-lotus-grey-700 border border-lotus-purple-600 rounded font-mono text-lotus-purple-200
                           focus:outline-none focus:ring-1 focus:ring-lotus-purple-500 focus:border-lotus-purple-500"
                       />

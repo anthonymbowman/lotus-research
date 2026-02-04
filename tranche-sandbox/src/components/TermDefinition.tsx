@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { getGlossaryEntry } from '../glossary';
 
@@ -13,6 +13,7 @@ export function TermDefinition({ term, children }: TermDefinitionProps) {
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLSpanElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const tooltipId = useId();
 
   const entry = getGlossaryEntry(term);
 
@@ -57,9 +58,27 @@ export function TermDefinition({ term, children }: TermDefinitionProps) {
     setIsVisible(!isVisible);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setIsVisible((prev) => !prev);
+    }
+    if (e.key === 'Escape') {
+      setIsVisible(false);
+      setShowFull(false);
+    }
+  };
+
   const tooltip = isVisible && (
     <div
       ref={tooltipRef}
+      id={tooltipId}
+      role="tooltip"
+      onMouseLeave={() => {
+        if (!showFull) {
+          setIsVisible(false);
+        }
+      }}
       className="fixed z-[9999] px-4 py-3 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl border border-lotus-grey-700"
       style={{
         top: tooltipPosition.top,
@@ -119,12 +138,29 @@ export function TermDefinition({ term, children }: TermDefinitionProps) {
         ref={triggerRef}
         className="border-b border-dotted border-lotus-grey-500 hover:border-lotus-purple-400 cursor-help transition-colors"
         onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => {
+        onMouseLeave={(event) => {
+          const related = event.relatedTarget as Node | null;
+          if (related && tooltipRef.current?.contains(related)) {
+            return;
+          }
           if (!showFull) {
             setIsVisible(false);
           }
         }}
         onClick={handleClick}
+        onFocus={() => setIsVisible(true)}
+        onBlur={(event) => {
+          const related = event.relatedTarget as Node | null;
+          if (related && tooltipRef.current?.contains(related)) {
+            return;
+          }
+          if (!showFull) {
+            setIsVisible(false);
+          }
+        }}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        aria-describedby={isVisible ? tooltipId : undefined}
       >
         {children}
       </span>

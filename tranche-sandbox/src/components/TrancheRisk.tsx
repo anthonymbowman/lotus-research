@@ -6,6 +6,7 @@ import { IRMExplainer } from './IRMExplainer';
 
 interface TrancheRiskProps {
   tranches: { lltv: number; borrowRate: number }[]; // kept for API compatibility
+  baseRate: number;
 }
 
 const TRANCHE_LLTV = [75, 80, 85, 90, 95];
@@ -142,10 +143,11 @@ function LiquidationsAndRisk() {
                     </span>
                   </td>
                   <td className="text-center py-2 px-2">
-                    <div className="flex items-center justify-center gap-0.5">
+                    <div className="flex items-center justify-center gap-0.5" aria-label={`Risk level ${tranche.riskDots} of ${TRANCHE_LLTV.length}`}>
                       {Array.from({ length: tranche.riskDots }).map((_, j) => (
                         <div key={j} className={`w-1.5 h-1.5 rounded-full ${tranche.colors.bg}`} />
                       ))}
+                      <span className="sr-only">Risk {tranche.riskDots} of {TRANCHE_LLTV.length}</span>
                     </div>
                   </td>
                 </tr>
@@ -235,7 +237,7 @@ function LiquidationsAndRisk() {
 // Main Component
 // ============================================
 
-export function TrancheRisk(_props: TrancheRiskProps) {
+export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
   return (
     <div className="space-y-8">
       <PageHeader
@@ -251,7 +253,7 @@ export function TrancheRisk(_props: TrancheRiskProps) {
       <LiquidationsAndRisk />
 
       {/* IRM Explainer - How Spreads Are Determined */}
-      <IRMExplainer />
+      <IRMExplainer tranches={tranches} baseRate={baseRate} />
 
       <FailureModeCallout title="Stress Scenario: Oracle Lag & Liquidation Delays">
         <p>

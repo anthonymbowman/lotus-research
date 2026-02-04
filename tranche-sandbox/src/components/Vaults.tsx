@@ -80,6 +80,12 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
     return DEFAULT_STRATEGIES.find(s => s.name === selectedStrategy)?.riskScore || 5;
   }, [selectedStrategy]);
 
+  const riskLabel = useMemo(() => {
+    if (riskScore <= 3) return 'Low';
+    if (riskScore <= 6) return 'Medium';
+    return 'High';
+  }, [riskScore]);
+
   const handleStrategySelect = (name: string) => {
     analytics.strategySelected(name);
     setSelectedStrategy(name);
@@ -295,21 +301,28 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                 {/* Risk indicator */}
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-lotus-grey-300">Risk</span>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-2 h-2 rounded-full ${
-                          i < strategy.riskScore
-                            ? strategy.riskScore <= 3
-                              ? 'bg-emerald-500'
-                              : strategy.riskScore <= 6
-                              ? 'bg-amber-500'
-                              : 'bg-red-500'
-                            : 'bg-lotus-grey-600'
-                        }`}
-                      />
-                    ))}
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-semibold uppercase tracking-wide ${
+                      strategy.riskScore <= 3 ? 'text-emerald-400' : strategy.riskScore <= 6 ? 'text-amber-400' : 'text-red-400'
+                    }`}>
+                      {strategy.riskScore <= 3 ? 'Low' : strategy.riskScore <= 6 ? 'Medium' : 'High'}
+                    </span>
+                    <div className="flex items-center gap-1" aria-label={`Risk level ${strategy.riskScore} out of 10`}>
+                      {Array.from({ length: 10 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`w-2 h-2 rounded-full ${
+                            i < strategy.riskScore
+                              ? strategy.riskScore <= 3
+                                ? 'bg-emerald-500'
+                                : strategy.riskScore <= 6
+                                ? 'bg-amber-500'
+                                : 'bg-red-500'
+                              : 'bg-lotus-grey-600'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -417,13 +430,14 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                 </svg>
               </div>
               <div>
-                <div className="text-sm text-lotus-grey-300">Risk Score</div>
-                <div className={`text-3xl font-mono font-bold ${
-                  riskScore <= 3 ? 'text-emerald-400' : riskScore <= 6 ? 'text-amber-400' : 'text-red-400'
-                }`}>
-                  {riskScore.toFixed(1)}/10
-                </div>
-              </div>
+            <div className="text-sm text-lotus-grey-300">Risk Score</div>
+            <div className={`text-3xl font-mono font-bold ${
+              riskScore <= 3 ? 'text-emerald-400' : riskScore <= 6 ? 'text-amber-400' : 'text-red-400'
+            }`}>
+              {riskScore.toFixed(1)}/10
+            </div>
+            <div className="text-xs text-lotus-grey-400 mt-1">Overall risk: {riskLabel}</div>
+          </div>
             </div>
             <div className="h-3 bg-lotus-grey-700 rounded-full overflow-hidden">
               <div

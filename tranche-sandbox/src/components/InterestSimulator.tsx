@@ -70,7 +70,8 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
         });
 
         return (
-          <table className="w-full text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] text-[11px] sm:text-xs">
             <thead>
               <tr className="border-b border-lotus-grey-700">
                 <th className="text-left py-1.5 px-1.5 font-semibold text-lotus-grey-300">LLTV</th>
@@ -128,7 +129,8 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                 );
               })}
             </tbody>
-          </table>
+            </table>
+          </div>
         );
       })()}
       </div>{/* End exportable section */}

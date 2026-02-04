@@ -1,16 +1,34 @@
+import { useEffect, useRef } from 'react';
+import { useFocusTrap } from './useFocusTrap';
+
 interface WelcomeModalProps {
   onStartTour: () => void;
   onSkip: () => void;
 }
 
 export function WelcomeModal({ onStartTour, onSkip }: WelcomeModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(modalRef, true, onSkip);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onSkip} />
 
       {/* Modal */}
-      <div className="relative bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl max-w-lg w-full mx-4 shadow-lotus-lg animate-slideIn overflow-hidden">
+      <div
+        ref={modalRef}
+        className="relative bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl max-w-lg w-full mx-4 shadow-lotus-lg animate-slideIn overflow-hidden focus:outline-none"
+        tabIndex={-1}
+      >
         {/* Gradient header */}
         <div className="h-2 bg-gradient-to-r from-lotus-purple-800 via-lotus-purple-500 to-lotus-purple-800" />
 
@@ -26,7 +44,7 @@ export function WelcomeModal({ onStartTour, onSkip }: WelcomeModalProps) {
 
           {/* Content */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-medium text-lotus-grey-100 mb-3">
+            <h2 id="welcome-title" className="text-2xl font-medium text-lotus-grey-100 mb-3 font-heading">
               Welcome to Lotus Protocol
             </h2>
             <p className="text-lotus-grey-400 leading-relaxed mb-6">
