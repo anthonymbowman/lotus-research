@@ -2,17 +2,16 @@ import { TermDefinition } from './TermDefinition';
 import { ProtocolExplainer, LotusSolution } from './ProtocolExplainer';
 import { PageHeader } from './PageHeader';
 import { AppCTA } from './AppCTA';
+import { content } from '../content';
+
+const { intro } = content;
 
 export function Introduction() {
   return (
     <div className="space-y-8">
       <PageHeader
-        whatYoullLearn={[
-          "What problem Lotus solves for DeFi lending",
-          "How tranches create different risk/reward options",
-          "Why connected liquidity beats isolated pools",
-        ]}
-        tryThis="Scan the problem summary below to see how traditional lending fails borrowers and lenders."
+        whatYoullLearn={intro.pageHeader.whatYoullLearn}
+        tryThis={intro.pageHeader.tryThis}
       />
 
       {/* Interactive Protocol Explainer */}
@@ -24,7 +23,7 @@ export function Introduction() {
       {/* The Lotus Difference */}
       <div className="bg-lotus-purple-900/20 rounded-lg p-6 border border-lotus-purple-700/50">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">
-          The Lotus Difference
+          {intro.lotusDifference.heading}
         </h3>
         <ul className="space-y-4">
           <li className="flex items-start gap-3">
@@ -34,13 +33,13 @@ export function Introduction() {
               </svg>
             </div>
             <div>
-              <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
+              <span className="font-medium text-lotus-purple-300">{intro.lotusDifference.features[0].title}</span>
               <span className="text-lotus-grey-300"> — Lenders choose their risk exposure across <TermDefinition term="tranche-seniority">senior and junior tranches</TermDefinition>.</span>
               <div className="text-sm text-lotus-grey-300 mt-2">
-                <span className="font-medium text-lotus-grey-200">Lenders:</span> Senior tranches offer safety; junior tranches offer higher yield.
+                <span className="font-medium text-lotus-grey-200">Lenders:</span> {intro.lotusDifference.features[0].lenderNote}
               </div>
               <div className="text-sm text-lotus-grey-300 mt-1">
-                <span className="font-medium text-lotus-grey-200">Borrowers:</span> Senior tranches offer more stable rates and deeper liquidity; junior tranches offer higher leverage and lower liquidation prices.
+                <span className="font-medium text-lotus-grey-200">Borrowers:</span> {intro.lotusDifference.features[0].borrowerNote}
               </div>
             </div>
           </li>
@@ -52,9 +51,9 @@ export function Introduction() {
             </div>
             <div>
               <span className="font-medium text-lotus-purple-300">
-                <TermDefinition term="connected-liquidity">Connected Liquidity</TermDefinition>
+                <TermDefinition term="connected-liquidity">{intro.lotusDifference.features[1].title}</TermDefinition>
               </span>
-              <span className="text-lotus-grey-300"> — Unlike isolated pools, liquidity flows between tranches, creating deeper markets and more efficient rates while maintaining risk segmentation.</span>
+              <span className="text-lotus-grey-300"> — {intro.lotusDifference.features[1].description}</span>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -65,9 +64,9 @@ export function Introduction() {
             </div>
             <div>
               <span className="font-medium text-lotus-purple-300">
-                <TermDefinition term="productive-debt">Productive Debt</TermDefinition>
+                <TermDefinition term="productive-debt">{intro.lotusDifference.features[2].title}</TermDefinition>
               </span>
-              <span className="text-lotus-grey-300"> — Idle liquidity earns yield from treasury-backed assets, giving lenders a base rate floor even when utilization is low and compressing <TermDefinition term="spread">spreads</TermDefinition>.</span>
+              <span className="text-lotus-grey-300"> — {intro.lotusDifference.features[2].description.replace('spreads', '')}<TermDefinition term="spread">spreads</TermDefinition>.</span>
             </div>
           </li>
         </ul>
@@ -82,9 +81,9 @@ export function Introduction() {
             </svg>
           </div>
           <div>
-            <h3 className="text-base font-semibold text-lotus-grey-100 mb-1">Vaults</h3>
+            <h3 className="text-base font-semibold text-lotus-grey-100 mb-1">{intro.vaultsPreview.heading}</h3>
             <p className="text-sm text-lotus-grey-200">
-              Most lenders participate through vaults — curated strategies that allocate across tranches. We'll cover vaults after you understand how tranches work.
+              {intro.vaultsPreview.description}
             </p>
           </div>
         </div>

@@ -18,6 +18,7 @@ import { TrancheRisk } from './components/TrancheRisk';
 import { SearchPalette } from './components/SearchPalette';
 import { Glossary } from './components/Glossary';
 import { analytics } from './analytics';
+import { sectionMeta } from './content';
 
 const STORAGE_KEY = 'lotus-docs-visited';
 const TOUR_KEY = 'lotus-docs-tour-completed';
@@ -149,64 +150,6 @@ function App() {
   const handleGlossarySelect = (termKey: string) => {
     setGlossaryFocusTerm(termKey);
     handleSectionChange('glossary');
-  };
-
-  // Section content mapping
-  const sectionMeta: Record<Section, { title: string; headline: string; subtitle: string; transitionText?: string; next?: { id: Section; label: string } }> = {
-    intro: {
-      title: 'Get Started',
-      headline: 'Welcome to Lotus Protocol',
-      subtitle: 'Understand how Lotus delivers better rates through connected liquidity',
-      transitionText: "Let's start with the foundation: how LotusUSD backing creates lower rates...",
-      next: { id: 'lotususd', label: 'Stable Backing' },
-    },
-    lotususd: {
-      title: 'Stable Backing',
-      headline: 'LotusUSD & Productive Debt',
-      subtitle: 'Treasury backing creates a lower base rate for all borrowers',
-      transitionText: "Now let's see what that base rate unlocks for borrowers...",
-      next: { id: 'borrower-benefits', label: 'Borrower Outcomes' },
-    },
-    'borrower-benefits': {
-      title: 'Borrower Outcomes',
-      headline: 'Better Borrowing, By Design',
-      subtitle: 'Lower rates, deeper access, and more predictable terms',
-      transitionText: "Next up: how tranches layer risk and rewards across the market.",
-      next: { id: 'risk', label: 'Risk Layers' },
-    },
-    risk: {
-      title: 'Risk Layers',
-      headline: 'Understanding Tranche Risk',
-      subtitle: 'Higher LTV means higher risk for lenders — and higher potential returns',
-      transitionText: "With risk understood, let's see how liquidity connects tranches...",
-      next: { id: 'tranches', label: 'Liquidity Flow' },
-    },
-    tranches: {
-      title: 'Liquidity Flow',
-      headline: 'Connected Liquidity',
-      subtitle: 'How supply cascades across tranches to maximize efficiency',
-      transitionText: "Interest flows through these tranches. Let's trace it...",
-      next: { id: 'interest-bad-debt', label: 'Interest & Losses' },
-    },
-    'interest-bad-debt': {
-      title: 'Interest & Losses',
-      headline: 'Interest Cascade & Bad Debt',
-      subtitle: 'How interest flows through tranches and who absorbs losses',
-      transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
-      next: { id: 'vaults', label: 'Your Strategy' },
-    },
-    vaults: {
-      title: 'Your Strategy',
-      headline: 'Choose Your Allocation',
-      subtitle: 'Pick the risk/reward profile that matches your goals',
-      transitionText: 'Need a quick reference? Review the key terms and formulas.',
-      next: { id: 'glossary', label: 'Glossary' },
-    },
-    glossary: {
-      title: 'Glossary',
-      headline: 'Key Terms & Formulas',
-      subtitle: 'Search definitions, formulas, and examples across the protocol',
-    },
   };
 
   const currentMeta = sectionMeta[activeSection];

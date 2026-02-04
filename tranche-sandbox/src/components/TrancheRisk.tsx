@@ -3,6 +3,9 @@ import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
 import { AssumptionsPanel, MODULE_ASSUMPTIONS } from './AssumptionsPanel';
 import { IRMExplainer } from './IRMExplainer';
+import { content } from '../content';
+
+const { trancheRisk: trContent } = content;
 
 interface TrancheRiskProps {
   tranches: { lltv: number; borrowRate: number }[]; // kept for API compatibility
@@ -71,31 +74,32 @@ function LiquidationsAndRisk() {
   const seizedCollateral = debtAtMaxBorrow * selectedData.lif;
   const liquidatorProfit = seizedCollateral - debtAtMaxBorrow;
 
+  const lr = trContent.liquidationsAndRisk;
+
   return (
     <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Liquidations & Risk</h3>
+      <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">{lr.heading}</h3>
       <p className="text-sm text-lotus-grey-300 mb-6">
-        When a borrower's LTV exceeds the tranche LLTV, liquidators seize collateral and repay debt.
-        Higher LLTV tranches have less buffer, meaning bad debt occurs sooner—so they pay higher spreads.
+        {lr.description}
       </p>
 
       {/* Risk Chain */}
       <div className="bg-lotus-grey-900/50 rounded-lg p-4 border border-lotus-grey-700 mb-6">
         <div className="flex items-center justify-center gap-2 flex-wrap text-sm">
           <div className="bg-lotus-purple-900/30 border border-lotus-purple-600 rounded px-3 py-2">
-            <span className="text-lotus-purple-300">Higher LLTV</span>
+            <span className="text-lotus-purple-300">{lr.riskChain.higherLltv}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
           <div className="bg-amber-900/30 border border-amber-600 rounded px-3 py-2">
-            <span className="text-amber-300">Less Buffer</span>
+            <span className="text-amber-300">{lr.riskChain.lessBuffer}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
           <div className="bg-red-900/30 border border-red-600 rounded px-3 py-2">
-            <span className="text-red-300">More Risk</span>
+            <span className="text-red-300">{lr.riskChain.moreRisk}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
           <div className="bg-emerald-900/30 border border-emerald-600 rounded px-3 py-2">
-            <span className="text-emerald-300">Higher Spread</span>
+            <span className="text-emerald-300">{lr.riskChain.higherSpread}</span>
           </div>
         </div>
       </div>
@@ -105,11 +109,11 @@ function LiquidationsAndRisk() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-lotus-grey-700">
-              <th className="text-left py-2 px-2 font-medium text-lotus-grey-300">Tranche</th>
-              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">Buffer</th>
-              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">Liq. Bonus</th>
-              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">Bad Debt After</th>
-              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">Risk</th>
+              <th className="text-left py-2 px-2 font-medium text-lotus-grey-300">{lr.tableHeaders.tranche}</th>
+              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">{lr.tableHeaders.buffer}</th>
+              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">{lr.tableHeaders.liqBonus}</th>
+              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">{lr.tableHeaders.badDebtAfter}</th>
+              <th className="text-center py-2 px-2 font-medium text-lotus-grey-300">{lr.tableHeaders.risk}</th>
             </tr>
           </thead>
           <tbody>
@@ -160,7 +164,7 @@ function LiquidationsAndRisk() {
       {/* Liquidation Example - Collapsible */}
       <details className="bg-lotus-grey-700/30 rounded-lg border border-lotus-grey-600 mb-4">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
-          Example: Liquidation at {selectedLLTV}% LLTV
+          {lr.exampleTitle(selectedLLTV)}
         </summary>
         <div className="px-4 pb-4 pt-2">
           <div className="grid grid-cols-2 gap-4">
@@ -189,7 +193,7 @@ function LiquidationsAndRisk() {
           {/* Bad Debt Calculation */}
           <div className="mt-4 pt-3 border-t border-lotus-grey-600">
             <div className="flex justify-between items-center text-sm mb-2">
-              <span className="text-lotus-grey-400">Bad debt starts after:</span>
+              <span className="text-lotus-grey-400">{lr.badDebtFormula.label}</span>
               <span className="font-mono font-medium text-amber-400">{selectedData.badDebtThreshold.toFixed(2)}% price drop</span>
             </div>
             <div className="text-xs text-lotus-grey-500 space-y-1">
@@ -198,8 +202,7 @@ function LiquidationsAndRisk() {
                 <span className="font-mono">1 - LLTV × LIF = 1 - {(selectedLLTV / 100).toFixed(2)} × {selectedData.lif.toFixed(4)} = {(selectedData.badDebtThreshold / 100).toFixed(4)}</span>
               </p>
               <p className="text-lotus-grey-500 mt-2">
-                This assumes the loan's health factor is 1 (at the liquidation threshold) and that gas conditions enable a profitable liquidation.
-                In practice, oracle lag or high gas costs may delay liquidations, increasing bad debt risk.
+                {lr.badDebtFormula.formulaNote}
               </p>
             </div>
           </div>
@@ -213,7 +216,7 @@ function LiquidationsAndRisk() {
       {/* Technical Details - Collapsible */}
       <details className="bg-lotus-grey-700/30 rounded-lg border border-lotus-grey-600">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-400 hover:text-lotus-grey-200">
-          Technical Details
+          {lr.technicalDetails}
         </summary>
         <div className="px-4 pb-4 pt-2 space-y-2 text-xs text-lotus-grey-400">
           <div>
@@ -224,8 +227,7 @@ function LiquidationsAndRisk() {
             LIF = min(1.15, 1 / (0.3 × LLTV + 0.7))
           </div>
           <p>
-            Higher LLTV = less collateral buffer = less room for liquidation bonus.
-            This is why junior tranches have lower bonus and higher bad debt risk.
+            {lr.lifNote}
           </p>
         </div>
       </details>
@@ -241,11 +243,7 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
   return (
     <div className="space-y-8">
       <PageHeader
-        whatYoullLearn={[
-          "How liquidations protect lenders",
-          "Why higher LTV means higher risk for lenders and higher potential returns",
-          "How risk level connects to the spread lenders earn",
-        ]}
+        whatYoullLearn={trContent.pageHeader.whatYoullLearn}
       />
 
       <LiquidationsAndRisk />
@@ -253,14 +251,9 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
       {/* IRM Explainer - How Spreads Are Determined */}
       <IRMExplainer tranches={tranches} baseRate={baseRate} />
 
-      <FailureModeCallout title="Stress Scenario: Oracle Lag & Liquidation Delays">
+      <FailureModeCallout title={trContent.failureMode.title}>
         <p>
-          In volatile markets, oracle price updates may lag behind actual market prices.
-          If collateral value drops faster than oracles report, positions may become
-          undercollateralized before liquidators can act. Additionally, high gas prices
-          during market stress can make small liquidations unprofitable, especially for
-          junior tranches with lower liquidation bonus. This delay increases the
-          risk of bad debt formation.
+          {trContent.failureMode.description}
         </p>
       </FailureModeCallout>
 
@@ -269,7 +262,7 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span>Simplified model for educational purposes. Actual liquidation modules have additional parameters.</span>
+        <span>{trContent.simplifiedNote}</span>
       </div>
 
       <AssumptionsPanel assumptions={MODULE_ASSUMPTIONS.liquidations} />

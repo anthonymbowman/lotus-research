@@ -4,6 +4,9 @@ import type { ChartPoint } from '../types';
 import { DefinitionBadge } from './DefinitionBadge';
 import { ExportButton } from './ExportButton';
 import { TeachingPrompt } from './TeachingPrompt';
+import { content } from '../content';
+
+const { productiveDebt: pdContent } = content;
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -22,47 +25,29 @@ function formatPercent(value: number, decimals = 2): string {
 // ============================================
 
 function IntroSection() {
-  const benefits = [
-    {
-      title: 'Minimum Rate for Lenders',
-      description: 'Lenders earn at least the base rate from productive assets, even when utilization is low.',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Spread Compression',
-      description: 'The gap between borrow and supply rates narrows, creating a more efficient market.',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-        </svg>
-      ),
-    },
-    {
-      title: 'Volatility Reduction',
-      description: 'The IRM only prices the spread, not the base rate — resulting in smaller rate swings.',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-    },
+  const icons = [
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+    </svg>,
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+    </svg>,
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>,
   ];
 
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Benefits of Productive Debt</h3>
+      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{pdContent.intro.heading}</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {benefits.map((benefit, i) => (
+        {pdContent.intro.benefits.map((benefit, i) => (
           <div
             key={i}
             className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700 hover:border-lotus-purple-500/50 transition-colors"
           >
             <div className="flex items-center gap-3 mb-2">
-              <div className="text-lotus-purple-400">{benefit.icon}</div>
+              <div className="text-lotus-purple-400">{icons[i]}</div>
               <h4 className="font-medium text-lotus-grey-100">{benefit.title}</h4>
             </div>
             <p className="text-sm text-lotus-grey-300">{benefit.description}</p>
@@ -85,29 +70,29 @@ interface RateCompositionSectionProps {
 
 function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompositionSectionProps) {
   const borrowRate = baseRate + spread;
+  const rc = pdContent.rateComposition;
 
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Borrow Rate Composition</h3>
+      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{rc.heading}</h3>
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <p className="text-sm text-lotus-grey-300 mb-6 text-center max-w-xl mx-auto">
-          With productive debt, the borrow rate decomposes into a base component (from productive assets)
-          plus a spread component (set by the market).
+          {rc.description}
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <div className="bg-emerald-900/30 border border-emerald-700 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-emerald-400 mb-1 font-medium">Base Rate</div>
+            <div className="text-xs text-emerald-400 mb-1 font-medium">{rc.baseRateLabel}</div>
             <div className="text-2xl font-mono font-semibold text-emerald-300">
               {formatPercent(baseRate)}
             </div>
-            <div className="text-xs text-emerald-500 mt-1">from LotusUSD</div>
+            <div className="text-xs text-emerald-500 mt-1">{rc.baseRateSource}</div>
           </div>
 
           <div className="text-3xl font-light text-lotus-grey-600">+</div>
 
           <div className="bg-lotus-purple-900/30 border border-lotus-purple-700 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-purple-400 mb-1 font-medium">Credit Spread</div>
+            <div className="text-xs text-lotus-purple-400 mb-1 font-medium">{rc.creditSpreadLabel}</div>
             <input
               type="number"
               value={(spread * 100).toFixed(1)}
@@ -118,17 +103,17 @@ function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompos
               className="w-20 text-2xl font-mono font-semibold text-lotus-purple-300 bg-transparent text-center border-b-2 border-lotus-purple-500 focus:border-lotus-purple-400 focus:outline-none"
             />
             <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
-            <div className="text-xs text-lotus-purple-500 mt-1">market-determined</div>
+            <div className="text-xs text-lotus-purple-500 mt-1">{rc.creditSpreadSource}</div>
           </div>
 
           <div className="text-3xl font-light text-lotus-grey-600">=</div>
 
           <div className="bg-lotus-grey-700 border border-lotus-grey-600 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-grey-300 mb-1 font-medium">Borrow Rate</div>
+            <div className="text-xs text-lotus-grey-300 mb-1 font-medium">{rc.borrowRateLabel}</div>
             <div className="text-2xl font-mono font-semibold text-lotus-grey-100">
               {formatPercent(borrowRate)}
             </div>
-            <div className="text-xs text-lotus-grey-300 mt-1">total rate</div>
+            <div className="text-xs text-lotus-grey-300 mt-1">{rc.borrowRateSource}</div>
           </div>
         </div>
       </div>
@@ -156,6 +141,7 @@ function SpreadCompressionSection({
   const [lenderShare, setLenderShare] = useState(0.5);
   const [showFormulas, setShowFormulas] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
+  const sc = pdContent.spreadCompression;
 
   const borrowRate = baseRate + spread;
 
@@ -180,20 +166,20 @@ function SpreadCompressionSection({
 
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Spread Compression</h3>
+      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{sc.heading}</h3>
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         {/* Section 1: Controls (NOT exported) */}
         <div className="controls-section">
           {/* What is Spread Compression */}
           <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50 mb-6">
-            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">What is Spread Compression?</h4>
+            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whatIs.heading}</h4>
             <p className="text-sm text-lotus-purple-300 mb-3">
               The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
               The <strong>credit spread</strong> is the additional rate set by the Interest Rate Model (IRM) on top of the base rate.
               In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
             </p>
-            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">Why Does It Matter?</h4>
+            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whyMatters.heading}</h4>
             <p className="text-sm text-lotus-purple-300">
               Productive debt (PD) compresses this spread by ensuring idle liquidity earns the base rate.
               This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
@@ -225,12 +211,12 @@ function SpreadCompressionSection({
                 className="w-full"
               />
               <p className="text-xs text-lotus-grey-300 mt-2">
-                Lower utilization = bigger PD advantage.
+                {sc.utilizationNote}
               </p>
             </div>
 
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">Efficiency Split</h4>
+              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.efficiencySplitLabel}</h4>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-blue-400">Borrowers</span>
                 <span className="text-sm font-medium text-lotus-grey-300">
@@ -248,7 +234,7 @@ function SpreadCompressionSection({
                 className="w-full"
               />
               <p className="text-xs text-lotus-grey-300 mt-2">
-                How efficiency gains are distributed.
+                {sc.efficiencySplitNote}
               </p>
             </div>
           </div>
@@ -257,8 +243,7 @@ function SpreadCompressionSection({
           {utilization === 0 && (
             <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50 mb-4">
               <p className="text-sm text-emerald-300">
-                At 0% utilization, lenders still earn the <strong>base rate</strong> in LotusUSD markets.
-                Traditional lending: supply rate = 0%.
+                {sc.zeroUtilizationNote}
               </p>
             </div>
           )}
@@ -271,7 +256,7 @@ function SpreadCompressionSection({
 
           {/* Export Title */}
           <h4 className="text-lg font-semibold text-lotus-grey-100 mb-3 text-center pr-10">
-            Comparing Productive Debt vs. Non-Productive Debt
+            {sc.chartTitle}
           </h4>
 
           {/* Input Summary Line */}
@@ -467,8 +452,8 @@ function SpreadCompressionSection({
             <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mt-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-emerald-300">Spread Efficiency</span>
-                  <p className="text-xs text-emerald-200/70 mt-0.5">How much tighter the borrow-lend spread is with PD</p>
+                  <span className="text-sm font-medium text-emerald-300">{sc.spreadEfficiency.label}</span>
+                  <p className="text-xs text-emerald-200/70 mt-0.5">{sc.spreadEfficiency.description}</p>
                 </div>
                 <div className="text-right">
                   <span className="text-2xl font-mono font-bold text-emerald-400">
@@ -531,6 +516,7 @@ export interface VolatilityReductionSectionProps {
 export function VolatilityReductionSection({ baseRate, spread }: VolatilityReductionSectionProps) {
   const [showFormulas, setShowFormulas] = useState(false);
   const borrowRate = baseRate + spread;
+  const vr = pdContent.volatilityReduction;
 
   const chartData = useMemo(
     () => generateScenario2ChartData(borrowRate, baseRate),
@@ -554,13 +540,12 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
 
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Volatility Reduction</h3>
+      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{vr.heading}</h3>
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <div className="bg-lotus-purple-900/20 rounded-lg p-3 border border-lotus-purple-700/50 mb-6">
           <p className="text-sm text-lotus-purple-200">
-            The IRM only prices the <strong>spread</strong>, not the base rate. This means rate swings
-            are proportionally smaller with productive debt.
+            {vr.description}
           </p>
         </div>
 
@@ -568,25 +553,25 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 text-center border border-lotus-grey-600">
-            <div className="text-xs text-lotus-grey-300 uppercase tracking-wide mb-1">Without PD Range</div>
+            <div className="text-xs text-lotus-grey-300 uppercase tracking-wide mb-1">{vr.withoutPdRange}</div>
             <div className="text-xl font-mono font-semibold text-lotus-grey-300">
               {formatPercent(withoutPD.u0)} — {formatPercent(withoutPD.u100)}
             </div>
             <div className="text-xs text-lotus-grey-300 mt-1">Δ {formatPercent(noPdRange)}</div>
           </div>
           <div className="bg-orange-900/30 rounded-lg p-4 text-center border border-orange-700">
-            <div className="text-xs text-orange-400 uppercase tracking-wide mb-1">With PD Range</div>
+            <div className="text-xs text-orange-400 uppercase tracking-wide mb-1">{vr.withPdRange}</div>
             <div className="text-xl font-mono font-semibold text-orange-300">
               {formatPercent(withPD.u0)} — {formatPercent(withPD.u100)}
             </div>
             <div className="text-xs text-orange-500 mt-1">Δ {formatPercent(pdRange)}</div>
           </div>
           <div className="bg-emerald-900/30 rounded-lg p-4 text-center border border-emerald-700">
-            <div className="text-xs text-emerald-400 uppercase tracking-wide mb-1">Volatility Reduced</div>
+            <div className="text-xs text-emerald-400 uppercase tracking-wide mb-1">{vr.volatilityReduced}</div>
             <div className="text-xl font-mono font-semibold text-emerald-300">
               {volatilityReduction.toFixed(0)}%
             </div>
-            <div className="text-xs text-emerald-500 mt-1">smaller rate swings</div>
+            <div className="text-xs text-emerald-500 mt-1">{vr.volatilityReducedNote}</div>
           </div>
         </div>
 
@@ -866,7 +851,7 @@ export function ProductiveDebt({
         onUtilizationChange={onUtilizationChange}
       />
       <TeachingPrompt title="Key takeaway:">
-        Productive debt compresses the borrow-lend spread most when utilization is low, because idle supply still earns the base rate.
+        {pdContent.keyTakeaway}
       </TeachingPrompt>
     </div>
   );

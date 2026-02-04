@@ -2,6 +2,9 @@ import { useMemo } from 'react';
 import { RateInput } from './RateInput';
 import { DynamicInsight } from './DynamicInsight';
 import { TermDefinition } from './TermDefinition';
+import { content } from '../content';
+
+const { lotusUSDAllocation: luContent } = content;
 
 interface LotusUSDAllocationProps {
   treasuryAllocation: number;
@@ -30,7 +33,7 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
 
   return (
     <div className="flex flex-col items-center">
-      <h4 className="text-sm font-medium text-lotus-grey-300 mb-3">LotusUSD Allocation</h4>
+      <h4 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.pieChart.title}</h4>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {treasuryAllocation > 0 && (
           <path
@@ -54,11 +57,11 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
       <div className="flex gap-6 mt-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-sm bg-blue-500" />
-          <span className="text-sm text-lotus-grey-300">USDC ({(usdcAllocation * 100).toFixed(0)}%)</span>
+          <span className="text-sm text-lotus-grey-300">{luContent.pieChart.usdcLabel} ({(usdcAllocation * 100).toFixed(0)}%)</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-sm bg-emerald-500" />
-          <span className="text-sm text-lotus-grey-300">Treasuries ({(treasuryAllocation * 100).toFixed(0)}%)</span>
+          <span className="text-sm text-lotus-grey-300">{luContent.pieChart.treasuriesLabel} ({(treasuryAllocation * 100).toFixed(0)}%)</span>
         </div>
       </div>
     </div>
@@ -104,12 +107,7 @@ function polarToCartesian(cx: number, cy: number, radius: number, angle: number)
   };
 }
 
-const ALLOCATION_PRESETS = [
-  { value: 0.1, label: 'Liquidity-first', description: 'Low treasury exposure, maximum liquidity' },
-  { value: 0.5, label: 'Balanced', description: 'Equal USDC and Treasury allocation' },
-  { value: 0.8, label: 'Yield-first', description: 'Higher treasury exposure for yield' },
-  { value: 0.95, label: 'Max yield', description: 'Maximum treasury exposure' },
-];
+const ALLOCATION_PRESETS = luContent.allocationPresets;
 
 function AllocationSlider({
   value,
@@ -121,7 +119,7 @@ function AllocationSlider({
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <label className="block text-sm font-medium text-lotus-grey-300">Treasury Allocation</label>
+        <label className="block text-sm font-medium text-lotus-grey-300">{luContent.inputs.treasuryAllocation}</label>
         <span className="text-sm font-mono text-emerald-400">{(value * 100).toFixed(0)}%</span>
       </div>
       {/* Preset buttons */}
@@ -151,9 +149,9 @@ function AllocationSlider({
         className="w-full"
       />
       <div className="flex justify-between text-xs text-lotus-grey-300">
-        <span>0% (All USDC)</span>
-        <span>50%</span>
-        <span>100% (All Treasuries)</span>
+        <span>{luContent.sliderLabels.min}</span>
+        <span>{luContent.sliderLabels.mid}</span>
+        <span>{luContent.sliderLabels.max}</span>
       </div>
     </div>
   );
@@ -175,14 +173,13 @@ export function LotusUSDAllocation({
     <div className="space-y-6">
       <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
         <p className="text-sm text-emerald-200">
-          <TermDefinition term="lotususd">LotusUSD</TermDefinition> is a yield-bearing vault token backed by USDC and short-term Treasuries.
-          Its yield becomes the market's base rate, allowing idle liquidity to earn yield even when not being borrowed.
+          <TermDefinition term="lotususd">LotusUSD</TermDefinition> {luContent.intro.replace('LotusUSD is a', 'is a')}
         </p>
       </div>
 
       {/* Presets */}
       <div className="flex flex-wrap gap-2">
-        <span className="text-sm text-lotus-grey-400 self-center mr-2">Presets:</span>
+        <span className="text-sm text-lotus-grey-400 self-center mr-2">{luContent.presets.label}</span>
         <button
           onClick={() => { onTreasuryAllocationChange(0.8); onTreasuryRateChange(0.04); }}
           className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
@@ -191,7 +188,7 @@ export function LotusUSDAllocation({
               : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
           }`}
         >
-          Typical (80% @ 4%)
+          {luContent.presets.typical}
         </button>
         <button
           onClick={() => { onTreasuryAllocationChange(0.95); onTreasuryRateChange(0.05); }}
@@ -201,7 +198,7 @@ export function LotusUSDAllocation({
               : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
           }`}
         >
-          High Yield (95% @ 5%)
+          {luContent.presets.highYield}
         </button>
         <button
           onClick={() => { onTreasuryAllocationChange(0.5); onTreasuryRateChange(0.035); }}
@@ -211,7 +208,7 @@ export function LotusUSDAllocation({
               : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
           }`}
         >
-          High Liquidity (50% @ 3.5%)
+          {luContent.presets.highLiquidity}
         </button>
       </div>
 
@@ -222,26 +219,26 @@ export function LotusUSDAllocation({
 
         <div className="space-y-6">
           <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
-            <h3 className="text-sm font-medium text-lotus-grey-300 mb-4">Inputs</h3>
+            <h3 className="text-sm font-medium text-lotus-grey-300 mb-4">{luContent.inputs.heading}</h3>
             <div className="space-y-4">
               <AllocationSlider
                 value={treasuryAllocation}
                 onChange={onTreasuryAllocationChange}
               />
               <RateInput
-                label="US Treasury Rate"
+                label={luContent.inputs.treasuryRate}
                 value={treasuryRate}
                 onChange={onTreasuryRateChange}
-                description="Current yield on US Treasury bills"
+                description={luContent.inputs.treasuryRateDescription}
               />
             </div>
           </div>
 
           <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
-            <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">Output</h3>
+            <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.output.heading}</h3>
             <div className="p-4 bg-emerald-900/30 rounded-lg border border-emerald-700">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-300 font-medium">Productive Debt Rate</span>
+                <span className="text-sm text-emerald-300 font-medium">{luContent.output.productiveDebtRate}</span>
                 <span className="text-2xl font-mono font-bold text-emerald-400">
                   {formatPercent(productiveDebtRate)}
                 </span>
@@ -253,38 +250,37 @@ export function LotusUSDAllocation({
 
       <div className="bg-lotus-grey-800/50 rounded-lg p-4 border border-lotus-grey-700">
         <p className="text-sm text-lotus-grey-300">
-          The percentage allocated to Treasuries will vary depending on market conditions. It is designed to maintain
-          sufficient instantaneous market liquidity while maximizing the percentage allocated to Treasuries.
+          {luContent.tradeoffNote}
         </p>
       </div>
 
       <DynamicInsight show={treasuryAllocation >= 0.95} variant="info">
-        <strong>Maximum Treasury Exposure:</strong> At near-100% treasury allocation, the productive debt rate equals the full treasury rate. However, this leaves minimal USDC reserves for instant redemptions.
+        <strong>Maximum Treasury Exposure:</strong> {luContent.insights.maxTreasury.replace('Maximum Treasury Exposure: ', '')}
       </DynamicInsight>
 
       <DynamicInsight show={treasuryAllocation <= 0.05} variant="warning">
-        <strong>Minimal Yield:</strong> With treasury allocation near 0%, the productive debt rate approaches zero. All backing is in USDC which earns no yield, but provides maximum liquidity for redemptions.
+        <strong>Minimal Yield:</strong> {luContent.insights.minTreasury.replace('Minimal Yield: ', '')}
       </DynamicInsight>
 
       <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
-        <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">How It Works</h3>
+        <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.howItWorks.heading}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-700/50">
-            <div className="font-medium text-blue-300 mb-1">USDC Reserve</div>
+            <div className="font-medium text-blue-300 mb-1">{luContent.howItWorks.usdcReserve.title}</div>
             <p className="text-blue-400 text-xs">
-              Held as instant liquidity for redemptions. Earns 0% yield but provides stability.
+              {luContent.howItWorks.usdcReserve.description}
             </p>
           </div>
           <div className="p-3 bg-emerald-900/30 rounded-lg border border-emerald-700/50">
-            <div className="font-medium text-emerald-300 mb-1">Treasury Holdings</div>
+            <div className="font-medium text-emerald-300 mb-1">{luContent.howItWorks.treasuryHoldings.title}</div>
             <p className="text-emerald-400 text-xs">
-              Invested in US Treasury bills to generate yield for the productive debt base rate.
+              {luContent.howItWorks.treasuryHoldings.description}
             </p>
           </div>
           <div className="p-3 bg-lotus-purple-900/30 rounded-lg border border-lotus-purple-700/50">
-            <div className="font-medium text-lotus-purple-300 mb-1">Productive Debt Rate</div>
+            <div className="font-medium text-lotus-purple-300 mb-1">{luContent.howItWorks.productiveDebtRate.title}</div>
             <p className="text-lotus-purple-400 text-xs">
-              The rate earned by idle supply. Used in the next section to compress spreads.
+              {luContent.howItWorks.productiveDebtRate.description}
             </p>
           </div>
         </div>

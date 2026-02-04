@@ -8,6 +8,9 @@ import { DynamicLoanMix } from './DynamicLoanMix';
 import { PageHeader } from './PageHeader';
 import { FailureModeCallout } from './FailureModeCallout';
 import { TeachingPrompt } from './TeachingPrompt';
+import { content } from '../content';
+
+const { trancheLiquidity: tlContent } = content;
 
 /**
  * FreeSupplyWhyButton - Inline explainer for the Free Supply concept
@@ -30,7 +33,7 @@ function FreeSupplyWhyButton() {
       {isExpanded && (
         <div className="absolute right-0 top-full mt-2 z-20 w-80 bg-lotus-grey-800 border border-lotus-grey-600 rounded-lg shadow-xl p-4">
           <div className="flex items-start justify-between mb-2">
-            <h5 className="font-medium text-emerald-300">Why Free Supply Matters</h5>
+            <h5 className="font-medium text-emerald-300">{tlContent.supplyMetrics.freeSupply.whyButton.heading}</h5>
             <button
               onClick={() => setIsExpanded(false)}
               className="text-lotus-grey-400 hover:text-lotus-grey-200"
@@ -42,16 +45,15 @@ function FreeSupplyWhyButton() {
           </div>
           <div className="space-y-3 text-xs text-lotus-grey-300">
             <p>
-              <strong className="text-emerald-400">Free supply is the amount that can be borrowed or withdrawn</strong> from a tranche.
+              <strong className="text-emerald-400">{tlContent.supplyMetrics.freeSupply.whyButton.explanation}</strong>
             </p>
             <p>
               It's limited by the <strong className="text-amber-400">tightest junior net supply</strong> along the senior path.
-              Even if a junior tranche has lots of liquidity, it can only be accessed if all senior tranches also have liquidity available.
+              {tlContent.supplyMetrics.freeSupply.whyButton.detail.split("Even if")[1] && ` Even if${tlContent.supplyMetrics.freeSupply.whyButton.detail.split("Even if")[1]}`}
             </p>
             <div className="bg-amber-900/20 border border-amber-700/50 rounded p-2 mt-2">
               <p className="text-amber-200">
-                <strong>Why can borrow &gt; supply?</strong> This is valid because liquidity cascades from junior tranches.
-                The true limit is Free Supply, not direct supply.
+                <strong>Why can borrow &gt; supply?</strong> {tlContent.supplyMetrics.freeSupply.whyButton.borrowNote.split("This is valid")[1] ? `This is valid${tlContent.supplyMetrics.freeSupply.whyButton.borrowNote.split("This is valid")[1]}` : tlContent.supplyMetrics.freeSupply.whyButton.borrowNote}
               </p>
             </div>
           </div>
@@ -79,25 +81,21 @@ export function TrancheLiquidity({
   return (
     <div className="space-y-6">
       <PageHeader
-        whatYoullLearn={[
-          "How lenders and borrowers interact with different tranches",
-          "Why liquidity cascades from junior to senior and interest cascades from senior to junior",
-          "How the dynamic loan mix shows who is lending to whom",
-        ]}
-        tryThis="Adjust the supply and borrow values in the table below to see how liquidity flows between tranches."
+        whatYoullLearn={tlContent.pageHeader.whatYoullLearn}
+        tryThis={tlContent.pageHeader.tryThis}
       />
 
       {/* Role Cards */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">How Lenders & Borrowers Use Tranches</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{tlContent.roleCards.heading}</h3>
         <RoleDiagramCompact />
       </div>
 
       {/* Liquidity Cascade Explanation */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Benefits of Cascading Liquidity</h3>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{tlContent.cascadeBenefits.heading}</h3>
         <p className="text-lotus-grey-300 mb-6">
-          Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism while keeping risk segmented.
+          {tlContent.cascadeBenefits.description}
         </p>
 
         {/* Key Insight Cards */}
@@ -107,10 +105,10 @@ export function TrancheLiquidity({
               <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
-              <span className="font-medium text-emerald-300">Capital Efficiency</span>
+              <span className="font-medium text-emerald-300">{tlContent.cascadeBenefits.cards[0].title}</span>
             </div>
             <p className="text-sm text-emerald-200/80">
-              Unused junior supply supports senior borrowers, improving overall efficiency.
+              {tlContent.cascadeBenefits.cards[0].description}
             </p>
           </div>
           <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-700/50">
@@ -118,10 +116,10 @@ export function TrancheLiquidity({
               <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="font-medium text-blue-300">Fair Distribution</span>
+              <span className="font-medium text-blue-300">{tlContent.cascadeBenefits.cards[1].title}</span>
             </div>
             <p className="text-sm text-blue-200/80">
-              Interest flows to all suppliers whose liquidity was used, proportionally.
+              {tlContent.cascadeBenefits.cards[1].description}
             </p>
           </div>
           <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
@@ -129,15 +127,15 @@ export function TrancheLiquidity({
               <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span className="font-medium text-lotus-purple-300">Higher Risk = Higher Yield</span>
+              <span className="font-medium text-lotus-purple-300">{tlContent.cascadeBenefits.cards[2].title}</span>
             </div>
             <p className="text-sm text-lotus-purple-200/80">
-              Junior lenders underwrite higher-risk LLTVs and earn higher yields to compensate.
+              {tlContent.cascadeBenefits.cards[2].description}
             </p>
           </div>
         </div>
 
-        <h4 className="text-sm font-semibold text-lotus-grey-100 mt-6 mb-3">How Cascading Liquidity Works</h4>
+        <h4 className="text-sm font-semibold text-lotus-grey-100 mt-6 mb-3">{tlContent.cascadeBenefits.howItWorks.heading}</h4>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
             <div className="w-6 h-6 bg-emerald-900/50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -145,8 +143,7 @@ export function TrancheLiquidity({
             </div>
             <div>
               <p className="text-sm text-lotus-grey-200">
-                <strong className="text-emerald-400">Liquidity cascades from junior to senior:</strong> Unused supply from junior tranches
-                (higher LLTV) supports more senior borrowers (lower LLTV).
+                <strong className="text-emerald-400">{tlContent.cascadeBenefits.howItWorks.steps[0].label}</strong> {tlContent.cascadeBenefits.howItWorks.steps[0].description}
               </p>
             </div>
           </div>
@@ -157,8 +154,7 @@ export function TrancheLiquidity({
             </div>
             <div>
               <p className="text-sm text-lotus-grey-200">
-                <strong className="text-blue-400">Interest cascades from senior to junior:</strong> Interest generated at senior tranches
-                flows to junior tranches based on supply utilization at each level.
+                <strong className="text-blue-400">{tlContent.cascadeBenefits.howItWorks.steps[1].label}</strong> {tlContent.cascadeBenefits.howItWorks.steps[1].description}
               </p>
             </div>
           </div>
@@ -169,8 +165,7 @@ export function TrancheLiquidity({
             </div>
             <div>
               <p className="text-sm text-lotus-grey-200">
-                <strong className="text-lotus-purple-400">No idle capital:</strong> Your supply earns yield even when borrowers at your
-                tranche level are quiet, because it can support senior borrowers.
+                <strong className="text-lotus-purple-400">{tlContent.cascadeBenefits.howItWorks.steps[2].label}</strong> {tlContent.cascadeBenefits.howItWorks.steps[2].description}
               </p>
             </div>
           </div>
@@ -184,9 +179,7 @@ export function TrancheLiquidity({
             </svg>
             <div>
               <p className="text-sm text-amber-200">
-                <strong>Important:</strong> Bad debt is allocated proportionally to lenders who provided the liquidity
-                that was borrowed. Junior lenders earn higher yields because they underwrite riskier (higher LLTV) loans,
-                not because they "absorb losses first."
+                <strong>Important:</strong> {tlContent.cascadeBenefits.badDebtNote}
               </p>
             </div>
           </div>
@@ -208,29 +201,29 @@ export function TrancheLiquidity({
       <DynamicLoanMix tranches={tranches} />
 
       <TeachingPrompt title="Key takeaway:">
-        Connected liquidity keeps senior markets deep while keeping risk separated across tranches.
+        {tlContent.keyTakeaway}
       </TeachingPrompt>
 
       <CollapsibleSection
-        title="Understanding Junior Metrics"
+        title={tlContent.juniorMetrics.title}
         icon="[]"
-        description="How supply and borrow cascade across tranches"
+        description={tlContent.juniorMetrics.description}
       >
         <div className="space-y-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Supply</h4>
+            <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorSupply.heading}</h4>
             <p className="text-sm text-lotus-grey-300 mb-3">
-              Junior supply is the total supply available at this tranche plus every more junior tranche. It shows how much liquidity sits “below” this level.
+              {tlContent.juniorMetrics.juniorSupply.description}
             </p>
             {/* Legend for stacked bars */}
             <div className="flex gap-4 mb-3 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-500 rounded" />
-                <span className="text-lotus-grey-300">Direct supply (this tranche)</span>
+                <span className="text-lotus-grey-300">{tlContent.juniorMetrics.juniorSupply.directLegend}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-400/50 rounded" />
-                <span className="text-lotus-grey-300">Cascaded from junior</span>
+                <span className="text-lotus-grey-300">{tlContent.juniorMetrics.juniorSupply.cascadedLegend}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -263,19 +256,19 @@ export function TrancheLiquidity({
           </div>
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Borrow</h4>
+            <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorBorrow.heading}</h4>
             <p className="text-sm text-lotus-grey-300 mb-3">
-              Junior borrow is the total borrow demand at this tranche and all more junior tranches. It shows how much risk demand piles up below this level.
+              {tlContent.juniorMetrics.juniorBorrow.description}
             </p>
             {/* Legend for stacked bars */}
             <div className="flex gap-4 mb-3 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-orange-500 rounded" />
-                <span className="text-lotus-grey-300">Direct borrow (this tranche)</span>
+                <span className="text-lotus-grey-300">{tlContent.juniorMetrics.juniorBorrow.directLegend}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-orange-400/50 rounded" />
-                <span className="text-lotus-grey-300">Cascaded from senior</span>
+                <span className="text-lotus-grey-300">{tlContent.juniorMetrics.juniorBorrow.cascadedLegend}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -308,9 +301,9 @@ export function TrancheLiquidity({
           </div>
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Net Supply</h4>
+            <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorNetSupply.heading}</h4>
             <p className="text-sm text-lotus-grey-300 mb-3">
-              Junior net supply is junior supply minus junior borrow. It shows the excess liquidity at each level that can flow to more senior borrowers.
+              {tlContent.juniorMetrics.juniorNetSupply.description}
             </p>
             {/* Math columns display */}
             <div className="space-y-2">
@@ -343,21 +336,21 @@ export function TrancheLiquidity({
 
       {/* Understanding Supply Metrics - CollapsibleSection style matching Utilization Metrics */}
       <CollapsibleSection
-        title="Understanding Supply Metrics"
+        title={tlContent.supplyMetrics.title}
         icon="{}"
-        description="Free Supply and Available Supply explained"
+        description={tlContent.supplyMetrics.description}
       >
         <div className="space-y-4">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="font-medium text-lotus-grey-100">Free Supply</h4>
+              <h4 className="font-medium text-lotus-grey-100">{tlContent.supplyMetrics.freeSupply.heading}</h4>
               <FreeSupplyWhyButton />
             </div>
             <p className="text-sm text-lotus-grey-300 mb-3">
               The amount of liquidity that can be <strong className="text-emerald-400">borrowed or withdrawn</strong> from the tranche.
             </p>
             <p className="text-xs text-lotus-grey-400 mb-4">
-              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">FreeSupply = min(JrNetSupply at this tranche and all more senior tranches)</span>
+              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">{tlContent.supplyMetrics.freeSupply.formula}</span>
             </p>
 
             {/* Legend */}
@@ -405,18 +398,17 @@ export function TrancheLiquidity({
             </div>
 
             <p className="text-xs text-lotus-grey-400 mt-3 italic">
-              Free supply is constrained by the minimum Jr Net Supply at all more senior tranches.
-              Even if a junior tranche has excess liquidity, it can only be withdrawn if senior tranches also have liquidity available.
+              {tlContent.supplyMetrics.freeSupply.note}
             </p>
           </div>
 
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-            <h4 className="font-medium text-lotus-grey-100 mb-2">Available Supply</h4>
+            <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.supplyMetrics.availableSupply.heading}</h4>
             <p className="text-sm text-lotus-grey-300 mb-3">
-              The total supply available for borrowers at this tranche. Equals Jr Net Supply plus existing borrows at the tranche.
+              {tlContent.supplyMetrics.availableSupply.description}
             </p>
             <p className="text-xs text-lotus-grey-400 mb-4">
-              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">AvailableSupply = JrNetSupply + BorrowsAtTranche</span>
+              <span className="font-mono bg-lotus-grey-800 px-2 py-1 rounded">{tlContent.supplyMetrics.availableSupply.formula}</span>
             </p>
 
             {/* Legend */}
@@ -465,14 +457,14 @@ export function TrancheLiquidity({
       </CollapsibleSection>
 
       <CollapsibleSection
-        title="Utilization Metrics"
+        title={tlContent.utilizationMetrics.title}
         icon="%"
-        description="How supply and borrow utilization are calculated"
+        description={tlContent.utilizationMetrics.description}
       >
         <div className="space-y-6">
           {/* Supply Utilization Table */}
           <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50">
-            <h4 className="font-medium text-lotus-purple-200 mb-3">Supply Utilization by Tranche</h4>
+            <h4 className="font-medium text-lotus-purple-200 mb-3">{tlContent.utilizationMetrics.supplyUtil.heading}</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -503,13 +495,13 @@ export function TrancheLiquidity({
               </table>
             </div>
             <p className="text-xs text-lotus-grey-400 mt-2">
-              Supply utilization determines how much interest stays at this tranche vs cascading to more junior tranches. Higher supply utilization means more of the interest is kept at this level.
+              {tlContent.utilizationMetrics.supplyUtil.note}
             </p>
           </div>
 
           {/* Borrow Utilization Table */}
           <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-700/50">
-            <h4 className="font-medium text-orange-200 mb-3">Borrow Utilization by Tranche</h4>
+            <h4 className="font-medium text-orange-200 mb-3">{tlContent.utilizationMetrics.borrowUtil.heading}</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -542,18 +534,15 @@ export function TrancheLiquidity({
               </table>
             </div>
             <p className="text-xs text-lotus-grey-400 mt-2">
-              Borrow utilization is used to determine interest rates according to the Interest Rate Model (IRM). Higher utilization leads to higher borrow rates.
+              {tlContent.utilizationMetrics.borrowUtil.note}
             </p>
           </div>
         </div>
       </CollapsibleSection>
 
-      <FailureModeCallout title="Stress Scenario: Withdrawal Limits">
+      <FailureModeCallout title={tlContent.failureMode.title}>
         <p>
-          Free Supply determines how much can be withdrawn instantly. There is no withdrawal
-          queue—if Free Supply is insufficient, lenders must wait until borrowers repay loans
-          or new supply enters the system. Junior lenders are particularly affected as their
-          Free Supply depends on senior tranches maintaining liquidity buffers.
+          {tlContent.failureMode.description}
         </p>
       </FailureModeCallout>
     </div>

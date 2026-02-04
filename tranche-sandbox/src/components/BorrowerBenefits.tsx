@@ -3,6 +3,9 @@ import type { TrancheData } from '../types';
 import { formatPercent } from '../math/lotusAccounting';
 import { PageHeader } from './PageHeader';
 import { TeachingPrompt } from './TeachingPrompt';
+import { content } from '../content';
+
+const { borrowerBenefits: bbContent } = content;
 
 interface BorrowerBenefitsProps {
   tranches: TrancheData[];
@@ -52,20 +55,15 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
   return (
     <div className="space-y-8">
       <PageHeader
-        whatYoullLearn={[
-          'How to choose a tranche for your borrowing goals',
-          'How higher LTVs unlock more borrowing power, higher leverage, and lower liquidation prices',
-          'Why senior borrowers get more stable rates and deeper liquidity',
-        ]}
-        tryThis="Choose a tranche by trading off borrow rate and liquidation price."
+        whatYoullLearn={bbContent.pageHeader.whatYoullLearn}
+        tryThis={bbContent.pageHeader.tryThis}
       />
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Borrow Experience</h3>
+          <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">{bbContent.borrowExperience.heading}</h3>
           <p className="text-sm text-lotus-grey-300">
-            Higher LLTV tranches unlock more borrowing power. Senior borrowers can access deeper liquidity because
-            junior supply cascades from junior to senior.
+            {bbContent.borrowExperience.description}
           </p>
         </div>
 
@@ -104,11 +102,11 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
               />
               <p className={`text-xs mt-2 ${isOverSelectedMax ? 'text-red-400' : 'text-lotus-grey-500'}`}>
                 {isOverSelectedMax
-                  ? `Over the max borrow for ${selectedLLTV}% LLTV. Choose a higher LLTV or reduce borrow.`
-                  : `Max borrow at ${selectedLLTV}% LLTV: $${selectedMaxBorrow.toLocaleString()}`}
+                  ? bbContent.overMaxMessage(selectedLLTV)
+                  : bbContent.maxBorrowMessage(selectedLLTV, selectedMaxBorrow.toLocaleString())}
               </p>
               <p className="text-xs text-lotus-grey-500 mt-1">
-                Loan balances are denominated in LotusUSD. USDC conversion happens automatically.
+                {bbContent.loanDenominationNote}
               </p>
             </div>
           </div>
@@ -209,15 +207,13 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         </div>
 
         <div className="text-xs text-lotus-grey-400">
-          Tranches that would put your health factor below 1.05 are disabled. In this simulator, health factor below
-          1.0 means LTV exceeds the tranche LLTV (liquidation threshold); 1.05 is a safety buffer.
+          {bbContent.healthFactorNote}
         </div>
 
       </div>
 
       <TeachingPrompt title="Key takeaway:">
-        Lower LLTV generally means lower, more stable rates. Higher LLTV offers more borrowing power and leverage and a
-        lower liquidation price.
+        {bbContent.keyTakeaway}
       </TeachingPrompt>
     </div>
   );
