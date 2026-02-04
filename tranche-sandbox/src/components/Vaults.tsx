@@ -237,7 +237,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             {/* Step 4: Tranches */}
             <div className="w-full">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-emerald-400"><TermDefinition term="tranche-seniority">Senior</TermDefinition> ({vContent.howVaultsWork.flowDiagram.seniorLabel.replace('Senior ', '')})</span>
+                <span className="text-sm font-medium text-emerald-400"><TermDefinition term="tranche-seniority">Senior</TermDefinition> {vContent.howVaultsWork.flowDiagram.seniorLabel.replace('Senior ', '')}</span>
                 <span className="text-sm font-medium text-red-400">{vContent.howVaultsWork.flowDiagram.juniorLabel}</span>
               </div>
               <div className="flex items-center gap-2">

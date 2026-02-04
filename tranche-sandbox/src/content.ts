@@ -85,7 +85,6 @@ export const content = {
         'How tranches create different risk/reward options',
         'Why connected liquidity beats isolated markets',
       ],
-      tryThis: 'Scan the problem summary below to see how traditional lending fails borrowers and lenders.',
     },
     lotusDifference: {
       heading: 'The Lotus Difference',
@@ -302,6 +301,70 @@ export const content = {
       badDebtNote: 'Bad debt is allocated proportionally to lenders who provided the liquidity that was borrowed. Junior lenders earn higher yields because they underwrite riskier (higher LLTV) loans, not because they "absorb losses first."',
     },
     keyTakeaway: 'Connected liquidity keeps senior markets deep while keeping risk separated across tranches.',
+    tableGuide: {
+      title: 'How to Read This Table',
+      intro: 'This table shows how liquidity flows across tranches in a single market. Tranches are ordered from senior (lower LLTV, lower risk) to junior (higher LLTV, higher risk).',
+      columns: [
+        {
+          name: 'LLTV',
+          description: 'The liquidation loan-to-value threshold. Borrowers at this tranche can borrow up to this percentage of their collateral value before becoming liquidatable.',
+        },
+        {
+          name: 'Supply',
+          description: 'The amount lenders have deposited directly into this tranche. This is an input you can edit.',
+        },
+        {
+          name: 'Borrow',
+          description: 'The amount borrowers have borrowed at this tranche (i.e., at this LLTV). This is an input you can edit.',
+        },
+        {
+          name: 'Credit Spread',
+          description: 'The interest rate premium set by the Interest Rate Model (IRM) based on borrow utilization. Higher utilization means higher spreads.',
+        },
+        {
+          name: 'Borrow Rate',
+          description: 'The total rate borrowers pay: Productive Debt Rate (base) + Credit Spread. This is what borrowers owe on their loans.',
+        },
+        {
+          name: 'Jr Supply',
+          description: 'Junior Supply — the total supply at this tranche plus all more junior tranches. This liquidity can support borrowers at this tranche or any more senior tranche.',
+        },
+        {
+          name: 'Jr Borrow',
+          description: 'Junior Borrow — the total borrow demand at this tranche plus all more junior tranches.',
+        },
+        {
+          name: 'Jr Net',
+          description: 'Junior Net Supply = Jr Supply − Jr Borrow. This must always be positive in a valid market state. It represents excess liquidity that can flow to more senior tranches, but does not account for existing borrow demand at senior tranches already utilizing that liquidity. Free Supply accounts for that.',
+        },
+        {
+          name: 'Free Supply',
+          description: 'The actual liquidity available to borrow or withdraw at this tranche. Equals the minimum Jr Net Supply across this tranche and all more senior tranches. This is the binding constraint on new borrows.',
+        },
+        {
+          name: 'Available',
+          description: 'Available Supply = Jr Net Supply + Borrows at this tranche. Represents the total supply that could be accessed by borrowers at this tranche if all existing borrows were repaid.',
+        },
+        {
+          name: 'Supply Util',
+          description: 'Supply Utilization = Supply / Available Supply. Determines how much interest stays at this tranche versus cascading to more junior tranches.',
+        },
+        {
+          name: 'Borrow Util',
+          description: 'Borrow Utilization = 1 − (Free Supply / Jr Supply). This drives the IRM: higher borrow utilization leads to higher credit spreads and borrow rates.',
+        },
+        {
+          name: 'Supply Rate',
+          description: 'The rate lenders earn at this tranche: Productive Debt Rate (base) + interest allocated through the cascade based on supply utilization.',
+        },
+      ],
+      tips: [
+        'Click any row to inspect the constraint details for that tranche.',
+        'A blue dot next to Borrow indicates the tranche is borrowing more than its direct supply — this is normal, as it draws from junior liquidity.',
+        'An amber-highlighted row indicates this tranche has the binding (tightest) Jr Net Supply constraint.',
+        'A red-highlighted row indicates an invalid state where borrow exceeds available liquidity.',
+      ],
+    },
     juniorMetrics: {
       title: 'Understanding Junior Metrics',
       description: 'How supply and borrow cascade across tranches',
@@ -368,7 +431,7 @@ export const content = {
     pageHeader: {
       whatYoullLearn: [
         'How to choose a tranche for your borrowing goals',
-        'How higher LTVs unlock more borrowing power, higher leverage, and lower liquidation prices',
+        'How higher LLTVs unlock more borrowing power, higher leverage, and lower liquidation prices',
         'Why senior borrowers get more stable rates and deeper liquidity',
       ],
       tryThis: 'Choose a tranche by trading off borrow rate and liquidation price.',

@@ -79,7 +79,7 @@ export function TrancheLiquidity({
   const maxJrNetSupply = useMemo(() => Math.max(...tranches.map(t => Math.abs(t.jrNetSupply))), [tranches]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         whatYoullLearn={tlContent.pageHeader.whatYoullLearn}
         tryThis={tlContent.pageHeader.tryThis}
@@ -193,6 +193,53 @@ export function TrancheLiquidity({
           onTrancheChange={onTrancheChange}
         />
       </div>
+
+      {/* How to Read This Table - Expandable */}
+      <details className="bg-blue-900/20 rounded-lg border border-blue-700/40 group hover:border-blue-600/50 transition-colors">
+        <summary className="px-4 py-3 cursor-pointer list-none flex items-center gap-3 text-sm font-medium text-blue-300 hover:text-blue-200 transition-colors">
+          <svg
+            className="w-5 h-5 text-blue-400 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="flex-1">{tlContent.tableGuide.title}</span>
+          <svg
+            className="w-4 h-4 text-blue-400 transition-transform group-open:rotate-180"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div className="px-4 pb-4 border-t border-blue-700/50 pt-3">
+          <p className="text-sm text-lotus-grey-300 mb-4">{tlContent.tableGuide.intro}</p>
+
+          <div className="space-y-2 mb-4">
+            {tlContent.tableGuide.columns.map((col) => (
+              <div key={col.name} className="flex gap-3 text-sm">
+                <span className="font-mono text-lotus-purple-300 w-24 flex-shrink-0">{col.name}</span>
+                <span className="text-lotus-grey-300">{col.description}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-lotus-grey-900/50 rounded-lg p-3 border border-lotus-grey-700">
+            <h5 className="text-xs font-semibold text-lotus-grey-200 uppercase tracking-wide mb-2">Tips</h5>
+            <ul className="space-y-1 text-sm text-lotus-grey-300">
+              {tlContent.tableGuide.tips.map((tip, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="text-lotus-purple-400">•</span>
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </details>
 
       {/* Rates by LLTV */}
       <RateChart tranches={tranches} productiveDebtRate={productiveDebtRate} />

@@ -18,8 +18,9 @@ interface BadDebtSimulatorProps {
 export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
   const exportRef = useRef<HTMLDivElement>(null);
   // State: bad debt amount per tranche (indexed by tranche index)
+  // Default: $100 in 90% LLTV (index 3), $200 in 95% LLTV (index 4)
   const [badDebtAmounts, setBadDebtAmounts] = useState<number[]>(
-    () => tranches.map(() => 0)
+    () => tranches.map((_, i) => i === 3 ? 100 : i === 4 ? 200 : 0)
   );
 
   // Update bad debt for a tranche (capped at borrow amount)

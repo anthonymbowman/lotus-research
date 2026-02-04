@@ -81,7 +81,7 @@ export function Introduction() {
             </svg>
           </div>
           <div>
-            <h3 className="text-base font-semibold text-lotus-grey-100 mb-1">{intro.vaultsPreview.heading}</h3>
+            <h3 className="text-lg font-medium text-lotus-grey-100 mb-1">{intro.vaultsPreview.heading}</h3>
             <p className="text-sm text-lotus-grey-200">
               {intro.vaultsPreview.description}
             </p>

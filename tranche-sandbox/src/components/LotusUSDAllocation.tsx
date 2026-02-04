@@ -107,8 +107,6 @@ function polarToCartesian(cx: number, cy: number, radius: number, angle: number)
   };
 }
 
-const ALLOCATION_PRESETS = luContent.allocationPresets;
-
 function AllocationSlider({
   value,
   onChange,
@@ -121,23 +119,6 @@ function AllocationSlider({
       <div className="flex justify-between items-center">
         <label className="block text-sm font-medium text-lotus-grey-300">{luContent.inputs.treasuryAllocation}</label>
         <span className="text-sm font-mono text-emerald-400">{(value * 100).toFixed(0)}%</span>
-      </div>
-      {/* Preset buttons */}
-      <div className="flex flex-wrap gap-2 mb-2">
-        {ALLOCATION_PRESETS.map(preset => (
-          <button
-            key={preset.value}
-            onClick={() => onChange(preset.value)}
-            title={preset.description}
-            className={`px-2 py-1 text-xs rounded transition-colors ${
-              Math.abs(value - preset.value) < 0.01
-                ? 'bg-emerald-600 text-white'
-                : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
-            }`}
-          >
-            {preset.label}
-          </button>
-        ))}
       </div>
       <input
         type="range"
@@ -170,46 +151,11 @@ export function LotusUSDAllocation({
   const formatPercent = (value: number) => `${(value * 100).toFixed(2)}%`;
 
   return (
-    <div className="space-y-6">
-      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mb-4">
+    <div className="space-y-8">
+      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
         <p className="text-sm text-emerald-200">
           <TermDefinition term="lotususd">LotusUSD</TermDefinition> {luContent.intro.replace('LotusUSD is a', 'is a')}
         </p>
-      </div>
-
-      {/* Presets */}
-      <div className="flex flex-wrap gap-2">
-        <span className="text-sm text-lotus-grey-400 self-center mr-2">{luContent.presets.label}</span>
-        <button
-          onClick={() => { onTreasuryAllocationChange(0.8); onTreasuryRateChange(0.04); }}
-          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
-            treasuryAllocation === 0.8 && treasuryRate === 0.04
-              ? 'bg-lotus-purple-900/30 border-lotus-purple-500 text-lotus-purple-300'
-              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
-          }`}
-        >
-          {luContent.presets.typical}
-        </button>
-        <button
-          onClick={() => { onTreasuryAllocationChange(0.95); onTreasuryRateChange(0.05); }}
-          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
-            treasuryAllocation === 0.95 && treasuryRate === 0.05
-              ? 'bg-emerald-900/30 border-emerald-500 text-emerald-300'
-              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
-          }`}
-        >
-          {luContent.presets.highYield}
-        </button>
-        <button
-          onClick={() => { onTreasuryAllocationChange(0.5); onTreasuryRateChange(0.035); }}
-          className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
-            treasuryAllocation === 0.5 && treasuryRate === 0.035
-              ? 'bg-blue-900/30 border-blue-500 text-blue-300'
-              : 'bg-lotus-grey-700/50 border-lotus-grey-600 text-lotus-grey-300 hover:border-lotus-grey-500'
-          }`}
-        >
-          {luContent.presets.highLiquidity}
-        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -249,6 +195,7 @@ export function LotusUSDAllocation({
       </div>
 
       <div className="bg-lotus-grey-800/50 rounded-lg p-4 border border-lotus-grey-700">
+        <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">LotusUSD Allocation Strategy</h4>
         <p className="text-sm text-lotus-grey-300">
           {luContent.tradeoffNote}
         </p>
@@ -289,3 +236,5 @@ export function LotusUSDAllocation({
     </div>
   );
 }
+
+export default LotusUSDAllocation;

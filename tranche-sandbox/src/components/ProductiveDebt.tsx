@@ -95,12 +95,12 @@ function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompos
             <div className="text-xs text-lotus-purple-400 mb-1 font-medium">{rc.creditSpreadLabel}</div>
             <input
               type="number"
-              value={(spread * 100).toFixed(1)}
+              value={spread * 100}
               onChange={(e) => onSpreadChange(parseFloat(e.target.value) / 100 || 0)}
-              step="0.1"
+              step="0.5"
               min="0"
               max="50"
-              className="w-20 text-2xl font-mono font-semibold text-lotus-purple-300 bg-transparent text-center border-b-2 border-lotus-purple-500 focus:border-lotus-purple-400 focus:outline-none"
+              className="w-24 text-2xl font-mono font-semibold text-lotus-purple-300 bg-transparent text-center border-b-2 border-lotus-purple-500 focus:border-lotus-purple-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
             <div className="text-xs text-lotus-purple-500 mt-1">{rc.creditSpreadSource}</div>
@@ -191,7 +191,7 @@ function SpreadCompressionSection({
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
               <div className="flex justify-between items-center mb-2">
                 <DefinitionBadge
-                  label="Borrow Utilization"
+                  label="Utilization"
                   formula="1 - (Free Supply / Jr Supply)"
                   note="This is the utilization that drives IRM rates. Higher utilization = higher borrow rates."
                   textColor="text-lotus-grey-300"
@@ -200,6 +200,10 @@ function SpreadCompressionSection({
                 <span className="text-lg font-mono font-semibold text-lotus-grey-100">
                   {(utilization * 100).toFixed(0)}%
                 </span>
+              </div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs font-medium text-emerald-400">No Utilization</span>
+                <span className="text-xs font-medium text-orange-400">Full Utilization</span>
               </div>
               <input
                 type="range"
@@ -216,13 +220,15 @@ function SpreadCompressionSection({
             </div>
 
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.efficiencySplitLabel}</h4>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-blue-400">Borrowers</span>
-                <span className="text-sm font-medium text-lotus-grey-300">
+                <span className="text-sm font-medium text-lotus-grey-300">{sc.efficiencySplitLabel}</span>
+                <span className="text-lg font-mono font-semibold text-lotus-grey-100">
                   {((1 - lenderShare) * 100).toFixed(0)}% / {(lenderShare * 100).toFixed(0)}%
                 </span>
-                <span className="text-sm font-medium text-emerald-400">Lenders</span>
+              </div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs font-medium text-blue-400">Borrowers</span>
+                <span className="text-xs font-medium text-emerald-400">Lenders</span>
               </div>
               <input
                 type="range"
@@ -473,7 +479,7 @@ function SpreadCompressionSection({
         <div className="mt-6 border-t border-lotus-grey-700 pt-4">
           <button
             onClick={() => setShowFormulas(!showFormulas)}
-            className="flex items-center gap-2 text-sm text-lotus-grey-300 hover:text-lotus-grey-300"
+            className="flex items-center gap-2 text-sm text-lotus-grey-400 hover:text-lotus-grey-200 transition-colors"
           >
             <svg
               className={`w-4 h-4 transition-transform ${showFormulas ? 'rotate-90' : ''}`}

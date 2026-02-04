@@ -124,7 +124,7 @@ function LiquidationsAndRisk() {
                   key={tranche.lltv}
                   onClick={() => setSelectedLLTV(tranche.lltv)}
                   className={`border-b border-lotus-grey-700/50 cursor-pointer transition-colors ${
-                    isSelected ? 'bg-lotus-grey-700/50' : 'hover:bg-lotus-grey-700/30'
+                    isSelected ? 'bg-lotus-purple-900/20' : 'hover:bg-lotus-grey-700/30'
                   }`}
                 >
                   <td className="py-2 px-2">
