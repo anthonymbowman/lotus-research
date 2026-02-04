@@ -58,26 +58,25 @@ const DEFAULT_STRATEGIES: AllocationStrategy[] = [
 
 function WstEthMark() {
   return (
-    <div className="relative w-12 h-12 rounded-full bg-emerald-900/40 border border-emerald-600/60 flex items-center justify-center">
-      <svg className="w-6 h-6 text-emerald-300" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2l6 10-6 10-6-10 6-10z" stroke="currentColor" strokeWidth={1.5} />
-        <path d="M12 2l6 10-6 4-6-4 6-10z" fill="currentColor" opacity="0.25" />
-      </svg>
-      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-lotus-purple-600 text-[9px] font-bold text-white flex items-center justify-center">
-        w
-      </span>
-    </div>
+    <img
+      className="w-12 h-12 rounded-full border border-emerald-500/40 bg-lotus-grey-900/40"
+      src={`${import.meta.env.BASE_URL}wstETH.png`}
+      alt="wstETH"
+      loading="lazy"
+      decoding="async"
+    />
   );
 }
 
 function CbBtcMark() {
   return (
-    <div className="relative w-12 h-12 rounded-full bg-amber-900/40 border border-amber-600/60 flex items-center justify-center ring-2 ring-blue-500/30">
-      <span className="text-amber-300 text-lg font-bold">B</span>
-      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-blue-500 text-[8px] font-bold text-white flex items-center justify-center">
-        cb
-      </span>
-    </div>
+    <img
+      className="w-12 h-12 rounded-full border border-amber-500/40 bg-lotus-grey-900/40"
+      src={`${import.meta.env.BASE_URL}cbBTC.png`}
+      alt="cbBTC"
+      loading="lazy"
+      decoding="async"
+    />
   );
 }
 
