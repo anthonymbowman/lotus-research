@@ -17,6 +17,12 @@ interface AllocationStrategy {
   riskScore: number;
 }
 
+interface LaunchMarket {
+  title: string;
+  subtitle: string;
+  logo: string;
+}
+
 const DEFAULT_STRATEGIES: AllocationStrategy[] = [
   {
     name: 'Conservative',
@@ -56,48 +62,18 @@ const DEFAULT_STRATEGIES: AllocationStrategy[] = [
   },
 ];
 
-function WstEthMark() {
-  return (
-    <img
-      className="w-12 h-12 rounded-full border border-emerald-500/40 bg-lotus-grey-900/40"
-      src={`${import.meta.env.BASE_URL}wstETH.png`}
-      alt="wstETH"
-      loading="lazy"
-      decoding="async"
-    />
-  );
-}
-
-function CbBtcMark() {
-  return (
-    <img
-      className="w-12 h-12 rounded-full border border-amber-500/40 bg-lotus-grey-900/40"
-      src={`${import.meta.env.BASE_URL}cbBTC.png`}
-      alt="cbBTC"
-      loading="lazy"
-      decoding="async"
-    />
-  );
-}
-
-const LAUNCH_MARKETS = [
+const LAUNCH_MARKETS: LaunchMarket[] = [
   {
-    id: 'wstETH',
-    name: 'Wrapped Staked ETH',
-    symbol: 'wstETH',
-    description: 'Liquid-staked ETH collateral with deep onchain liquidity.',
-    icon: WstEthMark,
-    accent: 'text-emerald-300',
+    title: 'ETH / USD',
+    subtitle: 'wstETH/LotusUSD',
+    logo: 'wstETH.png',
   },
   {
-    id: 'cbBTC',
-    name: 'Coinbase Bitcoin',
-    symbol: 'cbBTC',
-    description: 'Coinbase-wrapped BTC designed for institutional-grade custody.',
-    icon: CbBtcMark,
-    accent: 'text-amber-300',
+    title: 'BTC / USD',
+    subtitle: 'cbBTC/LotusUSD',
+    logo: 'cbBTC.png',
   },
-] as const;
+];
 
 export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
   const [selectedStrategy, setSelectedStrategy] = useState<string>('Balanced');
@@ -145,6 +121,36 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         ]}
         tryThis="Click each strategy card below to compare their allocations, APY, and risk profiles."
       />
+
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-lotus-grey-100">Launch Markets</h3>
+          <span className="text-xs text-lotus-grey-500 uppercase tracking-wide">Genesis</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {LAUNCH_MARKETS.map((market) => (
+            <div
+              key={market.title}
+              className="bg-lotus-grey-900/60 rounded-lg p-4 border border-lotus-grey-700 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-lotus-grey-900 border border-lotus-grey-700 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={`${import.meta.env.BASE_URL}${market.logo}`}
+                    alt={market.title}
+                    className="w-9 h-9 object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-lotus-grey-100">{market.title}</div>
+                  <div className="text-xs text-lotus-grey-400">{market.subtitle}</div>
+                </div>
+              </div>
+              <div className="text-[10px] text-lotus-grey-500 uppercase tracking-wide">Launch</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* How Vaults Work */}
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">

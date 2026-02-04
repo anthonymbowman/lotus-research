@@ -14,8 +14,6 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
   const collateralWstEth = 0.5;
   const [selectedLLTV, setSelectedLLTV] = useState(80);
   const [borrowAmount, setBorrowAmount] = useState(1000);
-  const [inflectionLtv, setInflectionLtv] = useState(85);
-
   const lltvOptions = useMemo(() => tranches.map((t) => t.lltv).sort((a, b) => a - b), [tranches]);
   const maxLLTV = lltvOptions[lltvOptions.length - 1] ?? 95;
 
@@ -35,7 +33,6 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
   }, [tranches]);
 
   const borrowerLtv = collateralValue > 0 ? borrowAmount / collateralValue : 0;
-  const borrowerLtvPct = borrowerLtv * 100;
   const isOverSelectedMax = borrowAmount > selectedMaxBorrow + 0.0001;
 
   useEffect(() => {
@@ -52,47 +49,16 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
     return 'text-emerald-300';
   };
 
-  const chartMinLtv = 60;
-  const chartMaxLtv = 95;
-  const chartWidth = 360;
-  const chartHeight = 140;
-
-  const riskY = (ltv: number, inflection: number) => {
-    if (ltv <= inflection) {
-      return 0.15 * (ltv / inflection);
-    }
-    const excess = (ltv - inflection) / (chartMaxLtv - inflection);
-    return 0.15 + excess * 0.85;
-  };
-
-  const chartX = (ltv: number) =>
-    ((ltv - chartMinLtv) / (chartMaxLtv - chartMinLtv)) * chartWidth;
-  const chartY = (risk: number) => chartHeight - risk * chartHeight;
-
-  const curvePoints = (() => {
-    const pts: string[] = [];
-    for (let ltv = chartMinLtv; ltv <= chartMaxLtv; ltv += 1) {
-      const x = chartX(ltv);
-      const y = chartY(riskY(ltv, inflectionLtv));
-      pts.push(`${x},${y}`);
-    }
-    return pts.join(' ');
-  })();
-
-  const borrowerMarkerLtv = Math.min(Math.max(borrowerLtvPct, chartMinLtv), chartMaxLtv);
-  const borrowerMarkerX = chartX(borrowerMarkerLtv);
-  const borrowerMarkerY = chartY(riskY(borrowerMarkerLtv, inflectionLtv));
-
   return (
     <div className="space-y-8">
       <PageHeader
         title="Borrower Outcomes"
         whatYoullLearn={[
-          'How higher LLTV unlocks more borrowing power',
-          'Why senior borrowers access deeper liquidity',
           'How to choose a tranche for your borrowing goals',
+          'How higher LTVs unlock more borrowing power, higher leverage, and lower liquidation prices',
+          'Why senior borrowers get more stable rates and deeper liquidity',
         ]}
-        tryThis="Adjust your borrow amount and compare outcomes across tranches."
+        tryThis="Choose a tranche by trading off borrow rate and liquidation price."
       />
 
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 space-y-6">
@@ -100,7 +66,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
           <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Borrow Experience</h3>
           <p className="text-sm text-lotus-grey-300">
             Higher LLTV tranches unlock more borrowing power. Senior borrowers can access deeper liquidity because
-            junior supply cascades upward.
+            junior supply cascades from junior to senior.
           </p>
         </div>
 
@@ -173,7 +139,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-[11px] sm:text-xs">
+          <table className="w-full min-w-[860px] text-[11px] sm:text-xs">
             <thead>
               <tr className="border-b border-lotus-grey-700 text-lotus-grey-400 uppercase tracking-wide text-[10px]">
                 <th className="text-left py-2 px-2">LLTV</th>
@@ -182,6 +148,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                 <th className="text-left py-2 px-2">Borrow Rate (Base + Spread)</th>
                 <th className="text-left py-2 px-2">Health Factor</th>
                 <th className="text-left py-2 px-2">Liq. Price (wstETH)</th>
+                <th className="text-left py-2 px-2">Price Drop to Liq.</th>
               </tr>
             </thead>
             <tbody>
@@ -192,6 +159,9 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                 const hf = borrowerLtv > 0 ? (tranche.lltv / 100) / borrowerLtv : Infinity;
                 const liquidationValue = borrowerLtv > 0 ? borrowAmount / (tranche.lltv / 100) : 0;
                 const liquidationPrice = collateralWstEth > 0 ? liquidationValue / collateralWstEth : 0;
+                const priceDropToLiq = borrowerLtv > 0
+                  ? Math.max(0, (WSTETH_PRICE - liquidationPrice) / WSTETH_PRICE)
+                  : null;
                 const isSelectable = borrowerLtv === 0 || hf >= 1.05;
                 const isSelected = tranche.lltv === selectedLLTV && isSelectable;
                 const rateClass = rateColorMap.get(tranche.lltv) ?? 'text-lotus-grey-200';
@@ -229,6 +199,9 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                         ? `$${Math.round(liquidationPrice).toLocaleString()}`
                         : '—'}
                     </td>
+                    <td className="py-2 px-2 text-xs font-mono text-lotus-grey-200">
+                      {priceDropToLiq === null ? '—' : formatPercent(priceDropToLiq, 1)}
+                    </td>
                   </tr>
                 );
               })}
@@ -241,95 +214,11 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
           1.0 means LTV exceeds the tranche LLTV (liquidation threshold); 1.05 is a safety buffer.
         </div>
 
-        <div className="bg-lotus-grey-900/60 rounded-lg p-5 border border-lotus-grey-700 space-y-4">
-          <div className="flex flex-col gap-2">
-            <h4 className="text-sm font-semibold text-lotus-grey-100">Rate Stability Explorer</h4>
-            <p className="text-xs text-lotus-grey-400">
-              Productive debt anchors the base rate. Utilization shifts the credit spread, and higher LLTV tranches
-              generally face higher borrow rates. This chart is a simplified, illustrative view of how risk premium
-              can steepen as LLTV rises.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs text-lotus-grey-400">
-                <span>Risk threshold (illustrative)</span>
-                <span className="font-mono text-lotus-grey-100">{inflectionLtv}% LLTV</span>
-              </div>
-              <input
-                type="range"
-                min={80}
-                max={90}
-                step={1}
-                value={inflectionLtv}
-                onChange={(event) => setInflectionLtv(Number(event.target.value))}
-                className="w-full accent-lotus-purple-400"
-              />
-              <div className="flex items-center justify-between text-[10px] text-lotus-grey-500">
-                <span>Lower threshold → steeper sooner</span>
-                <span>Higher threshold → steeper later</span>
-              </div>
-              <div className="flex items-center justify-between text-xs text-lotus-grey-400 pt-2">
-                <span>Your LTV (from inputs)</span>
-                <span className="font-mono text-lotus-grey-100">{borrowerLtvPct.toFixed(1)}%</span>
-              </div>
-            </div>
-
-            <div className="bg-lotus-grey-900 rounded-lg border border-lotus-grey-700 p-3">
-              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-36">
-                <rect
-                  x={chartX(80)}
-                  y={0}
-                  width={chartX(90) - chartX(80)}
-                  height={chartHeight}
-                  fill="rgba(124, 90, 255, 0.08)"
-                />
-                <line x1={0} y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke="rgba(148, 163, 184, 0.25)" strokeWidth={1} />
-                <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="rgba(148, 163, 184, 0.25)" strokeWidth={1} />
-                <line
-                  x1={chartX(inflectionLtv)}
-                  y1={0}
-                  x2={chartX(inflectionLtv)}
-                  y2={chartHeight}
-                  stroke="rgba(244, 114, 182, 0.7)"
-                  strokeDasharray="4 4"
-                  strokeWidth={1.5}
-                />
-                <polyline
-                  points={curvePoints}
-                  fill="none"
-                  stroke="rgba(52, 211, 153, 0.9)"
-                  strokeWidth={2.5}
-                />
-                <line
-                  x1={borrowerMarkerX}
-                  y1={borrowerMarkerY}
-                  x2={borrowerMarkerX}
-                  y2={chartHeight}
-                  stroke="rgba(248, 250, 252, 0.5)"
-                  strokeDasharray="3 3"
-                />
-                <circle cx={borrowerMarkerX} cy={borrowerMarkerY} r={4} fill="rgba(248, 250, 252, 0.9)" />
-              </svg>
-              <div className="flex justify-between text-[10px] text-lotus-grey-500 mt-2">
-                <span>60% LLTV</span>
-                <span>95% LLTV</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-[11px] text-lotus-grey-500">
-            The curve shows a simplified risk-premium shape by LLTV. Moving the threshold shifts where rates start to
-            rise faster in this illustration.
-          </div>
-        </div>
-
       </div>
 
       <TeachingPrompt title="Key takeaway:">
-        Borrowing at lower LLTV generally means lower rates and more room before liquidation; your total rate still
-        moves with utilization (base + spread).
+        Lower LLTV generally means lower, more stable rates. Higher LLTV offers more borrowing power and leverage and a
+        lower liquidation price.
       </TeachingPrompt>
     </div>
   );

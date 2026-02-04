@@ -148,10 +148,6 @@ export const MODULE_ASSUMPTIONS = {
       label: 'Simplified liquidation math',
       description: 'The buffer calculations use simplified formulas. Actual liquidation modules have more complex logic.',
     },
-    {
-      label: 'Single collateral type',
-      description: 'This assumes a single collateral asset. Multi-collateral positions have different dynamics.',
-    },
   ],
 };
 

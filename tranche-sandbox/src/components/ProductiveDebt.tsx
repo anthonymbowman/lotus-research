@@ -215,22 +215,6 @@ function SpreadCompressionSection({
                   {(utilization * 100).toFixed(0)}%
                 </span>
               </div>
-              {/* Preset buttons */}
-              <div className="flex gap-2 mb-3">
-                {[0, 50, 90, 100].map(preset => (
-                  <button
-                    key={preset}
-                    onClick={() => onUtilizationChange(preset / 100)}
-                    className={`px-3 py-1 text-xs rounded transition-colors ${
-                      utilization * 100 === preset
-                        ? 'bg-lotus-purple-600 text-white'
-                        : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
-                    }`}
-                  >
-                    {preset}%{preset === 0 ? ' (floor)' : preset === 90 ? ' (target)' : ''}
-                  </button>
-                ))}
-              </div>
               <input
                 type="range"
                 value={utilization * 100}
@@ -246,6 +230,7 @@ function SpreadCompressionSection({
             </div>
 
             <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">Efficiency Split</h4>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-blue-400">Borrowers</span>
                 <span className="text-sm font-medium text-lotus-grey-300">

@@ -253,8 +253,8 @@ export function LotusUSDAllocation({
 
       <div className="bg-lotus-grey-800/50 rounded-lg p-4 border border-lotus-grey-700">
         <p className="text-sm text-lotus-grey-300">
-          The % allocated to treasuries will vary depending on market conditions. It is designed to maintain
-          sufficient instantaneous market liquidity while maximizing the % allocated to treasuries.
+          The percentage allocated to Treasuries will vary depending on market conditions. It is designed to maintain
+          sufficient instantaneous market liquidity while maximizing the percentage allocated to Treasuries.
         </p>
       </div>
 

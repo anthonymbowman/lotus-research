@@ -1,25 +1,11 @@
-import { useState, useMemo } from 'react';
-
 interface IRMExplainerProps {
   tranches: { lltv: number; borrowRate: number }[];
   baseRate: number;
 }
 
-function spreadFromTarget(targetSpread: number, utilization: number): number {
-  const targetUtil = 0.9;
-  if (utilization <= targetUtil) {
-    return targetSpread * (0.2 + 0.8 * (utilization / targetUtil));
-  }
-  const excess = (utilization - targetUtil) / (1 - targetUtil);
-  return targetSpread * (1 + excess * 2);
-}
-
 export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
-  const [utilization, setUtilization] = useState(0.7);
-  const trancheRates = useMemo(() => {
-    return [...tranches].sort((a, b) => a.lltv - b.lltv);
-  }, [tranches]);
-  const baseRatePct = baseRate * 100;
+  const trancheCount = tranches.length;
+  const baseRatePct = (baseRate * 100).toFixed(2);
 
   return (
     <div className="space-y-6">
@@ -27,9 +13,8 @@ export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
       <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-3">Interest Rate Models (IRMs)</h3>
         <p className="text-sm text-lotus-grey-300 mb-4">
-          Each tranche has its own <strong className="text-lotus-grey-100">credit spread</strong> determined by its
-          local <strong className="text-lotus-purple-300">borrow utilization</strong>. Higher utilization at a tranche
-          means higher spreads for that tranche.
+          Each tranche has a <strong className="text-lotus-grey-100">credit spread</strong> set by its own
+          <strong className="text-lotus-purple-300"> borrow utilization</strong>. Higher utilization means higher spreads.
         </p>
 
         <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
@@ -43,223 +28,42 @@ export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
           <div className="text-xs text-lotus-grey-400 text-center mt-2">
             Base Rate from productive debt | Credit Spread from tranche's borrow utilization
           </div>
+          <div className="text-xs text-lotus-grey-500 text-center mt-1">
+            Current base rate: {baseRatePct}% across {trancheCount} tranches
+          </div>
         </div>
 
         <div className="mt-3 flex items-center gap-2 text-xs text-lotus-grey-500">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Simplified model. Target spreads at 90% utilization are pulled from the tranche table.</span>
+          <span>Simplified model for educational purposes.</span>
         </div>
       </div>
 
-      {/* Monotonicity */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Rate Monotonicity</h3>
+      {/* Adaptive behavior - plain language */}
+      <div className="bg-lotus-grey-800 rounded-lg border border-lotus-grey-700 p-6">
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-3">Adaptive Linear Kink IRM</h3>
         <p className="text-sm text-lotus-grey-300 mb-4">
-          In <strong className="text-lotus-grey-100">LLTV-ordered markets</strong>, the IRM enforces monotonic
-          credit spreads so junior tranches (higher LLTV) are priced higher to compensate for risk. This
-          simulator uses a simplified IRM for illustration and does not expose manual spread overrides.
+          The IRM raises rates gently up to a target utilization, then ramps rates faster once utilization
+          passes that target to protect liquidity. In LLTV-ordered markets, this enforces monotonic spreads
+          so higher-LLTV (junior) tranches price higher risk.
         </p>
-
-        {/* Monotonicity visualization */}
-        <div className="space-y-2">
-          {trancheRates.map((tranche, i) => {
-            const targetSpread = tranche.borrowRate * 100;
-            const spread = spreadFromTarget(targetSpread, utilization);
-            const totalRate = baseRatePct + spread;
-            const maxRate = baseRatePct + spreadFromTarget(Math.max(...trancheRates.map((t) => t.borrowRate * 100)), 1.0);
-            const barWidth = (totalRate / maxRate) * 100;
-
-            const colors = [
-              { bg: 'bg-emerald-500', text: 'text-emerald-400' },
-              { bg: 'bg-teal-500', text: 'text-teal-400' },
-              { bg: 'bg-amber-500', text: 'text-amber-400' },
-              { bg: 'bg-orange-500', text: 'text-orange-400' },
-              { bg: 'bg-red-500', text: 'text-red-400' },
-            ][i];
-
-            return (
-              <div key={tranche.lltv} className="flex items-center gap-3">
-                <div className="w-12 text-sm font-mono text-lotus-grey-300">{tranche.lltv}%</div>
-                <div className="flex-1 h-6 bg-lotus-grey-700 rounded overflow-hidden">
-                  <div
-                    className={`h-full ${colors.bg} flex items-center justify-end pr-2 transition-all duration-300`}
-                    style={{ width: `${barWidth}%` }}
-                  >
-                    <span className="text-xs font-mono text-white/90">{totalRate.toFixed(1)}%</span>
-                  </div>
-                </div>
-                <div className={`w-16 text-xs font-mono ${colors.text} text-right`}>
-                  +{spread.toFixed(1)}%
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-3 flex items-center gap-4 text-xs text-lotus-grey-400">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-emerald-500 rounded" />
-            <span>Lower risk</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-lotus-grey-300">
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <div className="font-medium text-lotus-grey-100 mb-1">Below target</div>
+            <div>Rates rise gradually as utilization increases.</div>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-red-500 rounded" />
-            <span>Higher risk</span>
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <div className="font-medium text-lotus-grey-100 mb-1">Above target</div>
+            <div>Rates rise more steeply to curb demand and attract supply.</div>
           </div>
-          <span className="text-lotus-grey-500">|</span>
-          <span>Spreads shown on right</span>
-        </div>
-      </div>
-
-      {/* Utilization → Rate (Kink Curve) */}
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">Utilization Drives Spreads</h3>
-        <p className="text-sm text-lotus-grey-300 mb-4">
-          Each tranche's spread is set by its own <strong className="text-lotus-purple-300">borrow utilization</strong>.
-          Higher utilization means more demand, so spreads increase—especially above the
-          <strong className="text-amber-300"> target utilization</strong> (~90%).
-        </p>
-
-        {/* Utilization slider */}
-        <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600 mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-lotus-grey-300">Borrow Utilization</span>
-            <span className="text-lg font-mono font-semibold text-lotus-grey-100">
-              {(utilization * 100).toFixed(0)}%
-            </span>
-          </div>
-          <div className="relative">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={utilization * 100}
-              onChange={(e) => setUtilization(Number(e.target.value) / 100)}
-              className="w-full accent-lotus-purple-500"
-            />
-            {/* Tick mark at 90% - account for slider thumb padding (~8px each side) */}
-            <div
-              className="absolute top-0 w-0.5 h-2 bg-amber-400"
-              style={{ left: 'calc(8px + (100% - 16px) * 0.9)', transform: 'translateX(-50%)' }}
-            />
-          </div>
-          {/* Labels aligned with slider track */}
-          <div className="relative text-xs mt-1">
-            <span className="ml-2 text-lotus-grey-500">0%</span>
-            <span
-              className="absolute text-amber-400"
-              style={{ left: 'calc(8px + (100% - 16px) * 0.9)', transform: 'translateX(-50%)' }}
-            >
-              90% target
-            </span>
-            <span className="absolute right-0 mr-2 text-lotus-grey-500">100%</span>
-          </div>
-        </div>
-
-        {/* Kink curve visualization */}
-        <div className="relative h-32 bg-lotus-grey-900 rounded-lg overflow-hidden">
-          {/* Grid lines */}
-          <div className="absolute inset-0">
-            <div className="absolute left-[90%] top-0 bottom-0 border-l border-dashed border-amber-500/30" />
-            <div className="absolute left-[90%] bottom-2 text-[10px] text-amber-400 -translate-x-1/2">target</div>
-          </div>
-
-          {/* Curve */}
-          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#10b981" />
-                <stop offset="90%" stopColor="#f59e0b" />
-                <stop offset="100%" stopColor="#ef4444" />
-              </linearGradient>
-            </defs>
-            {/* Gentle slope (0-90%) */}
-            <line
-              x1="0%"
-              y1="90%"
-              x2="90%"
-              y2="50%"
-              stroke="url(#curveGradient)"
-              strokeWidth="3"
-            />
-            {/* Steep slope (90-100%) */}
-            <line
-              x1="90%"
-              y1="50%"
-              x2="100%"
-              y2="5%"
-              stroke="#ef4444"
-              strokeWidth="3"
-            />
-          </svg>
-
-          {/* Current utilization marker */}
-          <div
-            className="absolute bottom-0 w-0.5 bg-lotus-purple-400 transition-all duration-200"
-            style={{
-              left: `${utilization * 100}%`,
-              height: '100%'
-            }}
-          />
-          <div
-            className="absolute w-3 h-3 bg-lotus-purple-400 rounded-full border-2 border-white transition-all duration-200"
-            style={{
-              left: `${utilization * 100}%`,
-              bottom: utilization <= 0.9
-                ? `${10 + (utilization / 0.9) * 40}%`
-                : `${50 + ((utilization - 0.9) / 0.1) * 45}%`,
-              transform: 'translate(-50%, 50%)'
-            }}
-          />
-
-          {/* Labels */}
-          <div className="absolute left-2 top-2 text-[10px] text-lotus-grey-500">Rate</div>
-          <div className="absolute right-2 bottom-2 text-[10px] text-lotus-grey-500">Utilization</div>
-        </div>
-
-        <div className="mt-3 grid grid-cols-2 gap-4 text-xs">
-          <div className="bg-emerald-900/20 rounded p-2 border border-emerald-700/50">
-            <div className="text-emerald-400 font-medium">Below Target (0-90%)</div>
-            <div className="text-emerald-300/70">Gentle rate increase</div>
-          </div>
-          <div className="bg-red-900/20 rounded p-2 border border-red-700/50">
-            <div className="text-red-400 font-medium">Above Target (90-100%)</div>
-            <div className="text-red-300/70">Steep rate increase</div>
+          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+            <div className="font-medium text-lotus-grey-100 mb-1">Adaptive</div>
+            <div>Parameters adjust over time based on recent utilization.</div>
           </div>
         </div>
       </div>
-
-      {/* Adaptive behavior - collapsible */}
-      <details className="bg-lotus-grey-800 rounded-lg border border-lotus-grey-700">
-        <summary className="px-6 py-4 cursor-pointer text-lg font-medium text-lotus-grey-100 hover:bg-lotus-grey-700/30">
-          About the Actual IRM
-        </summary>
-        <div className="px-6 pb-6 pt-2 space-y-4">
-          <p className="text-sm text-lotus-grey-300">
-            Lotus uses the <strong className="text-lotus-purple-300">Adaptive Linear Kink</strong> IRM,
-            which automatically adjusts parameters based on observed utilization. The visualization above
-            is simplified—the real model includes additional features:
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">Auto-Adjustment</h4>
-              <p className="text-xs text-lotus-grey-400">
-                Parameters update on each rate query based on how utilization compares to target.
-                This keeps rates responsive without manual intervention.
-              </p>
-            </div>
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">Guardrails</h4>
-              <p className="text-xs text-lotus-grey-400">
-                Rate changes are bounded to prevent sudden jumps. Grace periods for new markets
-                and minimum update intervals provide additional stability.
-              </p>
-            </div>
-          </div>
-        </div>
-      </details>
     </div>
   );
 }

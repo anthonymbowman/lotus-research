@@ -243,11 +243,10 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
       <PageHeader
         title="Tranche Risk"
         whatYoullLearn={[
-          "How liquidations protect lenders when borrowers become undercollateralized",
-          "Why higher LLTV means smaller safety buffer and more bad debt risk",
+          "How liquidations protect lenders",
+          "Why higher LTV means higher risk for lenders and higher potential returns",
           "How risk level connects to the spread lenders earn",
         ]}
-        tryThis="Click different LLTV levels to see how the liquidation bonus changes."
       />
 
       <LiquidationsAndRisk />

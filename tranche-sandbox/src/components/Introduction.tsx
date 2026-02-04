@@ -13,7 +13,7 @@ export function Introduction() {
           "How tranches create different risk/reward options",
           "Why connected liquidity beats isolated pools",
         ]}
-        tryThis="Click through the interactive diagram below to see how traditional lending fails borrowers and lenders."
+        tryThis="Scan the problem summary below to see how traditional lending fails borrowers and lenders."
       />
 
       {/* Interactive Protocol Explainer */}
@@ -36,7 +36,13 @@ export function Introduction() {
             </div>
             <div>
               <span className="font-medium text-lotus-purple-300">Risk-Tiered Tranches</span>
-              <span className="text-lotus-grey-300"> — Choose your risk exposure. <TermDefinition term="tranche-seniority">Senior tranches</TermDefinition> offer safety, junior tranches offer higher yields.</span>
+              <span className="text-lotus-grey-300"> — Lenders choose their risk exposure across <TermDefinition term="tranche-seniority">senior and junior tranches</TermDefinition>.</span>
+              <div className="text-sm text-lotus-grey-300 mt-2">
+                <span className="font-medium text-lotus-grey-200">Lenders:</span> Senior tranches offer safety; junior tranches offer higher yield.
+              </div>
+              <div className="text-sm text-lotus-grey-300 mt-1">
+                <span className="font-medium text-lotus-grey-200">Borrowers:</span> Senior tranches offer more stable rates and deeper liquidity; junior tranches offer higher leverage and lower liquidation prices.
+              </div>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -49,7 +55,7 @@ export function Introduction() {
               <span className="font-medium text-lotus-purple-300">
                 <TermDefinition term="connected-liquidity">Connected Liquidity</TermDefinition>
               </span>
-              <span className="text-lotus-grey-300"> — Unlike isolated pools, liquidity flows between tranches creating deeper markets and more efficient rates.</span>
+              <span className="text-lotus-grey-300"> — Unlike isolated pools, liquidity flows between tranches, creating deeper markets and more efficient rates while maintaining risk segmentation.</span>
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -62,24 +68,24 @@ export function Introduction() {
               <span className="font-medium text-lotus-purple-300">
                 <TermDefinition term="productive-debt">Productive Debt</TermDefinition>
               </span>
-              <span className="text-lotus-grey-300"> — Idle liquidity earns yield from treasury-backed assets, compressing <TermDefinition term="spread">spreads</TermDefinition> and reducing rate volatility.</span>
+              <span className="text-lotus-grey-300"> — Idle liquidity earns yield from treasury-backed assets, giving lenders a base rate floor even when utilization is low and compressing <TermDefinition term="spread">spreads</TermDefinition>.</span>
             </div>
           </li>
         </ul>
       </div>
 
       {/* Vault Mention */}
-      <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-9 h-9 bg-lotus-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
             <svg className="w-5 h-5 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
           </div>
           <div>
+            <h3 className="text-base font-semibold text-lotus-grey-100 mb-1">Vaults</h3>
             <p className="text-sm text-lotus-grey-200">
-              <strong>Note:</strong> Most lenders participate through <strong>Vaults</strong> — curated strategies
-              that allocate across tranches automatically. We'll cover vaults after you understand how tranches work.
+              Most lenders participate through vaults — curated strategies that allocate across tranches. We'll cover vaults after you understand how tranches work.
             </p>
           </div>
         </div>

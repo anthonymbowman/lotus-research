@@ -46,13 +46,11 @@ export function Liquidations({ computedTranches }: LiquidationsProps) {
         </div>
       )}
 
-      <FailureModeCallout title="Stress Scenario: Correlated Defaults">
+      <FailureModeCallout title="Why Bad Debt Skews Junior">
         <p>
-          Bad debt rarely occurs in isolation. During market crashes, multiple borrowers
-          may become undercollateralized simultaneously. This can overwhelm liquidators
-          and cause cascading defaults across tranches. In extreme scenarios, if total
-          bad debt exceeds the combined supply of all tranches, some debt may remain
-          unabsorbed, resulting in losses for the protocol.
+          Bad debt is more likely to show up in junior tranches because they have less buffer and lower liquidation
+          incentives. That higher risk is why junior lenders earn higher spreads. See the Risk Layers section for
+          how LLTV and liquidation bonuses shape this tradeoff.
         </p>
       </FailureModeCallout>
     </div>
