@@ -105,7 +105,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections, onRes
         <div className="p-6 border-b border-lotus-grey-700">
           <div className="flex items-center gap-3">
             <img
-              src="/lotus-research/Lotus-icon-light (1).png"
+              src="Lotus-icon-light (1).png"
               alt="Lotus"
               className="w-10 h-10"
             />
