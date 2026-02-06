@@ -122,7 +122,7 @@ export const content = {
         'Traditional lending markets force everyone into a single set of risk parameters. ' +
         'When collateral risk rises, the market responds with higher interest rates. ' +
         'This forces conservative lenders into taking on added risk. Conservative borrowers end up subsidizing the aggressive ones. ', 
-        'The naive solution is to have multiple markets with different. Unfortunately, this fragments liquidity. ' +
+        'The naive solution is to have multiple markets with different LLTVs. Unfortunately, this fragments liquidity. ' +
         'In practice, isolated markets find one equilibrium risk setting per lending pair. ' + 
         'On volatile markets, the parameters are conservative. On correlated markets, they are aggressive. ',
         'As a result, the only way to get high-yield with isolated markets, is to lend against risky correlated asset pairs. ' +
