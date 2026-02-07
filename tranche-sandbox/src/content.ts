@@ -553,8 +553,8 @@ export const content = {
     breakdownTitle: (strategy: string) => `${strategy} Strategy Breakdown`,
     breakdownSubtitle: 'Allocation across tranches',
     insights: {
-      highRisk: 'High Risk Allocation: With a risk score above 7, this strategy concentrates heavily in junior tranches. While yields are higher, these tranches absorb losses first during bad debt events.',
-      conservative: 'Conservative Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and are last to absorb bad debt.',
+      highRisk: 'High Risk Allocation: With a risk score above 7, this strategy concentrates heavily in junior tranches. While yields are higher, these tranches are more likely to have bad debt due to lending at higher LLTVs.',
+      conservative: 'Conservative Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and less likely to have bad debt.',
     },
     expectedApyLabel: 'Expected APY',
     expectedApyNote: 'Weighted average of tranche supply rates based on your allocation',
