@@ -37,7 +37,7 @@ export interface TrancheComputed {
   availableSupply: number;
   /** Whether this tranche is the binding constraint for free supply */
   isBindingConstraint: boolean;
-  /** Supply utilization: supply / availableSupply (most junior is 100% in valid states) */
+  /** Supply utilization: trancheSupplyAssets / availableSupply */
   supplyUtilization: number | null;
   /** Borrow utilization: (jrSupply - freeSupply) / jrSupply (if jrSupply > 0) */
   borrowUtilization: number | null;

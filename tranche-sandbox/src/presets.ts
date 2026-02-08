@@ -4,6 +4,10 @@ import { TRANCHE_LLTVS } from './types';
 /**
  * Predefined scenarios demonstrating different liquidity dynamics.
  * All presets use 5 tranches with fixed LLTVs: 75%, 80%, 85%, 90%, 95%
+ *
+ * Note: Monotonically increasing borrow rates shown here reflect typical
+ * market behavior, not a protocol guarantee. The IRM sets rates independently
+ * per tranche based on borrow utilization.
  */
 export const PRESETS: Record<string, Preset> = {
   highSeniorDemand: {

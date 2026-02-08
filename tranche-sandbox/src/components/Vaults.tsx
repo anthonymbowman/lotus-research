@@ -225,6 +225,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                 <span className="text-lg font-semibold text-amber-300">{vContent.howVaultsWork.flowDiagram.vaultManager}</span>
               </div>
               <p className="text-sm text-amber-200/70">{vContent.howVaultsWork.flowDiagram.allocates}</p>
+              <p className="text-xs text-amber-200/50 mt-1">{vContent.howVaultsWork.flowDiagram.rolesNote}</p>
             </div>
 
             {/* Arrow */}

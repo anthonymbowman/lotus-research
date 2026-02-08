@@ -144,13 +144,13 @@ export function getMatrixMax(matrix: number[][]): number {
 
 /**
  * Check if a funding relationship is valid (lender can fund borrower).
- * In Lotus, a tranche can only fund tranches at its level or more senior.
+ * In Lotus, a tranche can only fund its own tranche or more senior tranches.
  *
  * @param lenderIdx - Index of the lender tranche
  * @param borrowerIdx - Index of the borrower tranche
  * @returns True if the relationship is valid
  */
 export function isValidFundingRelationship(lenderIdx: number, borrowerIdx: number): boolean {
-  // Lender at index i can fund borrowers at indices 0..i (more senior or same level)
+  // Lender at index i can fund borrowers at indices 0..i (more senior or same tranche)
   return borrowerIdx <= lenderIdx;
 }

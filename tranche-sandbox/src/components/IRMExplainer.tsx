@@ -46,8 +46,9 @@ export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-3">Adaptive Linear Kink IRM</h3>
         <p className="text-sm text-lotus-grey-300 mb-4">
           The IRM raises rates gently up to a target utilization, then ramps rates faster once utilization
-          passes that target to protect liquidity. In LLTV-ordered markets, this enforces monotonic spreads
-          so higher-LLTV (junior) tranches price higher risk.
+          passes that target to protect liquidity. In LLTV-ordered markets, junior tranches tend to have
+          higher borrow utilization, which typically results in higher credit spreads — though this is a
+          market outcome, not a protocol guarantee.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-lotus-grey-300">
           <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">

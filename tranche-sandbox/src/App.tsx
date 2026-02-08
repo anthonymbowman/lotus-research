@@ -262,7 +262,7 @@ function App() {
                   <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Interest Accrual Simulation</h3>
                   <p className="text-lotus-grey-400 mb-6">
                     See how interest flows through tranches. The cascade mechanism allocates
-                    interest based on supply utilization at each level.
+                    interest based on supply utilization at each tranche.
                   </p>
                   <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
                 </div>

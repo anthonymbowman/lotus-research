@@ -61,7 +61,7 @@ export function LotusSolution() {
         {/* Overview */}
         <div className="text-sm text-lotus-grey-200 leading-relaxed">
           <p className="mb-4">
-            <span className="text-lotus-purple-400 font-semibold">Lotus</span> is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate pools for every risk setting, Lotus uses <span className="text-emerald-400 font-medium">tranches</span> to offer multiple risk levels while keeping liquidity connected.
+            <span className="text-lotus-purple-400 font-semibold">Lotus</span> is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate markets for every risk setting, Lotus uses <span className="text-emerald-400 font-medium">tranches</span> to offer multiple risk-return options while keeping liquidity connected.
           </p>
           <p className="mb-4">
             {solution.overview[1]} {solution.interestNote}
