@@ -49,7 +49,7 @@ function App() {
     return treasuryRate * treasuryAllocation;
   }, [treasuryRate, treasuryAllocation]);
 
-  // Liquidity Sandbox state
+  // Liquidity state
   const [tranches, setTranches] = useState<TrancheInput[]>(createDefaultTranches);
 
   // Productive Debt state

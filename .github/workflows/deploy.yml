@@ -4,7 +4,7 @@
     push:                                                                                                                                                                                   
       branches: [main]                                                                                                                                                                      
       paths:                                                                                                                                                                                
-        - 'tranche-sandbox/**'                                                                                                                                                              
+        - 'lotus-interactive-docs/**'                                                                                                                                                              
     workflow_dispatch:                                                                                                                                                                      
                                                                                                                                                                                             
   permissions:                                                                                                                                                                              
@@ -21,7 +21,7 @@
       runs-on: ubuntu-latest                                                                                                                                                                
       defaults:                                                                                                                                                                             
         run:                                                                                                                                                                                
-          working-directory: tranche-sandbox                                                                                                                                                
+          working-directory: lotus-interactive-docs                                                                                                                                                
       steps:                                                                                                                                                                                
         - name: Checkout                                                                                                                                                                    
           uses: actions/checkout@v4                                                                                                                                                         
@@ -31,7 +31,7 @@
           with:                                                                                                                                                                             
             node-version: 20                                                                                                                                                                
             cache: npm                                                                                                                                                                      
-            cache-dependency-path: tranche-sandbox/package-lock.json                                                                                                                        
+            cache-dependency-path: lotus-interactive-docs/package-lock.json                                                                                                                        
                                                                                                                                                                                             
         - name: Install dependencies                                                                                                                                                        
           run: npm ci                                                                                                                                                                       
@@ -45,7 +45,7 @@
         - name: Upload artifact                                                                                                                                                             
           uses: actions/upload-pages-artifact@v3                                                                                                                                            
           with:                                                                                                                                                                             
-            path: tranche-sandbox/dist                                                                                                                                                      
+            path: lotus-interactive-docs/dist                                                                                                                                                      
                                                                                                                                                                                             
     deploy:                                                                                                                                                                                 
       environment:                                                                                                                                                                          

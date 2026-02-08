@@ -14,7 +14,7 @@ Interactive educational tools for understanding Lotus Protocol's lending mechani
 ## Development
 
 ```bash
-cd tranche-sandbox
+cd lotus-interactive-docs
 npm install
 npm run dev
 ```
