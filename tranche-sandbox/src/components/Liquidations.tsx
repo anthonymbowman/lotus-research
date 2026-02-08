@@ -48,9 +48,12 @@ export function Liquidations({ computedTranches }: LiquidationsProps) {
 
       <FailureModeCallout title="Why Bad Debt Skews Junior">
         <p>
-          Bad debt is more likely to show up in junior tranches because they have less buffer and lower liquidation
-          incentives. That higher risk is why junior lenders earn higher spreads. See the Risk Layers section for
-          how LLTV and liquidation bonuses shape this tradeoff.
+          Bad debt originates wherever a liquidation shortfall occurs and cascades to more junior tranches
+          based on supply utilization weights. Junior tranches absorb a proportionally larger share because
+          their supply utilization is higher — the same mechanism that allocates them more interest.
+          Higher LLTV tranches also have less collateral buffer and lower liquidation incentives, making
+          bad debt more likely to originate there. See the Risk Layers section for how LLTV and
+          liquidation bonuses shape this tradeoff.
         </p>
       </FailureModeCallout>
     </div>

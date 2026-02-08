@@ -45,14 +45,14 @@ export const sectionMeta: Record<
   tranches: {
     title: 'Liquidity Flow',
     headline: 'Connected Liquidity',
-    subtitle: 'Unused liquidity flows across tranches, maximizing efficiency while maintaining risk segmentation',
+    subtitle: 'Unused liquidity cascades from junior to senior tranches, maximizing efficiency while maintaining risk segmentation',
     transitionText: "Interest flows through these tranches. Let's trace it...",
     next: { id: 'interest-bad-debt', label: 'Interest & Losses' },
   },
   'interest-bad-debt': {
     title: 'Interest & Losses',
     headline: 'Interest Cascade & Bad Debt',
-    subtitle: 'Risk and reward stay aligned as interest and losses flow through across tranches',
+    subtitle: 'Risk and reward stay aligned as interest and losses cascade from senior to junior tranches',
     transitionText: 'Now you understand how the protocol works. Ready to choose your strategy?',
     next: { id: 'vaults', label: 'Your Strategy' },
   },
@@ -92,7 +92,7 @@ export const content = {
         {
           title: 'Risk-Ordered Tranches',
           description: 'Lenders choose their risk exposure across senior and junior tranches.',
-          lenderNote: 'Senior tranches offer safety; junior tranches offer higher yield.',
+          lenderNote: 'Senior tranches have lower risk exposure; junior tranches offer higher yield.',
           borrowerNote: 'Senior tranches offer more stable rates and deeper liquidity; junior tranches offer higher leverage and lower liquidation prices.',
         },
         {
@@ -160,7 +160,7 @@ export const content = {
       badge: 'The Solution',
       heading: 'Lotus Protocol',
       overview: [
-        'Lotus is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of creating separate pools for every risk setting, Lotus uses tranches to offer multiple risk-return options while keeping liquidity connected.',
+        'Lotus is an onchain lending protocol that lets lenders and borrowers meet on a risk curve inside a single market. Instead of separate markets for every risk setting, Lotus uses tranches to offer multiple risk-return options while keeping liquidity connected.',
         'A market contains multiple tranches ordered by risk (senior to junior). Unused liquidity from junior tranches can support more senior borrowers. This keeps markets deep without forcing everyone into the same risk profile.',
         'The Lotus flagship markets order tranches by liquidation loan-to-value (LLTV) threshold. Higher LLTV tranches (junior) carry higher risk for lenders, but earn higher yields.',
       ],
@@ -266,7 +266,7 @@ export const content = {
     },
     cascadeBenefits: {
       heading: 'Benefits of Cascading Liquidity',
-      description: 'Unlike isolated pools, Lotus tranches share liquidity through a cascade mechanism while keeping risk segmented.',
+      description: 'Unlike isolated markets, Lotus tranches share liquidity through a cascade mechanism while keeping risk segmented.',
       cards: [
         {
           title: 'Capital Efficiency',
@@ -274,7 +274,7 @@ export const content = {
         },
         {
           title: 'Fair Distribution',
-          description: 'Interest flows to all suppliers whose liquidity was used, proportionally.',
+          description: 'Interest flows proportionally to all suppliers whose liquidity supported borrowers.',
         },
         {
           title: 'Higher Risk = Higher Yield',
@@ -460,7 +460,7 @@ export const content = {
     },
     liquidationsAndRisk: {
       heading: 'Liquidations & Risk',
-      description: 'When a borrower\'s LTV exceeds the tranche LLTV, liquidators seize collateral and repay debt. Higher LLTV tranches have less buffer, meaning bad debt occurs sooner—so they pay higher spreads.',
+      description: 'When a borrower\'s LTV exceeds the tranche LLTV, liquidators seize collateral and repay debt. Higher LLTV tranches have less buffer, meaning bad debt occurs with smaller price drops. In equilibrium, this higher risk tends to produce higher credit spreads.',
       riskChain: {
         higherLltv: 'Higher LLTV',
         lessBuffer: 'Less Buffer',
@@ -555,7 +555,7 @@ export const content = {
     breakdownSubtitle: 'Allocation across tranches',
     insights: {
       highRisk: 'High Risk Allocation: With a risk score above 7, this strategy concentrates heavily in junior tranches. While yields are higher, these tranches have higher supply utilization and absorb a proportionally larger share of bad debt when it occurs.',
-      conservative: 'Conservative Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and are not exposed to bad debt from more junior tranches.',
+      conservative: 'Conservative Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and lower bad debt risk, though they can still absorb bad debt from liquidation shortfalls at their own tranche.',
     },
     expectedApyLabel: 'Expected APY',
     expectedApyNote: 'Weighted average of tranche supply rates based on your allocation',

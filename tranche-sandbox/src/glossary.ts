@@ -36,8 +36,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   'cascading-supply': {
     term: 'Cascading Supply',
-    shortDef: 'Unused supply from junior tranches flows upward to support senior borrowers.',
-    fullDef: 'Unlike isolated lending pools, Lotus connects tranches through cascading supply. When borrowers at a senior tranche need liquidity, they can use supply from junior tranches that isn\'t being utilized at that tranche. This maximizes capital efficiency.',
+    shortDef: 'Unused supply from junior tranches flows to senior borrowers.',
+    fullDef: 'Unlike isolated markets, Lotus connects tranches through cascading supply. When borrowers at a senior tranche need liquidity, they can use supply from junior tranches that isn\'t being utilized at that tranche. This maximizes capital efficiency.',
     example: 'If 95% LLTV has $5M unused supply, it can support 75% LLTV borrowers',
     related: ['connected-liquidity', 'tranche', 'free-supply'],
   },
@@ -147,9 +147,9 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   'connected-liquidity': {
     term: 'Connected Liquidity',
-    shortDef: 'Liquidity shared across tranches, unlike isolated pools where each market is separate.',
-    fullDef: 'In isolated lending pools, each market has its own liquidity that can\'t be shared. Lotus connects tranches so unused junior supply can support senior borrowers, and interest flows back down. This creates deeper markets and more efficient rates.',
-    example: 'Unused 95% LLTV supply cascades up to support 75% LLTV borrowers if needed',
+    shortDef: 'Liquidity shared across tranches, unlike isolated markets where liquidity is separate.',
+    fullDef: 'In isolated markets, each market has its own liquidity that can\'t be shared. Lotus connects tranches so unused junior supply can support senior borrowers, and interest flows back to junior tranches. This creates deeper markets and more efficient rates.',
+    example: 'Unused 95% LLTV supply cascades to senior tranches, supporting 75% LLTV borrowers if needed',
     related: ['cascade', 'tranche-seniority'],
   },
 

@@ -157,7 +157,7 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
         <div className="px-4 pb-4">
           <ol className="list-decimal list-inside text-sm text-lotus-grey-300 space-y-1">
             <li><strong>Generation:</strong> Each tranche generates interest from its borrowers</li>
-            <li><strong>Cascade Start:</strong> Starting from the most senior tranche (75% LLTV)</li>
+            <li><strong>Cascade Start:</strong> Starting from the most senior tranche (lowest LLTV)</li>
             <li><strong>Allocation:</strong> Lenders receive interest proportional to supply utilization</li>
             <li><strong>Cascade:</strong> Remaining interest flows to the next junior tranche</li>
             <li><strong>Final:</strong> Most junior tranche receives 100% of remaining interest</li>

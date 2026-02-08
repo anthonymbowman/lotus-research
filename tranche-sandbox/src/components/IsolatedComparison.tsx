@@ -265,9 +265,9 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
             </li>
           </ul>
           <p className="font-medium text-amber-300 mt-3">
-            Lotus solves this by pooling liquidity across tranches. Lenders at any LLTV benefit from the full
+            Lotus solves this by connecting liquidity across tranches. Lenders at any LLTV benefit from the full
             stack's liquidity, enabling sustainable markets at higher LLTVs (85%, 90%, 95%) that would be
-            impossible with isolated pools.
+            impossible with isolated markets.
           </p>
         </div>
       </div>

@@ -426,16 +426,15 @@ export function simulateInterestAccrual(
 /**
  * Simulate bad debt absorption across tranches.
  *
- * Bad debt cascades the SAME WAY as interest (senior to junior):
+ * Bad debt cascades using the same supply utilization weights as interest
+ * (senior to junior), but absorption is additionally capped by each
+ * tranche's supply balance:
  * 1. Bad debt occurs at one or more tranches
  * 2. Starting from the most senior tranche (index 0):
  *    - Total bad debt at this tranche = cascaded in + locally occurring
- *    - Absorbed by this tranche = totalBadDebt × supplyUtilization
- *    - Cascaded to junior = totalBadDebt × (1 - supplyUtilization)
- * 3. The most junior tranche absorbs 100% of remaining bad debt
- *
- * Supply utilization determines how much bad debt each tranche absorbs.
- * This is the same mechanism as interest allocation.
+ *    - Absorbed by this tranche = min(totalBadDebt × supplyUtilization, trancheSupply)
+ *    - Cascaded to junior = totalBadDebt - absorbed
+ * 3. The most junior tranche absorbs 100% of remaining bad debt (up to its supply)
  *
  * @param tranches - Array of computed tranche data
  * @param badDebtEvents - Array of bad debt events, or single event params for backwards compatibility

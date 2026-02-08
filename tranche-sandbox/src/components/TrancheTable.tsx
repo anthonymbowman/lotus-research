@@ -50,7 +50,7 @@ export function TrancheTable({
                 <DefinitionBadge
                   label="Credit Spread"
                   formula="Determined by IRM"
-                  note="Set by the Interest Rate Model based on borrow utilization. In LLTV-ordered markets, the IRM enforces monotonic credit spreads. Total borrow rate = base rate + credit spread."
+                  note="Set by the Interest Rate Model based on this tranche's borrow utilization. Total borrow rate = base rate + credit spread."
                   textColor="text-lotus-purple-300"
                 />
               </th>
