@@ -159,12 +159,13 @@ export function computeAvailableSupply(
 export function computeSupplyUtilization(
   tranches: TrancheInput[],
   availableSupply: number[],
-  includePendingInterest: boolean = true
+  _includePendingInterest: boolean = true
 ): (number | null)[] {
   return tranches.map((tranche, i) => {
     if (availableSupply[i] === 0) return null;
-    const supply = tranche.supplyAssets + (includePendingInterest ? tranche.pendingInterest : 0);
-    return supply / availableSupply[i];
+    // Docs formula: trancheSupplyAssets[i] / availableSupply[i]
+    // pendingInterest is already reflected in availableSupply via jrSupply
+    return tranche.supplyAssets / availableSupply[i];
   });
 }
 
@@ -385,7 +386,7 @@ export function simulateInterestAccrual(
 
   // Process from senior (0) to junior (n-1)
   for (let i = 0; i < n; i++) {
-    // Total interest at this level = cascading + locally generated
+    // Total interest at this tranche = cascading + locally generated
     const totalInterest = cascadingInterest + interestGenerated[i];
 
     // Get supply utilization (defaults to 1 for most junior or if null)
@@ -428,7 +429,7 @@ export function simulateInterestAccrual(
  * Bad debt cascades the SAME WAY as interest (senior to junior):
  * 1. Bad debt occurs at one or more tranches
  * 2. Starting from the most senior tranche (index 0):
- *    - Total bad debt at this level = cascaded in + locally occurring
+ *    - Total bad debt at this tranche = cascaded in + locally occurring
  *    - Absorbed by this tranche = totalBadDebt × supplyUtilization
  *    - Cascaded to junior = totalBadDebt × (1 - supplyUtilization)
  * 3. The most junior tranche absorbs 100% of remaining bad debt
@@ -488,7 +489,7 @@ export function simulateBadDebt(
   for (let i = 0; i < n; i++) {
     const result = trancheResults[i];
 
-    // Bad debt at this level = cascaded from senior + locally occurring
+    // Bad debt at this tranche = cascaded from senior + locally occurring
     result.badDebtCascadedIn = cascadingBadDebt;
     const totalBadDebtAtLevel = cascadingBadDebt + result.badDebtLocal;
 
@@ -504,7 +505,8 @@ export function simulateBadDebt(
     result.wipedOut = result.remainingSupply === 0 && absorbed > 0;
 
     // Cascade remainder to next junior tranche
-    result.badDebtCascadedOut = totalBadDebtAtLevel * (1 - utilization);
+    // Use total - absorbed (not total * (1 - util)) so cap binding is handled correctly
+    result.badDebtCascadedOut = totalBadDebtAtLevel - absorbed;
     cascadingBadDebt = result.badDebtCascadedOut;
   }
 

@@ -1,7 +1,7 @@
 import type { Scenario2Inputs, Scenario2Outputs, ChartPoint } from '../types';
 
 /**
- * Kink curve constants
+ * Kink curve constants — educational example parameters, not from a specific deployed IRM.
  */
 const TARGET_UTIL = 0.9;
 const MIN_FACTOR = 0.25;
@@ -26,7 +26,7 @@ export function calculateKinkFactor(utilization: number): number {
 }
 
 /**
- * Calculate spread at a given utilization using Morpho-style linear kink curve
+ * Calculate spread at a given utilization using a linear kink curve
  *
  * If u <= 0.9: S(u) = S90 * (0.25 + 0.75 * (u / 0.9))
  * If u > 0.9:  S(u) = S90 * (1 + 30 * (u - 0.9))

@@ -21,14 +21,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     term: 'LIF',
     shortDef: 'Liquidation Incentive Factor — the bonus liquidators receive for repaying bad debt.',
     fullDef: 'LIF determines how much collateral a liquidator receives per unit of debt they repay. A LIF of 1.10 means liquidators get $1.10 in collateral for every $1.00 of debt repaid. Higher LLTV tranches have lower LIF (less profit for liquidators), which can slow liquidations.',
-    formula: 'LIF = min(1.15, 1 / (0.3 × LLTV + 0.7))',
+    formula: 'LIF = min(1.15, 1 / (0.3 × LLTV + 0.7)) (from default liquidation module)',
     example: 'At 85% LLTV, LIF ≈ 1.08 → liquidators earn 8% profit on liquidations',
     related: ['liquidation', 'lltv', 'bad-debt'],
   },
 
   tranche: {
     term: 'Tranche',
-    shortDef: 'A risk tier defined by its LLTV — higher LLTV means higher risk and higher potential yield.',
+    shortDef: 'A risk configuration defined by its LLTV — higher LLTV means higher risk and higher potential yield.',
     fullDef: 'Tranches are risk layers in Lotus Protocol. Each tranche has a specific LLTV (like 75%, 85%, 95%). Lenders choose which tranche to supply to based on their risk tolerance. Senior tranches (lower LLTV) are safer but earn less, while junior tranches (higher LLTV) earn more but face more bad debt risk.',
     example: '75% LLTV tranche = senior/safer, 95% LLTV tranche = junior/riskier',
     related: ['lltv', 'tranche-seniority', 'cascade'],
@@ -37,7 +37,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   'cascading-supply': {
     term: 'Cascading Supply',
     shortDef: 'Unused supply from junior tranches flows upward to support senior borrowers.',
-    fullDef: 'Unlike isolated lending pools, Lotus connects tranches through cascading supply. When borrowers at a senior tranche need liquidity, they can use supply from junior tranches that isn\'t being utilized at that level. This maximizes capital efficiency.',
+    fullDef: 'Unlike isolated lending pools, Lotus connects tranches through cascading supply. When borrowers at a senior tranche need liquidity, they can use supply from junior tranches that isn\'t being utilized at that tranche. This maximizes capital efficiency.',
     example: 'If 95% LLTV has $5M unused supply, it can support 75% LLTV borrowers',
     related: ['connected-liquidity', 'tranche', 'free-supply'],
   },
@@ -53,7 +53,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   lltv: {
     term: 'LLTV',
-    shortDef: 'Loan-to-Liquidation-Value — the maximum percentage you can borrow against your collateral before liquidation.',
+    shortDef: 'Liquidation Loan-to-Value — the maximum percentage you can borrow against your collateral before liquidation.',
     fullDef: 'LLTV determines when a position becomes liquidatable. An 80% LLTV means if you deposit $10,000 collateral, you can borrow up to $8,000 before risking liquidation. Higher LLTVs offer more leverage but leave less buffer before liquidation.',
     formula: 'LLTV = Max Borrow / Collateral Value',
     example: 'At 80% LLTV with $10,000 collateral: max borrow = $8,000, liquidation buffer = 20%',
@@ -61,18 +61,18 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   },
 
   'health-factor': {
-    term: 'Health Factor',
-    shortDef: 'A measure of position safety. Above 1 = safe, below 1 = liquidatable.',
-    fullDef: 'Health Factor compares your current loan-to-value against the tranche\'s LLTV limit. A health factor of 1.5 means your collateral could drop 33% before liquidation. Below 1.0, your position can be liquidated.',
-    formula: 'Health Factor = LLTV / Current LTV',
-    example: 'Current LTV 60%, LLTV 80% → Health Factor = 0.80/0.60 = 1.33 (safe)',
+    term: 'Health',
+    shortDef: 'Position solvency status — healthy if max borrow >= actual borrow.',
+    fullDef: 'A position is healthy when its maximum borrowing capacity (collateral value × LLTV) exceeds its actual borrow amount. When the position becomes unhealthy (max borrow < actual borrow), it is eligible for liquidation. The ratio LLTV / Current LTV provides a numeric health factor: above 1 is safe, below 1 is liquidatable.',
+    formula: 'Healthy when: Collateral Value × LLTV ≥ Actual Borrow',
+    example: 'Current LTV 60%, LLTV 80% → max borrow exceeds actual borrow → healthy (factor = 1.33)',
     related: ['lltv', 'liquidation'],
   },
 
   'tranche-seniority': {
     term: 'Tranche Seniority',
-    shortDef: 'Senior tranches (lower LLTV) are safer and earn less. Junior tranches (higher LLTV) earn more and face higher loss risk; losses are allocated by supply utilization and cascade to junior tranches.',
-    fullDef: 'Think of tranches like floors in a building during a flood. Senior tranches are higher floors — water (losses) reaches them later. Losses are allocated by supply utilization at each level and cascade from senior to junior, so junior tranches face higher loss risk and earn higher yields to compensate.',
+    shortDef: 'Senior tranches (lower LLTV) are safer and earn less. Junior tranches (higher LLTV) earn more but bear proportionally more risk.',
+    fullDef: 'Junior tranches have higher supply utilization, meaning a larger share of available supply at each tranche is theirs. The same utilization weights that allocate more interest to junior lenders also allocate more bad debt to them — risk and reward are symmetric.',
     example: '75% LLTV = senior (safer, ~4% yield), 95% LLTV = junior (riskier, ~8% yield)',
     related: ['lltv', 'cascade', 'bad-debt'],
   },
@@ -88,7 +88,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   'bad-debt': {
     term: 'Bad Debt',
     shortDef: 'Debt that cannot be fully recovered from liquidation — the shortfall is absorbed by lenders.',
-    fullDef: 'Bad debt occurs when collateral value drops so fast that even after liquidation, there\'s not enough to cover the debt. This shortfall is allocated by supply utilization at each tranche and cascades from senior to junior; the most junior tranche absorbs whatever remains if supply is still available.',
+    fullDef: 'Bad debt occurs when collateral value drops so fast that even after liquidation, there\'s not enough to cover the debt. This shortfall is allocated to lenders at the originating tranche and more junior tranches, proportional to their supply utilization — the same weights used for interest distribution.',
     example: 'Borrower owes $10,000, collateral liquidates for $9,000 → $1,000 bad debt absorbed by tranches',
     related: ['liquidation', 'cascade', 'tranche-seniority'],
   },
@@ -96,7 +96,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   cascade: {
     term: 'Cascade',
     shortDef: 'How interest and bad debt flow through tranches — from senior to junior.',
-    fullDef: 'The cascade mechanism distributes interest and absorbs bad debt proportionally based on supply utilization at each tranche level. Interest generated at each level cascades down to more junior tranches. Bad debt follows the same path, being absorbed proportionally at each level.',
+    fullDef: 'The cascade mechanism distributes interest and allocates bad debt proportionally based on supply utilization at each tranche. At each tranche, a share equal to supply utilization is allocated to that tranche\'s lenders, and the remainder continues to more junior tranches.',
     formula: 'Absorbed = (Local Interest + Cascaded In) × Supply Utilization',
     related: ['tranche-seniority', 'supply-utilization'],
   },

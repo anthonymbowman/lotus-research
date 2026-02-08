@@ -221,7 +221,7 @@ export const FORMULAS = {
   },
   supplyRate: {
     formula: 'Cascading: (cascade + interest) × supplyUtil → allocated',
-    description: 'Interest cascades from senior to junior, allocated by supply utilization at each level.',
+    description: 'Interest cascades from senior to junior, allocated by supply utilization at each tranche.',
   },
 };
 

@@ -84,7 +84,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
     const lenderIdx = selectedLender;
     const destinations: { trancheIdx: number; lltv: number; percent: number; isUnallocated?: boolean }[] = [];
 
-    // Lender can only fund tranches at their level or more senior (borrowerIdx <= lenderIdx)
+    // Lender can only fund their own tranche or more senior tranches (borrowerIdx <= lenderIdx)
     for (let borrowerIdx = 0; borrowerIdx <= lenderIdx; borrowerIdx++) {
       const percent = fundingData.matrix[borrowerIdx][lenderIdx];
       if (percent > 0) {

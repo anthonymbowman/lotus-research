@@ -256,12 +256,12 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
               at 75%, 80%, 85%, etc., risk-averse lenders prefer the lower LLTV for less default exposure.
             </li>
             <li>
-              <strong className="text-amber-300">Liquidity fragments and dries up</strong> — With lenders concentrated in safe tiers,
+              <strong className="text-amber-300">Liquidity fragments and dries up</strong> — With lenders concentrated in safe tranches,
               higher-LLTV markets have insufficient supply, driving up rates until borrowing becomes uneconomical.
             </li>
             <li>
               <strong className="text-amber-300">Equilibrium: one market wins</strong> — The market converges to a single LLTV that balances
-              lender risk appetite with borrower demand. Higher-risk tiers simply don't exist in equilibrium.
+              lender risk appetite with borrower demand. Higher-risk tranches simply don't exist in equilibrium.
             </li>
           </ul>
           <p className="font-medium text-amber-300 mt-3">
