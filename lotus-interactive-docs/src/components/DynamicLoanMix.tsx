@@ -9,21 +9,32 @@ interface DynamicLoanMixProps {
   defaultView?: ViewMode;
 }
 
-// Colors for bar segments (one per tranche)
+// Colors for bar segments (one per tranche) - using credit rating spectrum
+// Lower LLTV = safer (A+), Higher LLTV = riskier (D)
 const SEGMENT_COLORS = [
-  'bg-emerald-500',
-  'bg-teal-500',
-  'bg-amber-500',
-  'bg-orange-500',
-  'bg-red-500',
+  'bg-rating-a-plus',  // 75% - safest
+  'bg-rating-a',       // 80%
+  'bg-rating-b',       // 85%
+  'bg-rating-c-plus',  // 90%
+  'bg-rating-d',       // 95% - riskiest
 ];
 
 const SEGMENT_TEXT_COLORS = [
-  'text-emerald-400',
-  'text-teal-400',
-  'text-amber-400',
-  'text-orange-400',
-  'text-red-400',
+  'text-rating-a-plus',
+  'text-rating-a',
+  'text-rating-b',
+  'text-rating-c-plus',
+  'text-rating-d',
+];
+
+// Text colors for use ON the colored bar segments (need contrast)
+// Light backgrounds (a-plus, a, b) need dark text; dark backgrounds (c-plus, d) can use light text
+const SEGMENT_OVERLAY_TEXT = [
+  'text-lotus-grey-900',  // on a-plus (teal) - dark text
+  'text-lotus-grey-900',  // on a (green) - dark text
+  'text-lotus-grey-900',  // on b (yellow) - dark text
+  'text-lotus-grey-900',  // on c-plus (pink) - dark text
+  'text-white',           // on d (red) - light text
 ];
 
 type ViewMode = 'lender' | 'borrower';
@@ -111,7 +122,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
           onClick={() => setViewMode('borrower')}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             viewMode === 'borrower'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-rating-c-plus text-lotus-grey-900'
               : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
           }`}
         >
@@ -176,7 +187,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                           title={`${dest.lltv}% tranche: ${formatPercent(dest.percent)}`}
                         >
                           {dest.percent > 0.1 && (
-                            <span className="text-xs font-mono text-white/90">{formatPercent(dest.percent)}</span>
+                            <span className={`text-xs font-mono ${SEGMENT_OVERLAY_TEXT[dest.trancheIdx]}`}>{formatPercent(dest.percent)}</span>
                           )}
                         </div>
                       ))}
@@ -198,7 +209,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                     </div>
                   )}
                 </div>
-                <div className="w-24 text-right text-xs font-mono text-emerald-400">
+                <div className="w-24 text-right text-xs font-mono text-rating-a">
                   {formatPercent(view.allocated)}
                 </div>
               </div>
@@ -223,7 +234,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                           title={`From ${src.lltv}% lenders: ${formatPercent(src.percent)}`}
                         >
                           {src.percent > 0.1 && (
-                            <span className="text-xs font-mono text-white/90">{formatPercent(src.percent)}</span>
+                            <span className={`text-xs font-mono ${SEGMENT_OVERLAY_TEXT[src.trancheIdx]}`}>{formatPercent(src.percent)}</span>
                           )}
                         </div>
                       ))}
@@ -234,7 +245,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                     </div>
                   )}
                 </div>
-                <div className="w-24 text-right text-xs font-mono text-blue-400">
+                <div className="w-24 text-right text-xs font-mono text-rating-a">
                   {formatPercent(supplyUtil)}
                 </div>
               </div>

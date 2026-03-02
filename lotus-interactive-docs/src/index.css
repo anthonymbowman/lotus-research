@@ -2,6 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Credit Rating Colors - Risk Spectrum */
+:root {
+  --rating-a-plus: #2FFAE2;  /* A+ safest (teal) */
+  --rating-a: #6BF4A0;       /* A (green) */
+  --rating-b-plus: #B0ED83;  /* B+ (lime) */
+  --rating-b: #EBE283;       /* B (yellow) */
+  --rating-c-plus: #FFA5CD;  /* C+ (pink) */
+  --rating-c: #E764FA;       /* C (magenta) */
+  --rating-d: #FE3E38;       /* D riskiest (red) */
+}
+
+/* Rating Color Utilities */
+.text-rating-a-plus { color: var(--rating-a-plus); }
+.text-rating-a { color: var(--rating-a); }
+.text-rating-b-plus { color: var(--rating-b-plus); }
+.text-rating-b { color: var(--rating-b); }
+.text-rating-c-plus { color: var(--rating-c-plus); }
+.text-rating-c { color: var(--rating-c); }
+.text-rating-d { color: var(--rating-d); }
+
+.bg-rating-a-plus { background-color: var(--rating-a-plus); }
+.bg-rating-a { background-color: var(--rating-a); }
+.bg-rating-b-plus { background-color: var(--rating-b-plus); }
+.bg-rating-b { background-color: var(--rating-b); }
+.bg-rating-c-plus { background-color: var(--rating-c-plus); }
+.bg-rating-c { background-color: var(--rating-c); }
+.bg-rating-d { background-color: var(--rating-d); }
+
+.border-rating-a-plus { border-color: var(--rating-a-plus); }
+.border-rating-a { border-color: var(--rating-a); }
+.border-rating-b-plus { border-color: var(--rating-b-plus); }
+.border-rating-b { border-color: var(--rating-b); }
+.border-rating-c-plus { border-color: var(--rating-c-plus); }
+.border-rating-c { border-color: var(--rating-c); }
+.border-rating-d { border-color: var(--rating-d); }
+
+/* Rating Colors with Opacity */
+.bg-rating-a-plus\/15 { background-color: rgba(47, 250, 226, 0.15); }
+.bg-rating-a-plus\/20 { background-color: rgba(47, 250, 226, 0.20); }
+.bg-rating-a\/15 { background-color: rgba(107, 244, 160, 0.15); }
+.bg-rating-a\/20 { background-color: rgba(107, 244, 160, 0.20); }
+.bg-rating-a\/60 { background-color: rgba(107, 244, 160, 0.60); }
+.bg-rating-b\/10 { background-color: rgba(235, 226, 131, 0.10); }
+.bg-rating-b\/20 { background-color: rgba(235, 226, 131, 0.20); }
+.bg-rating-c-plus\/15 { background-color: rgba(255, 165, 205, 0.15); }
+.bg-rating-c-plus\/20 { background-color: rgba(255, 165, 205, 0.20); }
+.bg-rating-c-plus\/50 { background-color: rgba(255, 165, 205, 0.50); }
+.bg-rating-a\/50 { background-color: rgba(107, 244, 160, 0.50); }
+
+.border-rating-b\/30 { border-color: rgba(235, 226, 131, 0.30); }
+.border-rating-b\/50 { border-color: rgba(235, 226, 131, 0.50); }
+
 /* Lotus Protocol Brand Styles */
 :root {
   /* Background */

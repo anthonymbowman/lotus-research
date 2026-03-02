@@ -5,6 +5,21 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
+  safelist: [
+    // Rating colors - base classes
+    'text-rating-a-plus', 'text-rating-a', 'text-rating-b-plus', 'text-rating-b',
+    'text-rating-c-plus', 'text-rating-c', 'text-rating-d',
+    'bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b-plus', 'bg-rating-b',
+    'bg-rating-c-plus', 'bg-rating-c', 'bg-rating-d',
+    'border-rating-a-plus', 'border-rating-a', 'border-rating-b-plus', 'border-rating-b',
+    'border-rating-c-plus', 'border-rating-c', 'border-rating-d',
+    // Rating colors - with opacity modifiers used in the codebase
+    'bg-rating-a/15', 'bg-rating-a/20', 'bg-rating-a/60',
+    'bg-rating-a-plus/15', 'bg-rating-a-plus/20',
+    'bg-rating-b/10', 'bg-rating-b/20',
+    'bg-rating-c-plus/15', 'bg-rating-c-plus/20',
+    'border-rating-b/30', 'border-rating-b/50',
+  ],
   theme: {
     extend: {
       colors: {
@@ -15,6 +30,16 @@ export default {
           border: '#d97706',    // amber-600 - dashed borders
           bg: 'rgba(245, 158, 11, 0.1)',  // amber with low opacity for backgrounds
           'bg-hover': 'rgba(245, 158, 11, 0.2)',
+        },
+        // Credit Rating Colors (risk spectrum: safest → riskiest)
+        'rating': {
+          'a-plus': '#2FFAE2',  // A+ - safest (teal)
+          'a': '#6BF4A0',       // A (green)
+          'b-plus': '#B0ED83',  // B+ (lime)
+          'b': '#EBE283',       // B (yellow)
+          'c-plus': '#FFA5CD',  // C+ (pink)
+          'c': '#E764FA',       // C (magenta)
+          'd': '#FE3E38',       // D - default/riskiest (red)
         },
         // Lotus Brand Colors
         'lotus-grey': {

@@ -82,21 +82,22 @@ export function SimplePieChart({ segments, size = 72 }: SimplePieChartProps) {
   );
 }
 
-// Color mapping for tranche LLTVs (matching DynamicLoanMix)
+// Color mapping for tranche LLTVs using credit rating spectrum
+// Lower LLTV = safer (A+/A), Higher LLTV = riskier (C/D)
 export const TRANCHE_COLORS: Record<number, string> = {
-  75: '#10b981', // emerald-500
-  80: '#14b8a6', // teal-500
-  85: '#f59e0b', // amber-500
-  90: '#f97316', // orange-500
-  95: '#ef4444', // red-500
+  75: '#2FFAE2', // rating-a-plus (safest)
+  80: '#6BF4A0', // rating-a
+  85: '#EBE283', // rating-b
+  90: '#FFA5CD', // rating-c-plus
+  95: '#FE3E38', // rating-d (riskiest)
 };
 
 export const TRANCHE_TEXT_COLORS: Record<number, string> = {
-  75: 'text-emerald-400',
-  80: 'text-teal-400',
-  85: 'text-amber-400',
-  90: 'text-orange-400',
-  95: 'text-red-400',
+  75: 'text-rating-a-plus',
+  80: 'text-rating-a',
+  85: 'text-rating-b',
+  90: 'text-rating-c-plus',
+  95: 'text-rating-d',
 };
 
 export const IDLE_COLOR = '#4b5563'; // grey-600
