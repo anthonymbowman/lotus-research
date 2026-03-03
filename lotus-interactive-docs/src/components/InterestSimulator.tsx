@@ -22,9 +22,22 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
 
   return (
     <div className="space-y-4">
+      {/* Data source callout */}
+      <div className="flex items-start gap-3 bg-lotus-purple-900/20 border border-lotus-purple-700/50 rounded p-3">
+        <div className="w-6 h-6 bg-lotus-purple-500/20 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg className="w-4 h-4 text-lotus-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p className="text-sm text-lotus-purple-200">
+          <strong className="text-lotus-purple-300">Live data:</strong> These numbers reflect the market you configured in{' '}
+          <span className="text-lotus-purple-300 font-medium">Liquidity Flow</span>.
+          Change supply/borrow amounts there to see how interest redistributes here.
+        </p>
+      </div>
 
       {/* Exportable Section */}
-      <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-4 pb-6 border border-lotus-grey-700 relative">
+      <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded p-4 pb-6 border border-lotus-grey-700 relative">
         <ExportButton targetRef={exportRef} filename="interest-accrual-simulation" />
 
         <h4 className="text-lg font-semibold text-lotus-grey-100 mb-4 text-center pr-10">
@@ -32,19 +45,19 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
         </h4>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="bg-emerald-900/30 rounded-lg p-4 border border-emerald-700">
-          <div className="text-sm text-emerald-400">Total Interest Generated</div>
-          <div className="text-2xl font-mono font-semibold text-emerald-300">
+        <div className="bg-rating-a/15 rounded p-4 border border-rating-a">
+          <div className="text-sm text-rating-a">Total Interest Generated</div>
+          <div className="text-2xl font-mono font-semibold text-rating-a">
             ${formatNumber(simulation.totalInterestGenerated, 2)}
           </div>
         </div>
-        <div className="bg-blue-900/30 rounded-lg p-4 border border-blue-700">
-          <div className="text-sm text-blue-400">Total Interest Received</div>
-          <div className="text-2xl font-mono font-semibold text-blue-300">
+        <div className="bg-lotus-purple-900/30 rounded p-4 border border-lotus-purple-700">
+          <div className="text-sm text-lotus-purple-400">Total Interest Received</div>
+          <div className="text-2xl font-mono font-semibold text-lotus-purple-300">
             ${formatNumber(simulation.totalInterestReceived, 2)}
           </div>
         </div>
-        <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+        <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
           <div className="text-sm text-lotus-grey-300">Time Period</div>
           <div className="text-2xl font-semibold text-lotus-grey-200">
             1 Month
@@ -75,11 +88,11 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
             <thead>
               <tr className="border-b border-lotus-grey-700">
                 <th className="text-left py-1.5 px-1.5 font-semibold text-lotus-grey-300">LLTV</th>
-                <th className="text-center py-1.5 px-1.5 font-semibold text-blue-300">Cascade In</th>
+                <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-purple-300">Cascade In</th>
                 <th className="py-1.5 px-1 text-center text-lotus-grey-400">+</th>
-                <th className="text-center py-1.5 px-1.5 font-semibold text-emerald-300">Generated</th>
+                <th className="text-center py-1.5 px-1.5 font-semibold text-rating-a">Generated</th>
                 <th className="py-1.5 px-1 text-center text-lotus-grey-400">=</th>
-                <th className="text-center py-1.5 px-1.5 font-semibold text-yellow-300">Total</th>
+                <th className="text-center py-1.5 px-1.5 font-semibold text-rating-b">Total</th>
                 <th className="py-1.5 px-1 text-center text-lotus-grey-400">×</th>
                 <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-purple-300">
                   <DefinitionBadge
@@ -90,8 +103,8 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                   />
                 </th>
                 <th className="py-1.5 px-1 text-center text-lotus-grey-400">=</th>
-                <th className="text-center py-1.5 px-1.5 font-semibold text-teal-300">Received</th>
-                <th className="text-right py-1.5 px-1.5 font-semibold text-orange-300">Cascade Out</th>
+                <th className="text-center py-1.5 px-1.5 font-semibold text-rating-a-plus">Received</th>
+                <th className="text-right py-1.5 px-1.5 font-semibold text-rating-c-plus">Cascade Out</th>
               </tr>
             </thead>
             <tbody>
@@ -103,26 +116,26 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
                 return (
                   <tr key={result.index} className="border-b border-lotus-grey-700/50 hover:bg-lotus-grey-700/30">
                     <td className="py-1.5 px-1.5 font-medium text-lotus-grey-200">{result.lltv}%</td>
-                    <td className="py-1.5 px-1.5 text-center font-mono text-blue-400">
+                    <td className="py-1.5 px-1.5 text-center font-mono text-lotus-purple-400">
                       {isFirst ? <span className="text-lotus-grey-500">—</span> : `$${formatNumber(result.cascadeIn, 2)}`}
                     </td>
                     <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">+</td>
-                    <td className="py-1.5 px-1.5 text-center font-mono text-emerald-400">
+                    <td className="py-1.5 px-1.5 text-center font-mono text-rating-a">
                       ${formatNumber(result.interestGenerated, 2)}
                     </td>
                     <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">=</td>
-                    <td className="py-1.5 px-1.5 text-center font-mono text-yellow-400">
+                    <td className="py-1.5 px-1.5 text-center font-mono text-rating-b">
                       ${formatNumber(result.total, 2)}
                     </td>
                     <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">×</td>
-                    <td className={`py-1.5 px-1.5 text-center font-mono ${supplyUtilHigh ? 'text-amber-300' : 'text-lotus-purple-400'}`}>
+                    <td className={`py-1.5 px-1.5 text-center font-mono ${supplyUtilHigh ? 'text-rating-b' : 'text-lotus-purple-400'}`}>
                       {formatPercent(result.supplyUtil, 1)}
                     </td>
                     <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">=</td>
-                    <td className="py-1.5 px-1.5 text-center font-mono font-medium text-teal-300">
+                    <td className="py-1.5 px-1.5 text-center font-mono font-medium text-rating-a-plus">
                       ${formatNumber(result.interestReceived, 2)}
                     </td>
-                    <td className="py-1.5 px-1.5 text-right font-mono text-orange-400">
+                    <td className="py-1.5 px-1.5 text-right font-mono text-rating-c-plus">
                       {isLast ? <span className="text-lotus-grey-500">—</span> : `$${formatNumber(result.cascadeOut, 2)}`}
                     </td>
                   </tr>
@@ -136,12 +149,12 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
       </div>{/* End exportable section */}
 
       {/* Formula - Collapsible */}
-      <details className="bg-lotus-grey-700/50 rounded-lg border border-lotus-grey-600">
+      <details className="bg-lotus-grey-900 rounded border border-lotus-grey-700">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
           Show Formula
         </summary>
         <div className="px-4 pb-4">
-          <div className="bg-lotus-grey-900 rounded-lg p-3 text-sm text-lotus-grey-300">
+          <div className="bg-lotus-grey-900 rounded p-3 text-sm text-lotus-grey-300">
             <code className="font-mono">Interest Received = (Cascaded In + Generated) × Supply Utilization</code>
             <br />
             <code className="font-mono">Cascaded Out = (Cascaded In + Generated) × (1 - Supply Utilization)</code>
@@ -150,7 +163,7 @@ export function InterestSimulator({ tranches }: InterestSimulatorProps) {
       </details>
 
       {/* How Interest Flows - Collapsible */}
-      <details className="bg-lotus-grey-700/50 rounded-lg border border-lotus-grey-600">
+      <details className="bg-lotus-grey-900 rounded border border-lotus-grey-700">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
           How Interest Flows
         </summary>

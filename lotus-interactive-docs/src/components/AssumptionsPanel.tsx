@@ -68,7 +68,7 @@ export function AssumptionsPanel({
       </button>
 
       {isExpanded && (
-        <div className="mt-3 p-4 bg-lotus-grey-800/50 rounded-lg border border-lotus-grey-700">
+        <div className="mt-3 p-4 bg-lotus-grey-900 rounded border border-lotus-grey-700">
           <p className="text-xs text-lotus-grey-400 mb-3">
             This simulator uses simplified models for educational purposes.
             Actual protocol behavior may differ.
@@ -76,7 +76,7 @@ export function AssumptionsPanel({
           <ul className="space-y-3">
             {assumptions.map((assumption, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span className="text-amber-500 mt-0.5">•</span>
+                <span className="text-rating-b mt-0.5">•</span>
                 <div>
                   <span className="text-sm font-medium text-lotus-grey-200">
                     {assumption.label}

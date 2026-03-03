@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
-import { PageHeader } from './PageHeader';
+import { ContextZone } from './ContextZone';
+import { InteractiveZone } from './InteractiveZone';
+import { DetailZone } from './DetailZone';
 import { FailureModeCallout } from './FailureModeCallout';
 import { AssumptionsPanel, MODULE_ASSUMPTIONS } from './AssumptionsPanel';
 import { IRMExplainer } from './IRMExplainer';
@@ -55,11 +57,11 @@ function LiquidationsAndRisk() {
       const riskDots = i + 1;
 
       const colorClasses = [
-        { text: 'text-emerald-400', bg: 'bg-emerald-500', border: 'border-emerald-500' },
-        { text: 'text-teal-400', bg: 'bg-teal-500', border: 'border-teal-500' },
-        { text: 'text-amber-400', bg: 'bg-amber-500', border: 'border-amber-500' },
-        { text: 'text-orange-400', bg: 'bg-orange-500', border: 'border-orange-500' },
-        { text: 'text-red-400', bg: 'bg-red-500', border: 'border-red-500' },
+        { text: 'text-rating-a-plus', bg: 'bg-rating-a-plus', border: 'border-rating-a-plus' },
+        { text: 'text-rating-a', bg: 'bg-rating-a', border: 'border-rating-a' },
+        { text: 'text-rating-b', bg: 'bg-rating-b', border: 'border-rating-b' },
+        { text: 'text-rating-c-plus', bg: 'bg-rating-c-plus', border: 'border-rating-c-plus' },
+        { text: 'text-rating-d', bg: 'bg-rating-d', border: 'border-rating-d' },
       ];
 
       return { lltv, buffer, liquidationBonus, badDebtThreshold, riskDots, colors: colorClasses[i], lif };
@@ -77,35 +79,37 @@ function LiquidationsAndRisk() {
   const lr = trContent.liquidationsAndRisk;
 
   return (
-    <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">{lr.heading}</h3>
-      <p className="text-sm text-lotus-grey-300 mb-6">
-        {lr.description}
-      </p>
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">{lr.heading}</h3>
+        <p className="text-sm text-lotus-grey-300">
+          {lr.description}
+        </p>
+      </div>
 
       {/* Risk Chain */}
-      <div className="bg-lotus-grey-900/50 rounded-lg p-4 border border-lotus-grey-700 mb-6">
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 mb-6">
         <div className="flex items-center justify-center gap-2 flex-wrap text-sm">
           <div className="bg-lotus-purple-900/30 border border-lotus-purple-600 rounded px-3 py-2">
             <span className="text-lotus-purple-300">{lr.riskChain.higherLltv}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
-          <div className="bg-amber-900/30 border border-amber-600 rounded px-3 py-2">
-            <span className="text-amber-300">{lr.riskChain.lessBuffer}</span>
+          <div className="bg-rating-b/20 border border-rating-b rounded px-3 py-2">
+            <span className="text-rating-b">{lr.riskChain.lessBuffer}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
-          <div className="bg-red-900/30 border border-red-600 rounded px-3 py-2">
-            <span className="text-red-300">{lr.riskChain.moreRisk}</span>
+          <div className="bg-rating-d/20 border border-rating-d rounded px-3 py-2">
+            <span className="text-rating-d">{lr.riskChain.moreRisk}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
-          <div className="bg-emerald-900/30 border border-emerald-600 rounded px-3 py-2">
-            <span className="text-emerald-300">{lr.riskChain.higherSpread}</span>
+          <div className="bg-rating-a/15 border border-rating-a rounded px-3 py-2">
+            <span className="text-rating-a">{lr.riskChain.higherSpread}</span>
           </div>
         </div>
       </div>
 
       {/* Comparison Table */}
-      <div className="overflow-x-auto mb-6">
+      <div className="overflow-x-auto mb-6 border-l-2 border-l-lotus-purple-500 pl-4">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-lotus-grey-700">
@@ -140,8 +144,8 @@ function LiquidationsAndRisk() {
                   </td>
                   <td className="text-center py-2 px-2">
                     <span className={`font-mono font-medium ${
-                      tranche.badDebtThreshold < 10 ? 'text-red-400' :
-                      tranche.badDebtThreshold < 15 ? 'text-amber-400' : 'text-emerald-400'
+                      tranche.badDebtThreshold < 10 ? 'text-rating-d' :
+                      tranche.badDebtThreshold < 15 ? 'text-rating-b' : 'text-rating-a'
                     }`}>
                       {tranche.badDebtThreshold.toFixed(2)}% drop
                     </span>
@@ -149,7 +153,7 @@ function LiquidationsAndRisk() {
                   <td className="text-center py-2 px-2">
                     <div className="flex items-center justify-center gap-0.5" aria-label={`Risk level ${tranche.riskDots} of ${TRANCHE_LLTV.length}`}>
                       {Array.from({ length: tranche.riskDots }).map((_, j) => (
-                        <div key={j} className={`w-1.5 h-1.5 rounded-full ${tranche.colors.bg}`} />
+                        <div key={j} className={`w-1.5 h-1.5 rounded-sm ${tranche.colors.bg}`} />
                       ))}
                       <span className="sr-only">Risk {tranche.riskDots} of {TRANCHE_LLTV.length}</span>
                     </div>
@@ -161,8 +165,8 @@ function LiquidationsAndRisk() {
         </table>
       </div>
 
-      {/* Liquidation Example - Collapsible */}
-      <details className="bg-lotus-grey-700/30 rounded-lg border border-lotus-grey-600 mb-4">
+      {/* Liquidation Example - Open by default so users see changes when clicking rows */}
+      <details open className="bg-lotus-grey-900 rounded border border-lotus-grey-700 mb-4">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-100">
           {lr.exampleTitle(selectedLLTV)}
         </summary>
@@ -181,11 +185,11 @@ function LiquidationsAndRisk() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Seized by liquidator:</span>
-                <span className="font-mono text-emerald-400">${seizedCollateral.toFixed(2)}</span>
+                <span className="font-mono text-rating-a">${seizedCollateral.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-lotus-grey-400">Liquidator profit:</span>
-                <span className="font-mono text-emerald-400">${liquidatorProfit.toFixed(2)}</span>
+                <span className="font-mono text-rating-a">${liquidatorProfit.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -194,7 +198,7 @@ function LiquidationsAndRisk() {
           <div className="mt-4 pt-3 border-t border-lotus-grey-600">
             <div className="flex justify-between items-center text-sm mb-2">
               <span className="text-lotus-grey-400">{lr.badDebtFormula.label}</span>
-              <span className="font-mono font-medium text-amber-400">{selectedData.badDebtThreshold.toFixed(2)}% price drop</span>
+              <span className="font-mono font-medium text-rating-b">{selectedData.badDebtThreshold.toFixed(2)}% price drop</span>
             </div>
             <div className="text-xs text-lotus-grey-500 space-y-1">
               <p>
@@ -214,7 +218,7 @@ function LiquidationsAndRisk() {
       </details>
 
       {/* Technical Details - Collapsible */}
-      <details className="bg-lotus-grey-700/30 rounded-lg border border-lotus-grey-600">
+      <details className="bg-lotus-grey-900 rounded border border-lotus-grey-700">
         <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-400 hover:text-lotus-grey-200">
           {lr.technicalDetails}
         </summary>
@@ -242,30 +246,50 @@ function LiquidationsAndRisk() {
 export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
   return (
     <div className="space-y-8">
-      <PageHeader
-        whatYoullLearn={trContent.pageHeader.whatYoullLearn}
+      {/* ═══════════════════════════════════════════════════════════════════
+          CONTEXT ZONE - Minimal context above the fold
+          ═══════════════════════════════════════════════════════════════════ */}
+      <ContextZone
+        context="Understand how risk varies across tranches. Higher LLTV means less collateral buffer, more liquidation risk, but higher yields."
+        whatYoullLearn={['Liquidation mechanics', 'Bad debt thresholds', 'Risk-return tradeoffs']}
       />
 
-      <LiquidationsAndRisk />
+      {/* ═══════════════════════════════════════════════════════════════════
+          INTERACTIVE ZONE - The main event
+          ═══════════════════════════════════════════════════════════════════ */}
+      <InteractiveZone
+        tryThis="Click different tranches to see how liquidation bonuses and bad debt thresholds change with LLTV."
+        title="Risk & Liquidation Explorer"
+      >
+        <LiquidationsAndRisk />
+      </InteractiveZone>
 
-      {/* IRM Explainer - How Spreads Are Determined */}
-      <IRMExplainer tranches={tranches} baseRate={baseRate} />
+      {/* ═══════════════════════════════════════════════════════════════════
+          DETAIL ZONE - Below the fold, for those who want to go deeper
+          ═══════════════════════════════════════════════════════════════════ */}
+      <DetailZone
+        title="Understanding Risk Mechanics"
+        teaserItems={['Interest Rate Model', 'Failure Modes', 'Model Assumptions']}
+      >
+        {/* IRM Explainer - How Spreads Are Determined */}
+        <IRMExplainer tranches={tranches} baseRate={baseRate} />
 
-      <FailureModeCallout title={trContent.failureMode.title}>
-        <p>
-          {trContent.failureMode.description}
-        </p>
-      </FailureModeCallout>
+        <FailureModeCallout title={trContent.failureMode.title}>
+          <p>
+            {trContent.failureMode.description}
+          </p>
+        </FailureModeCallout>
 
-      {/* Simplified Model Note */}
-      <div className="flex items-center gap-2 text-xs text-lotus-grey-400">
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>{trContent.simplifiedNote}</span>
-      </div>
+        {/* Simplified Model Note */}
+        <div className="flex items-center gap-2 text-xs text-lotus-grey-400">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{trContent.simplifiedNote}</span>
+        </div>
 
-      <AssumptionsPanel assumptions={MODULE_ASSUMPTIONS.liquidations} />
+        <AssumptionsPanel assumptions={MODULE_ASSUMPTIONS.liquidations} />
+      </DetailZone>
     </div>
   );
 }

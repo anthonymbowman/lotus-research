@@ -44,14 +44,14 @@ export function ConstraintBadge({
   }, [showTooltip, tooltip]);
 
   const severityStyles = {
-    active: 'bg-amber-500/20 text-amber-400 border-amber-500/50',
-    near: 'bg-amber-300/10 text-amber-300 border-amber-300/30',
-    info: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    active: 'bg-constraint-bg text-constraint-active border-constraint-border',
+    near: 'bg-constraint-bg text-constraint-near border-constraint-near/30',
+    info: 'bg-lotus-purple-900/15 text-lotus-purple-400 border-lotus-purple-500/30',
   };
 
   const tooltipElement = showTooltip && tooltip && (
     <div
-      className="fixed z-[9999] px-3 py-2 text-xs bg-lotus-grey-900 text-lotus-grey-300 rounded-lg shadow-xl border border-lotus-grey-700 max-w-xs"
+      className="fixed z-[9999] px-3 py-2 text-xs bg-lotus-grey-900 text-lotus-grey-300 rounded shadow-xl border border-lotus-grey-700 max-w-xs"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,

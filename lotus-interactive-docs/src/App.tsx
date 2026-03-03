@@ -4,6 +4,8 @@ import { computeAllTranches } from './math/lotusAccounting';
 import { createDefaultTranches } from './presets';
 import { Sidebar, SECTIONS, type Section } from './components/Sidebar';
 import { SectionWrapper } from './components/SectionWrapper';
+import { ContextZone } from './components/ContextZone';
+import { InteractiveZone } from './components/InteractiveZone';
 import { GuidedTour } from './components/GuidedTour';
 import { WelcomeModal } from './components/WelcomeModal';
 import { Introduction } from './components/Introduction';
@@ -160,7 +162,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-lotus-gradient-subtle">
+    <div className="min-h-screen bg-lotus-grey-900">
       {/* Welcome Modal */}
       {showWelcome && (
         <WelcomeModal
@@ -258,15 +260,21 @@ function App() {
             {/* Section 6: Interest & Bad Debt (merged from Interest Cascade + Liquidations) */}
             {activeSection === 'interest-bad-debt' && (
               <div className="space-y-8">
-                <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-                  <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">Interest Accrual Simulation</h3>
-                  <p className="text-lotus-grey-400 mb-6">
-                    See how interest flows through tranches. The cascade mechanism allocates
-                    interest based on supply utilization at each tranche.
-                  </p>
-                  <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
-                </div>
+                {/* Context Zone */}
+                <ContextZone
+                  context="Simulate how interest and bad debt flow through tranches. Both follow the same cascading mechanism based on supply utilization."
+                  whatYoullLearn={['Interest allocation', 'Bad debt absorption', 'Cascade mechanics']}
+                />
 
+                {/* Interactive Zone - Interest Simulator */}
+                <InteractiveZone
+                  tryThis="Go to Liquidity Flow → increase borrow in junior tranches → return here to see more interest cascade to junior lenders."
+                  title="Interest Accrual Simulation"
+                >
+                  <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
+                </InteractiveZone>
+
+                {/* Bad Debt Simulator (also interactive) */}
                 <Liquidations
                   tranches={computedTranches.map(t => ({ lltv: t.lltv }))}
                   computedTranches={computedTranches}

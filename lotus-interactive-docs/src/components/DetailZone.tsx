@@ -11,15 +11,18 @@ interface DetailZoneProps {
   title?: string;
   /** Teaser items to show when collapsed */
   teaserItems?: string[];
+  /** Whether the section is open by default */
+  defaultOpen?: boolean;
 }
 
 export function DetailZone({
   children,
   title = 'Go Deeper',
-  teaserItems = []
+  teaserItems = [],
+  defaultOpen = false,
 }: DetailZoneProps) {
   return (
-    <details className="mt-12 group">
+    <details className="mt-12 group" open={defaultOpen}>
       <summary className="cursor-pointer list-none border-t border-lotus-grey-700 pt-6 pb-4 hover:bg-lotus-grey-800/30 -mx-2 px-2 rounded transition-colors">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-6 h-6 bg-lotus-grey-700 rounded-sm flex items-center justify-center border border-lotus-grey-700">

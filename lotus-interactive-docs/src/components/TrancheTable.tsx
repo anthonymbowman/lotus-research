@@ -188,7 +188,7 @@ export function TrancheTable({
                   key={tranche.id}
                   className={`border-b transition-colors cursor-pointer ${
                     isOverBorrowed
-                      ? 'border-red-600/50 bg-red-900/20 hover:bg-red-900/30'
+                      ? 'border-rating-d/50 bg-rating-d/20 hover:bg-rating-d/30'
                       : isBindingConstraint
                       ? 'border-rating-b/50 bg-rating-b/10 hover:bg-rating-b/20'
                       : 'border-lotus-grey-700/50 hover:bg-lotus-grey-700/30'
@@ -196,10 +196,10 @@ export function TrancheTable({
                   onClick={() => setInspectedTranche(index)}
                 >
                   <td className={`py-1 px-1 border-r border-lotus-grey-700 sticky left-0 z-10 w-1 whitespace-nowrap ${
-                    isOverBorrowed ? 'bg-red-900/30' : isBindingConstraint ? 'bg-rating-b/20' : 'bg-lotus-grey-800'
+                    isOverBorrowed ? 'bg-rating-d/30' : isBindingConstraint ? 'bg-rating-b/20' : 'bg-lotus-grey-800'
                   }`}>
-                    <span className={`font-medium ${isOverBorrowed ? 'text-red-300' : 'text-lotus-grey-200'}`}>{tranche.lltv}%</span>
-                    {isOverBorrowed && <span className="ml-1 text-red-400 text-xs">!</span>}
+                    <span className={`font-medium ${isOverBorrowed ? 'text-rating-d' : 'text-lotus-grey-200'}`}>{tranche.lltv}%</span>
+                    {isOverBorrowed && <span className="ml-1 text-rating-d text-xs">!</span>}
                   </td>
 
                   <td className="py-1 px-1 w-1 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
@@ -225,7 +225,7 @@ export function TrancheTable({
                         className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono text-lotus-grey-100
                           hover:border-lotus-purple-400 hover:bg-lotus-grey-800 transition-colors cursor-text
                           focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800 ${
-                          isOverBorrowed ? 'border-red-500' : 'border-lotus-purple-500/40'
+                          isOverBorrowed ? 'border-rating-d' : 'border-lotus-purple-500/40'
                         }`}
                       />
                     </div>
@@ -240,7 +240,7 @@ export function TrancheTable({
                           scope="tranche"
                           trancheIndex={index}
                         >
-                          <span className="w-2 h-2 rounded-sm bg-red-500 animate-pulse" />
+                          <span className="w-2 h-2 rounded-sm bg-rating-d animate-pulse" />
                         </ConstraintTooltip>
                       ) : hasCascadingSupply && (
                         <ConstraintTooltip
@@ -274,7 +274,7 @@ export function TrancheTable({
                         className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono
                           hover:border-lotus-purple-400 hover:bg-lotus-grey-800 transition-colors cursor-text
                           focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800 ${
-                          isOverBorrowed ? 'border-red-500 text-red-300' : 'border-lotus-purple-500/40 text-lotus-grey-100'
+                          isOverBorrowed ? 'border-rating-d text-rating-d' : 'border-lotus-purple-500/40 text-lotus-grey-100'
                         }`}
                       />
                     </div>

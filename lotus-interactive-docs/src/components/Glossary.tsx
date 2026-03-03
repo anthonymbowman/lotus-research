@@ -46,7 +46,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-lotus-grey-800/70 rounded-xl p-5 border border-lotus-grey-700">
+      <div className="bg-lotus-grey-900 rounded p-5 border border-lotus-grey-700">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <label className="block text-sm font-medium text-lotus-grey-200 mb-2" htmlFor="glossary-search">
@@ -59,7 +59,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search terms, formulas, or concepts..."
-                className="w-full sm:w-[360px] px-3 py-2 pr-10 bg-lotus-grey-700 border border-lotus-grey-600 rounded-lg text-lotus-grey-100 focus:border-lotus-purple-500 focus:outline-none"
+                className="w-full sm:w-[360px] px-3 py-2 pr-10 bg-lotus-grey-700 border border-lotus-grey-700 rounded text-lotus-grey-100 focus:border-lotus-purple-500 focus:outline-none"
               />
               {query && (
                 <button
@@ -78,7 +78,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-lotus-grey-800/60 border border-lotus-grey-700 rounded-xl p-6 text-center text-sm text-lotus-grey-400">
+        <div className="bg-lotus-grey-900 border border-lotus-grey-700 rounded p-6 text-center text-sm text-lotus-grey-400">
           No glossary matches for "{query}"
         </div>
       ) : (
@@ -87,7 +87,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
             <details
               key={entry.key}
               id={`glossary-${entry.key}`}
-              className={`bg-lotus-grey-800/60 border rounded-xl p-4 ${
+              className={`bg-lotus-grey-900 border rounded p-4 ${
                 focusTerm === entry.key ? 'border-lotus-purple-500 shadow-lotus' : 'border-lotus-grey-700'
               }`}
               open={focusTerm === entry.key ? true : undefined}
@@ -103,7 +103,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
               <div className="mt-4 pt-4 border-t border-lotus-grey-700 space-y-3">
                 <p className="text-sm text-lotus-grey-300">{entry.fullDef}</p>
                 {entry.formula && (
-                  <div className="bg-lotus-grey-900 rounded-lg px-3 py-2 text-xs font-mono text-lotus-purple-300">
+                  <div className="bg-lotus-grey-900 rounded px-3 py-2 text-xs font-mono text-lotus-purple-300">
                     {entry.formula}
                   </div>
                 )}

@@ -20,11 +20,11 @@ export function BottleneckIndicator({ tranches }: BottleneckIndicatorProps) {
   const freeSupply = bindingTranches[0]?.freeSupply ?? 0;
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+    <div className="bg-constraint-bg border border-constraint-border rounded p-4 mb-4">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0">
           <svg
-            className="w-5 h-5 text-amber-500 mt-0.5"
+            className="w-5 h-5 text-constraint-active mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -38,15 +38,15 @@ export function BottleneckIndicator({ tranches }: BottleneckIndicatorProps) {
           </svg>
         </div>
         <div>
-          <h4 className="font-semibold text-amber-800 text-sm">
+          <h4 className="font-semibold text-constraint-active text-sm">
             Binding Constraint: {bindingLltvs} LLTV
           </h4>
-          <p className="text-amber-700 text-sm mt-1">
+          <p className="text-constraint-near text-sm mt-1">
             The <strong>{bindingLltvs}</strong> tranche has the minimum jrNetSupply,
             limiting free supply to <strong>{freeSupply.toLocaleString()}</strong> for
             all senior tranches.
           </p>
-          <p className="text-amber-600 text-xs mt-2">
+          <p className="text-constraint-active text-xs mt-2">
             Tip: Increase supply or reduce borrows in this tranche to unlock more liquidity
             for senior tranches.
           </p>

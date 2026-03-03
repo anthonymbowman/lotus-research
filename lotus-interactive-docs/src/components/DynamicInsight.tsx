@@ -8,19 +8,19 @@ interface DynamicInsightProps {
 
 const variantStyles = {
   info: {
-    container: 'bg-blue-900/20 border-blue-700/50',
-    icon: 'text-blue-400 bg-blue-900/50',
-    text: 'text-blue-200',
+    container: 'bg-lotus-purple-900/20 border-lotus-purple-700/50',
+    icon: 'text-lotus-purple-400 bg-lotus-purple-900/50',
+    text: 'text-lotus-purple-200',
   },
   warning: {
-    container: 'bg-amber-900/20 border-amber-700/50',
-    icon: 'text-amber-400 bg-amber-900/50',
-    text: 'text-amber-200',
+    container: 'bg-rating-b/10 border-rating-b/50',
+    icon: 'text-rating-b bg-rating-b/20',
+    text: 'text-rating-b',
   },
   success: {
-    container: 'bg-emerald-900/20 border-emerald-700/50',
-    icon: 'text-emerald-400 bg-emerald-900/50',
-    text: 'text-emerald-200',
+    container: 'bg-rating-a/15 border-rating-a/50',
+    icon: 'text-rating-a bg-rating-a/20',
+    text: 'text-rating-a',
   },
 };
 
@@ -48,9 +48,9 @@ export function DynamicInsight({ show, variant, children }: DynamicInsightProps)
   const styles = variantStyles[variant];
 
   return (
-    <div className={`rounded-lg p-4 border ${styles.container} animate-fadeIn`}>
+    <div className={`rounded p-4 border ${styles.container} animate-fadeIn`}>
       <div className="flex items-start gap-3">
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${styles.icon}`}>
+        <div className={`w-8 h-8 rounded flex items-center justify-center flex-shrink-0 ${styles.icon}`}>
           {icons[variant]}
         </div>
         <div className={`text-sm ${styles.text}`}>

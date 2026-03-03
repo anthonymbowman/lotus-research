@@ -16,7 +16,7 @@ export function ConceptPrimer({ concepts, defaultExpanded = false }: ConceptPrim
   if (entries.length === 0) return null;
 
   return (
-    <div className="bg-lotus-grey-800/50 rounded-lg border border-lotus-grey-700 overflow-hidden">
+    <div className="bg-lotus-grey-800/50 rounded border border-lotus-grey-700 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-lotus-grey-800/80 transition-colors"

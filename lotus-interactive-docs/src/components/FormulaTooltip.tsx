@@ -70,7 +70,7 @@ export function FormulaTooltip({ formula, description, children, currentValues }
   const tooltip = isVisible && (
     <div
       ref={tooltipRef}
-      className="fixed z-[9999] px-3 py-2 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl border border-lotus-grey-700"
+      className="fixed z-[9999] px-3 py-2 text-sm bg-lotus-grey-900 text-white rounded shadow-xl border border-lotus-grey-700"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,

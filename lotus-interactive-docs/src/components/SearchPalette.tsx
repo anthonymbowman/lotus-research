@@ -165,7 +165,7 @@ export function SearchPalette({ onNavigate, onGlossarySelect }: SearchPalettePro
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl text-lotus-grey-300 hover:border-lotus-purple-500 hover:text-lotus-grey-100 transition-all shadow-lg"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 bg-lotus-grey-800 border border-lotus-grey-700 rounded text-lotus-grey-300 hover:border-lotus-purple-500 hover:text-lotus-grey-100 transition-all shadow-lg"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         aria-controls="search-palette"
@@ -194,7 +194,7 @@ export function SearchPalette({ onNavigate, onGlossarySelect }: SearchPalettePro
       <div
         ref={paletteRef}
         id="search-palette"
-        className="relative w-full max-w-xl mx-4 bg-lotus-grey-800 rounded-xl border border-lotus-grey-700 shadow-2xl overflow-hidden focus:outline-none"
+        className="relative w-full max-w-xl mx-4 bg-lotus-grey-800 rounded border border-lotus-grey-700 shadow-2xl overflow-hidden focus:outline-none"
         tabIndex={-1}
       >
         {/* Search input */}
@@ -268,7 +268,7 @@ export function SearchPalette({ onNavigate, onGlossarySelect }: SearchPalettePro
                               isSelected ? 'bg-lotus-purple-900/30' : 'hover:bg-lotus-grey-700/50'
                             }`}
                           >
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-lotus-purple-900/50 text-lotus-purple-400">
+                            <div className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0 bg-lotus-purple-900/50 text-lotus-purple-400">
                               {result.type === 'glossary' ? (
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />

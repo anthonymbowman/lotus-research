@@ -43,6 +43,7 @@ export default {
         },
         // Lotus Brand Colors
         'lotus-grey': {
+          950: '#08060C', // darker than 900 for container fills
           900: '#0D0A14', // --dark-grey (main background)
           800: '#191621', // --dark-grey-2
           700: '#27232F', // --dark-grey-3

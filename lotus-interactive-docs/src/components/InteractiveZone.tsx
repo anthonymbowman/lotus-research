@@ -32,7 +32,7 @@ export function InteractiveZone({ children, tryThis, title }: InteractiveZonePro
       )}
 
       {/* Interactive content wrapper with visual affordance - main structural frame = 0px */}
-      <div className="bg-lotus-grey-800/80 rounded-none border-2 border-lotus-purple-600/40 shadow-lg shadow-lotus-purple-900/20 overflow-hidden">
+      <div className="bg-lotus-grey-950 rounded-none border border-lotus-grey-700 overflow-hidden">
         {title && (
           <div className="px-6 py-3 border-b border-lotus-grey-700 bg-lotus-purple-900/20">
             <h3 className="text-sm font-medium text-lotus-purple-300 uppercase tracking-wide">{title}</h3>

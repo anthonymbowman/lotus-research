@@ -18,13 +18,13 @@ interface HoverInfo {
   borrowerLltv: number;
 }
 
-// Colors for pie chart slices (one per tranche) - Lotus theme
+// Colors for pie chart slices (one per tranche) - Credit rating spectrum
 const SLICE_COLORS = [
-  '#8E62FF', // lotus-purple-500
-  '#C4B2FF', // lotus-purple-300
-  '#10b981', // emerald-500
-  '#f97316', // orange-500
-  '#3b82f6', // blue-500
+  '#2FFAE2', // rating-a-plus (teal)
+  '#6BF4A0', // rating-a (green)
+  '#EBE283', // rating-b (yellow)
+  '#FFA5CD', // rating-c-plus (pink)
+  '#FE3E38', // rating-d (red)
 ];
 
 /**
@@ -167,13 +167,13 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
       </div>
 
       {showDisclaimer && (
-        <div className="mb-4 p-3 bg-lotus-grey-700/50 border border-lotus-grey-600 rounded-lg text-xs text-lotus-grey-300">
+        <div className="mb-4 p-3 bg-lotus-grey-900 border border-lotus-grey-700 rounded text-xs text-lotus-grey-300">
           {FUNDING_MATRIX_DISCLAIMER}
         </div>
       )}
 
       {showExplanation && (
-        <div className="mb-4 p-4 bg-lotus-purple-900/20 border border-lotus-purple-700/50 rounded-lg text-xs text-lotus-grey-300 space-y-3">
+        <div className="mb-4 p-4 bg-lotus-purple-900/20 border border-lotus-purple-700/50 rounded text-xs text-lotus-grey-300 space-y-3">
           <div>
             <strong className="text-lotus-purple-300">Matrix Calculation:</strong>
             <p className="mt-1">
@@ -286,15 +286,15 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
                 </tr>
               ))}
               {/* Capital Allocated row */}
-              <tr className="border-t-2 border-lotus-grey-600">
+              <tr className="border-t-2 border-lotus-grey-700">
                 <td></td>
-                <th className="px-3 py-2 text-right font-medium text-emerald-400 whitespace-nowrap">
+                <th className="px-3 py-2 text-right font-medium text-rating-a whitespace-nowrap">
                   Allocated
                 </th>
                 {fundingData.capitalAllocated?.map((percent, lenderIdx) => (
                   <td
                     key={lenderIdx}
-                    className="px-4 py-2 text-center font-mono text-emerald-400 bg-emerald-900/20"
+                    className="px-4 py-2 text-center font-mono text-rating-a bg-rating-a/15"
                   >
                     {formatPercent(percent)}
                   </td>
@@ -360,7 +360,7 @@ export function FundingMatrix({ tranches, includePendingInterest }: FundingMatri
             )}
 
             <div className="mt-2 text-xs text-lotus-grey-300">
-              Total allocated: <span className="font-mono font-medium text-emerald-400">
+              Total allocated: <span className="font-mono font-medium text-rating-a">
                 {formatPercent(fundingData.capitalAllocated?.[selectedLender] || 0)}
               </span>
             </div>

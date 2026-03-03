@@ -36,15 +36,18 @@ export function RateInput({
               onChange(newValue);
             }
           }}
-          className="w-full px-3 py-2 pr-8 bg-lotus-grey-700 border border-lotus-grey-600 rounded-lg text-lotus-grey-100 font-mono focus:border-lotus-purple-500 focus:ring-1 focus:ring-lotus-purple-500 text-sm"
+          className="w-full px-3 py-2 pr-8 bg-lotus-grey-900 border-2 border-lotus-purple-500/40 rounded-sm text-lotus-grey-100 font-mono text-sm
+            hover:border-lotus-purple-400 hover:bg-lotus-grey-800
+            focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
+            transition-colors cursor-text"
           step={(step * 100).toString()}
           min={(min * 100).toString()}
           max={(max * 100).toString()}
           aria-describedby={description ? descriptionId : undefined}
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-lotus-grey-300 text-sm">%</span>
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-lotus-grey-400 text-sm">%</span>
       </div>
-      {description && <p id={descriptionId} className="text-xs text-lotus-grey-300">{description}</p>}
+      {description && <p id={descriptionId} className="text-xs text-lotus-grey-400">{description}</p>}
     </div>
   );
 }

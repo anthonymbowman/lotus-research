@@ -2,6 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   Neue Machina Font Face Definitions
+   ============================================ */
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/PPNeueMachina-PlainLight.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/PPNeueMachina-PlainRegular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/PPNeueMachina-PlainMedium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/PPNeueMachina-PlainUltrabold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Credit Rating Colors - Risk Spectrum */
 :root {
   --rating-a-plus: #2FFAE2;  /* A+ safest (teal) */
@@ -73,7 +108,7 @@
   --purple-bg: #3F1C85;
 
   /* Typography */
-  --font-heading: 'Space Grotesk', 'Roboto', system-ui, sans-serif;
+  --font-heading: 'Neue Machina', 'Space Grotesk', 'Roboto', system-ui, sans-serif;
   --font-body: 'Roboto', system-ui, sans-serif;
 }
 
@@ -285,6 +320,47 @@ input[type="range"]:focus::-webkit-slider-thumb {
 
 .accent-purple {
   @apply text-lotus-purple-500;
+}
+
+/* ============================================
+   Interactive Element Affordances
+   ============================================
+   Visual language for "this is interactive"
+   - Purple left border accent on containers
+   - Purple border on inputs (subtle by default)
+   - Consistent hover/focus states
+   ============================================ */
+
+/* Interactive container - wrap around input groups */
+.interactive-container {
+  @apply border-l-2 border-l-lotus-purple-500 pl-4 bg-lotus-grey-800/80;
+}
+
+/* Interactive input - for number/text inputs */
+.interactive-input {
+  @apply bg-lotus-grey-900 border-2 border-lotus-purple-500/40 rounded-sm font-mono text-lotus-grey-100
+    hover:border-lotus-purple-400 hover:bg-lotus-grey-800
+    focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
+    transition-colors cursor-text;
+}
+
+/* Interactive input (compact variant) */
+.interactive-input-sm {
+  @apply interactive-input px-2 py-1 text-sm;
+}
+
+/* Interactive input (default size) */
+.interactive-input-md {
+  @apply interactive-input px-3 py-2 text-sm;
+}
+
+/* Interactive row - for clickable table rows */
+.interactive-row {
+  @apply cursor-pointer transition-colors hover:bg-lotus-purple-900/20;
+}
+
+.interactive-row-selected {
+  @apply bg-lotus-purple-900/30 border-l-2 border-l-lotus-purple-500;
 }
 
 /* Animation utilities */

@@ -56,8 +56,8 @@ export function PDRateChart({
   const xTicks = [0, 0.25, 0.5, 0.75, 1];
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-gray-200">
-      {title && <h3 className="text-sm font-medium text-gray-700 mb-2">{title}</h3>}
+    <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
+      {title && <h3 className="text-sm font-medium text-lotus-grey-300 mb-2">{title}</h3>}
       <svg width={width} height={height} className="overflow-visible">
         {/* Grid lines */}
         {yTicks.map((tick, i) => (
@@ -67,7 +67,7 @@ export function PDRateChart({
             y1={yScale(tick)}
             x2={width - padding.right}
             y2={yScale(tick)}
-            stroke="#e5e7eb"
+            stroke="#3D3B47"
             strokeWidth="1"
           />
         ))}
@@ -78,7 +78,7 @@ export function PDRateChart({
           y1={padding.top}
           x2={currentX}
           y2={height - padding.bottom}
-          stroke="#6366f1"
+          stroke="#8E62FF"
           strokeWidth="2"
           strokeDasharray="4,4"
           opacity="0.5"
@@ -101,13 +101,13 @@ export function PDRateChart({
         <path
           d={generatePath((p) => p.supplyPD)}
           fill="none"
-          stroke="#10b981"
+          stroke="#6BF4A0"
           strokeWidth="2"
         />
         <path
           d={generatePath((p) => p.supplyNoPD)}
           fill="none"
-          stroke="#10b981"
+          stroke="#6BF4A0"
           strokeWidth="2"
           strokeDasharray="6,4"
           opacity="0.6"
@@ -119,13 +119,13 @@ export function PDRateChart({
             <path
               d={generatePath((p) => p.borrowPD)}
               fill="none"
-              stroke="#f97316"
+              stroke="#FFA5CD"
               strokeWidth="2"
             />
             <path
               d={generatePath((p) => p.borrowNoPD)}
               fill="none"
-              stroke="#f97316"
+              stroke="#FFA5CD"
               strokeWidth="2"
               strokeDasharray="6,4"
               opacity="0.6"
@@ -139,7 +139,7 @@ export function PDRateChart({
           y1={padding.top}
           x2={padding.left}
           y2={height - padding.bottom}
-          stroke="#374151"
+          stroke="#6B6978"
           strokeWidth="1"
         />
 
@@ -149,7 +149,7 @@ export function PDRateChart({
           y1={height - padding.bottom}
           x2={width - padding.right}
           y2={height - padding.bottom}
-          stroke="#374151"
+          stroke="#6B6978"
           strokeWidth="1"
         />
 
@@ -161,7 +161,7 @@ export function PDRateChart({
             y={yScale(tick)}
             textAnchor="end"
             dominantBaseline="middle"
-            className="text-xs fill-gray-500"
+            className="text-xs fill-lotus-grey-400"
           >
             {(tick * 100).toFixed(0)}%
           </text>
@@ -174,7 +174,7 @@ export function PDRateChart({
             x={xScale(tick)}
             y={height - padding.bottom + 16}
             textAnchor="middle"
-            className="text-xs fill-gray-500"
+            className="text-xs fill-lotus-grey-400"
           >
             {(tick * 100).toFixed(0)}%
           </text>
@@ -185,7 +185,7 @@ export function PDRateChart({
           x={width / 2}
           y={height - 4}
           textAnchor="middle"
-          className="text-xs fill-gray-600 font-medium"
+          className="text-xs fill-lotus-grey-300 font-medium"
         >
           Utilization
         </text>
@@ -194,7 +194,7 @@ export function PDRateChart({
           y={height / 2}
           textAnchor="middle"
           transform={`rotate(-90, 12, ${height / 2})`}
-          className="text-xs fill-gray-600 font-medium"
+          className="text-xs fill-lotus-grey-300 font-medium"
         >
           Rate (APR)
         </text>
@@ -203,22 +203,22 @@ export function PDRateChart({
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3 text-xs">
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-0.5 bg-emerald-500"></div>
-          <span className="text-gray-600">Supply (PD)</span>
+          <div className="w-4 h-0.5 bg-rating-a"></div>
+          <span className="text-lotus-grey-300">Supply (PD)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-0.5 bg-emerald-500 opacity-60" style={{ borderBottom: '2px dashed' }}></div>
-          <span className="text-gray-600">Supply (no PD)</span>
+          <div className="w-4 h-0.5 bg-rating-a opacity-60" style={{ borderBottom: '2px dashed' }}></div>
+          <span className="text-lotus-grey-300">Supply (no PD)</span>
         </div>
         {showBorrowRates && (
           <>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-0.5 bg-orange-500"></div>
-              <span className="text-gray-600">Borrow (PD)</span>
+              <div className="w-4 h-0.5 bg-rating-c-plus"></div>
+              <span className="text-lotus-grey-300">Borrow (PD)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-0.5 bg-orange-500 opacity-60" style={{ borderBottom: '2px dashed' }}></div>
-              <span className="text-gray-600">Borrow (no PD)</span>
+              <div className="w-4 h-0.5 bg-rating-c-plus opacity-60" style={{ borderBottom: '2px dashed' }}></div>
+              <span className="text-lotus-grey-300">Borrow (no PD)</span>
             </div>
           </>
         )}

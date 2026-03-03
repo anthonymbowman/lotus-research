@@ -27,7 +27,7 @@ export function SectionWrapper({
 
   return (
     <div id={id} className="animate-fadeIn">
-      <div className="rounded-2xl border border-lotus-grey-800 bg-lotus-grey-900/40 p-6 sm:p-8 shadow-lotus">
+      <div className="rounded border border-lotus-grey-700 bg-lotus-grey-950 p-6 sm:p-8">
         {/* Section Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between gap-4 mb-3">

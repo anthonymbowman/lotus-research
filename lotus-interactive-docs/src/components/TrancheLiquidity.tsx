@@ -120,7 +120,7 @@ export function TrancheLiquidity({
           </div>
 
           {/* How to read this table - collapsible, right here where it's useful */}
-          <details className="bg-lotus-grey-700/30 rounded border border-lotus-grey-700">
+          <details className="bg-lotus-grey-900 rounded border border-lotus-grey-700">
             <summary className="px-4 py-2 cursor-pointer list-none flex items-center gap-2 text-sm text-lotus-grey-300 hover:text-lotus-grey-100 transition-colors">
               <svg className="w-4 h-4 text-lotus-grey-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -147,7 +147,7 @@ export function TrancheLiquidity({
       </InteractiveZone>
 
       {/* Secondary interactive: Rate visualization */}
-      <div className="bg-lotus-grey-800/80 rounded-none p-6 border-2 border-lotus-purple-600/30">
+      <div className="bg-lotus-grey-950 rounded-none p-6 border border-lotus-grey-700">
         <div className="flex items-center gap-2 text-xs text-lotus-purple-300 mb-4">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -158,7 +158,7 @@ export function TrancheLiquidity({
       </div>
 
       {/* Tertiary interactive: Dynamic Loan Mix */}
-      <div className="bg-lotus-grey-800/80 rounded-none p-6 border-2 border-lotus-purple-600/30">
+      <div className="bg-lotus-grey-950 rounded-none p-6 border border-lotus-grey-700">
         <div className="flex items-center gap-2 text-xs text-lotus-purple-300 mb-4">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -179,23 +179,23 @@ export function TrancheLiquidity({
       <DetailZone
         title="Understand the Mechanics"
         teaserItems={['How Roles Work', 'Liquidity Cascade', 'Junior Metrics', 'Supply Metrics', 'Utilization']}
+        defaultOpen
       >
         {/* Role Diagram - How lenders and borrowers interact */}
-        <div className="bg-lotus-grey-800/50 rounded p-5 border border-lotus-grey-700/50">
+        <div className="bg-lotus-grey-900 rounded p-5 border border-lotus-grey-700">
           <h3 className="text-base font-medium text-lotus-grey-200 mb-4">{tlContent.roleCards.heading}</h3>
           <RoleDiagramCompact />
         </div>
 
-        {/* Liquidity Cascade Explanation */}
-        <div className="bg-lotus-grey-800/50 rounded p-5 border border-lotus-grey-700/50">
-          <h3 className="text-base font-medium text-lotus-grey-200 mb-3">{tlContent.cascadeBenefits.heading}</h3>
-          <p className="text-sm text-lotus-grey-400 mb-5">
-            {tlContent.cascadeBenefits.description}
-          </p>
-
+        {/* Liquidity Cascade Explanation - Collapsible */}
+        <CollapsibleSection
+          title={tlContent.cascadeBenefits.heading}
+          icon="→"
+          description={tlContent.cascadeBenefits.description}
+        >
           {/* Key Insight Cards - muted, monochrome */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="bg-lotus-grey-700/30 rounded p-3 border border-lotus-grey-700/50">
+            <div className="bg-lotus-grey-900 rounded p-3 border border-lotus-grey-700">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-5 h-5 rounded-sm bg-lotus-grey-600 flex items-center justify-center text-xs text-lotus-grey-300">1</span>
                 <span className="font-medium text-lotus-grey-200 text-sm">{tlContent.cascadeBenefits.cards[0].title}</span>
@@ -204,7 +204,7 @@ export function TrancheLiquidity({
                 {tlContent.cascadeBenefits.cards[0].description}
               </p>
             </div>
-            <div className="bg-lotus-grey-700/30 rounded p-3 border border-lotus-grey-700/50">
+            <div className="bg-lotus-grey-900 rounded p-3 border border-lotus-grey-700">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-5 h-5 rounded-sm bg-lotus-grey-600 flex items-center justify-center text-xs text-lotus-grey-300">2</span>
                 <span className="font-medium text-lotus-grey-200 text-sm">{tlContent.cascadeBenefits.cards[1].title}</span>
@@ -213,7 +213,7 @@ export function TrancheLiquidity({
                 {tlContent.cascadeBenefits.cards[1].description}
               </p>
             </div>
-            <div className="bg-lotus-grey-700/30 rounded p-3 border border-lotus-grey-700/50">
+            <div className="bg-lotus-grey-900 rounded p-3 border border-lotus-grey-700">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-5 h-5 rounded-sm bg-lotus-grey-600 flex items-center justify-center text-xs text-lotus-grey-300">3</span>
                 <span className="font-medium text-lotus-grey-200 text-sm">{tlContent.cascadeBenefits.cards[2].title}</span>
@@ -232,12 +232,12 @@ export function TrancheLiquidity({
           </div>
 
           {/* Important clarification about bad debt - muted */}
-          <div className="mt-5 p-3 bg-lotus-grey-700/30 rounded border border-lotus-grey-700/50">
+          <div className="mt-5 p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700/50">
             <p className="text-xs text-lotus-grey-400">
               <strong className="text-lotus-grey-300">Note:</strong> {tlContent.cascadeBenefits.badDebtNote}
             </p>
           </div>
-        </div>
+        </CollapsibleSection>
 
         {/* Advanced Metrics - Collapsible sections */}
         <CollapsibleSection
@@ -246,7 +246,7 @@ export function TrancheLiquidity({
           description={tlContent.juniorMetrics.description}
         >
           <div className="space-y-4">
-            <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-700">
+            <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
               <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorSupply.heading}</h4>
               <p className="text-sm text-lotus-grey-300 mb-3">
                 {tlContent.juniorMetrics.juniorSupply.description}
@@ -289,7 +289,7 @@ export function TrancheLiquidity({
               </div>
             </div>
 
-            <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-700">
+            <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
               <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorBorrow.heading}</h4>
               <p className="text-sm text-lotus-grey-300 mb-3">
                 {tlContent.juniorMetrics.juniorBorrow.description}
@@ -331,7 +331,7 @@ export function TrancheLiquidity({
               </div>
             </div>
 
-            <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-700">
+            <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
               <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.juniorMetrics.juniorNetSupply.heading}</h4>
               <p className="text-sm text-lotus-grey-300 mb-3">
                 {tlContent.juniorMetrics.juniorNetSupply.description}
@@ -346,12 +346,12 @@ export function TrancheLiquidity({
                       <span className="text-xs text-lotus-grey-300">−</span>
                       <span className="text-xs font-mono text-rating-c-plus w-14 text-right">{t.jrBorrow.toLocaleString()}</span>
                       <span className="text-xs text-lotus-grey-300">=</span>
-                      <span className={`text-xs font-mono w-14 text-right font-medium ${isPositive ? 'text-rating-a-plus' : 'text-red-400'}`}>
+                      <span className={`text-xs font-mono w-14 text-right font-medium ${isPositive ? 'text-rating-a-plus' : 'text-rating-d'}`}>
                         {t.jrNetSupply.toLocaleString()}
                       </span>
                       <div className="flex-1 h-4 bg-lotus-grey-700 rounded overflow-hidden relative">
                         <div
-                          className={`h-full transition-all ${isPositive ? 'bg-rating-a-plus' : 'bg-red-500'}`}
+                          className={`h-full transition-all ${isPositive ? 'bg-rating-a-plus' : 'bg-rating-d'}`}
                           style={{ width: `${maxJrNetSupply > 0 ? (Math.abs(t.jrNetSupply) / maxJrNetSupply) * 100 : 0}%` }}
                         />
                       </div>
@@ -369,7 +369,7 @@ export function TrancheLiquidity({
           description={tlContent.supplyMetrics.description}
         >
           <div className="space-y-4">
-            <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-700">
+            <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-medium text-lotus-grey-100">{tlContent.supplyMetrics.freeSupply.heading}</h4>
                 <FreeSupplyWhyButton />
@@ -427,7 +427,7 @@ export function TrancheLiquidity({
               </p>
             </div>
 
-            <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-700">
+            <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
               <h4 className="font-medium text-lotus-grey-100 mb-2">{tlContent.supplyMetrics.availableSupply.heading}</h4>
               <p className="text-sm text-lotus-grey-300 mb-3">
                 {tlContent.supplyMetrics.availableSupply.description}

@@ -79,7 +79,7 @@ export function TermDefinition({ term, children }: TermDefinitionProps) {
           setIsVisible(false);
         }
       }}
-      className="fixed z-[9999] px-4 py-3 text-sm bg-lotus-grey-900 text-white rounded-lg shadow-xl border border-lotus-grey-700"
+      className="fixed z-[9999] px-4 py-3 text-sm bg-lotus-grey-900 text-white rounded shadow-xl border border-lotus-grey-700"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,

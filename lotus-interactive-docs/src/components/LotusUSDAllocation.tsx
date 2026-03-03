@@ -38,7 +38,7 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
         {treasuryAllocation > 0 && (
           <path
             d={treasuryPath}
-            fill="#10b981"
+            fill="#6BF4A0"
             stroke="#0D0A14"
             strokeWidth="2"
           />
@@ -46,7 +46,7 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
         {usdcAllocation > 0 && (
           <path
             d={usdcPath}
-            fill="#3b82f6"
+            fill="#8E62FF"
             stroke="#0D0A14"
             strokeWidth="2"
           />
@@ -56,11 +56,11 @@ function AllocationPieChart({ treasuryAllocation }: { treasuryAllocation: number
 
       <div className="flex gap-6 mt-4">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-blue-500" />
+          <div className="w-3 h-3 rounded-sm bg-lotus-purple-500" />
           <span className="text-sm text-lotus-grey-300">{luContent.pieChart.usdcLabel} ({(usdcAllocation * 100).toFixed(0)}%)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-emerald-500" />
+          <div className="w-3 h-3 rounded-sm bg-rating-a" />
           <span className="text-sm text-lotus-grey-300">{luContent.pieChart.treasuriesLabel} ({(treasuryAllocation * 100).toFixed(0)}%)</span>
         </div>
       </div>
@@ -118,7 +118,7 @@ function AllocationSlider({
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <label className="block text-sm font-medium text-lotus-grey-300">{luContent.inputs.treasuryAllocation}</label>
-        <span className="text-sm font-mono text-emerald-400">{(value * 100).toFixed(0)}%</span>
+        <span className="text-sm font-mono text-rating-a">{(value * 100).toFixed(0)}%</span>
       </div>
       <input
         type="range"
@@ -152,20 +152,20 @@ export function LotusUSDAllocation({
 
   return (
     <div className="space-y-8">
-      <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50">
-        <p className="text-sm text-emerald-200">
+      <div className="bg-rating-a/15 rounded p-4 border border-rating-a/50">
+        <p className="text-sm text-rating-a">
           <TermDefinition term="lotususd">LotusUSD</TermDefinition> {luContent.intro.replace('LotusUSD is a', 'is a')}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 flex items-center justify-center">
+        <div className="bg-lotus-grey-800 rounded p-6 border border-lotus-grey-700 flex items-center justify-center">
           <AllocationPieChart treasuryAllocation={treasuryAllocation} />
         </div>
 
         <div className="space-y-6">
-          <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
-            <h3 className="text-sm font-medium text-lotus-grey-300 mb-4">{luContent.inputs.heading}</h3>
+          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500">
+            <h3 className="text-sm font-medium text-lotus-grey-200 mb-4">{luContent.inputs.heading}</h3>
             <div className="space-y-4">
               <AllocationSlider
                 value={treasuryAllocation}
@@ -180,12 +180,12 @@ export function LotusUSDAllocation({
             </div>
           </div>
 
-          <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
+          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
             <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.output.heading}</h3>
-            <div className="p-4 bg-emerald-900/30 rounded-lg border border-emerald-700">
+            <div className="p-4 bg-rating-a/15 rounded border border-rating-a">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-300 font-medium">{luContent.output.productiveDebtRate}</span>
-                <span className="text-2xl font-mono font-bold text-emerald-400">
+                <span className="text-sm text-rating-a font-medium">{luContent.output.productiveDebtRate}</span>
+                <span className="text-2xl font-mono font-bold text-rating-a">
                   {formatPercent(productiveDebtRate)}
                 </span>
               </div>
@@ -194,7 +194,7 @@ export function LotusUSDAllocation({
         </div>
       </div>
 
-      <div className="bg-lotus-grey-800/50 rounded-lg p-4 border border-lotus-grey-700">
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
         <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">LotusUSD Allocation Strategy</h4>
         <p className="text-sm text-lotus-grey-300">
           {luContent.tradeoffNote}
@@ -209,22 +209,22 @@ export function LotusUSDAllocation({
         <strong>Minimal Yield:</strong> {luContent.insights.minTreasury.replace('Minimal Yield: ', '')}
       </DynamicInsight>
 
-      <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
+      <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
         <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.howItWorks.heading}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-700/50">
-            <div className="font-medium text-blue-300 mb-1">{luContent.howItWorks.usdcReserve.title}</div>
-            <p className="text-blue-400 text-xs">
+          <div className="p-3 bg-lotus-purple-900/30 rounded border border-lotus-purple-700/50">
+            <div className="font-medium text-lotus-purple-300 mb-1">{luContent.howItWorks.usdcReserve.title}</div>
+            <p className="text-lotus-purple-400 text-xs">
               {luContent.howItWorks.usdcReserve.description}
             </p>
           </div>
-          <div className="p-3 bg-emerald-900/30 rounded-lg border border-emerald-700/50">
-            <div className="font-medium text-emerald-300 mb-1">{luContent.howItWorks.treasuryHoldings.title}</div>
-            <p className="text-emerald-400 text-xs">
+          <div className="p-3 bg-rating-a/15 rounded border border-rating-a/50">
+            <div className="font-medium text-rating-a mb-1">{luContent.howItWorks.treasuryHoldings.title}</div>
+            <p className="text-rating-a text-xs">
               {luContent.howItWorks.treasuryHoldings.description}
             </p>
           </div>
-          <div className="p-3 bg-lotus-purple-900/30 rounded-lg border border-lotus-purple-700/50">
+          <div className="p-3 bg-lotus-purple-900/30 rounded border border-lotus-purple-700/50">
             <div className="font-medium text-lotus-purple-300 mb-1">{luContent.howItWorks.productiveDebtRate.title}</div>
             <p className="text-lotus-purple-400 text-xs">
               {luContent.howItWorks.productiveDebtRate.description}
