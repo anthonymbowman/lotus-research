@@ -305,7 +305,7 @@ function SpreadCompressionSectionContent({
                     <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(borrowRateNoPD)}</span>
                     <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
                       <div
-                        className="h-full bg-lotus-grey-500 rounded-lg"
+                        className="h-full bg-lotus-grey-500 rounded"
                         style={{ width: `${widthPercent}%` }}
                       />
                     </div>
@@ -382,7 +382,7 @@ function SpreadCompressionSectionContent({
                     <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(supplyRateNoPD)}</span>
                     <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
                       <div
-                        className="h-full bg-lotus-grey-500 rounded-lg"
+                        className="h-full bg-lotus-grey-500 rounded"
                         style={{ width: `${widthPercent}%` }}
                       />
                     </div>
@@ -424,7 +424,7 @@ function SpreadCompressionSectionContent({
                     <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(blSpreadNoPD)}</span>
                     <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
                       <div
-                        className="h-full bg-lotus-grey-500 rounded-lg"
+                        className="h-full bg-lotus-grey-500 rounded"
                         style={{ width: `${widthPercent}%` }}
                       />
                     </div>
@@ -603,7 +603,7 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
             {showFormulas ? 'Hide formulas' : 'Show formulas'}
           </button>
           {showFormulas && (
-            <div className="mt-3 p-3 bg-lotus-grey-900 rounded-lg text-sm font-mono space-y-2">
+            <div className="mt-3 p-3 bg-lotus-grey-900 rounded text-sm font-mono space-y-2">
               <p className="text-rating-c-plus">
                 With PD: Rate = Base + Spread × factor(u) = {formatPercent(baseRate)} + {formatPercent(spread)} × factor
               </p>
@@ -662,7 +662,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
   const borrowRateAt90 = baseRate + spread;
 
   return (
-    <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700">
+    <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto max-w-[680px] mx-auto block overflow-visible"

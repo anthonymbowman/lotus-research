@@ -2,6 +2,19 @@
 
 ## Design System
 
+### Typography
+
+**Display Font (Headings):** PP Neue Machina Inktrap
+- Weights: Light (300), Regular (400), Medium (500), Ultrabold (700)
+- Use for: h1, h2, h3, h4, section titles
+
+**Body Font:** PP Neue Montreal
+- Weights: Book (400), Regular (450), Medium (500), Bold (700)
+- Use for: body text, paragraphs, labels, descriptions
+
+**Mono Font:** Roboto Mono
+- Use for: code, numbers, technical values
+
 ### Colors
 
 #### Brand Color
@@ -48,3 +61,20 @@ Assign radius by role:
 
 Never use any other radius values (`rounded-lg`, `rounded-xl`, `rounded-2xl`, etc.).
 When unsure, default to 0px.
+
+**Exception:** `rounded-full` is acceptable for small circular indicators (dots, status lights).
+
+### Transitions
+
+Use consistent transition timing:
+- **Standard:** `transition-colors` or `transition-all` (200ms default)
+- **Animations:** 0.3s ease-out for fade/slide animations
+
+### Container Hierarchy
+
+Visual depth through background colors:
+1. **Page background:** `bg-lotus-grey-900`
+2. **Main containers:** `bg-lotus-grey-950` with `border-lotus-grey-700`
+3. **Nested cards:** `bg-lotus-grey-900` or `bg-lotus-grey-800` with `border-lotus-grey-700`
+
+For subtle nested containers, use `border-lotus-grey-700/50` to reduce visual weight.

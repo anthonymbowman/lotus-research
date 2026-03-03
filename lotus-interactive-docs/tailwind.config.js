@@ -83,8 +83,9 @@ export default {
         },
       },
       fontFamily: {
-        'heading': ['"Space Grotesk"', 'Roboto', 'system-ui', 'sans-serif'],
-        'body': ['Roboto', 'system-ui', 'sans-serif'],
+        'heading': ['"Neue Machina"', '"Space Grotesk"', 'system-ui', 'sans-serif'],
+        'body': ['"Neue Montreal"', 'Inter', 'system-ui', 'sans-serif'],
+        'mono': ['"Roboto Mono"', 'ui-monospace', 'monospace'],
       },
       lineHeight: {
         'tight': '1.3',

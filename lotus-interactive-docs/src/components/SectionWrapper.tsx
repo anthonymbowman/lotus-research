@@ -31,7 +31,7 @@ export function SectionWrapper({
         {/* Section Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between gap-4 mb-3">
-            <span className="text-xs font-semibold text-lotus-purple-300 bg-lotus-purple-900/40 px-2.5 py-1 rounded-full uppercase tracking-wide">
+            <span className="text-xs font-semibold text-lotus-purple-300 bg-lotus-purple-900/40 px-2.5 py-1 rounded-sm uppercase tracking-wide">
               {title}
             </span>
             {progress && (
@@ -74,7 +74,7 @@ export function SectionWrapper({
             )}
             <button
               onClick={() => onNavigate(nextSection.id)}
-              className="group flex items-center justify-center gap-3 w-full py-5 px-6 bg-lotus-purple-600 hover:bg-lotus-purple-500 text-white font-medium text-lg rounded-xl transition-all shadow-lg shadow-lotus-purple-900/30 hover:shadow-lotus-purple-900/50"
+              className="group flex items-center justify-center gap-3 w-full py-5 px-6 bg-lotus-purple-600 hover:bg-lotus-purple-500 text-white font-medium text-lg rounded transition-all shadow-lg shadow-lotus-purple-900/30 hover:shadow-lotus-purple-900/50"
             >
               <span>Continue to {nextSection.label}</span>
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

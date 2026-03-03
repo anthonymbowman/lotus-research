@@ -130,7 +130,7 @@ export function TrancheConstraintInspector({
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-lg bg-lotus-grey-800 rounded-t-xl sm:rounded-xl border border-lotus-grey-700 shadow-xl max-h-[85vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-lotus-grey-800 rounded-t sm:rounded border border-lotus-grey-700 shadow-xl max-h-[85vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-lotus-grey-800 px-4 py-3 border-b border-lotus-grey-700 flex items-center justify-between z-10">
           <h3 className="text-lg font-medium text-lotus-grey-100">
@@ -148,7 +148,7 @@ export function TrancheConstraintInspector({
 
         <div className="p-4 space-y-4">
           {/* Section 1: Basic Values (Supply & Borrow) */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-3">Direct Values</h4>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -167,7 +167,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 2: Junior Aggregates */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Junior Aggregates</h4>
             <p className="text-xs text-lotus-grey-400 mb-3">
               Cumulative values from this tranche + all junior tranches
@@ -194,7 +194,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 3: Free Supply */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Free Supply</h4>
             <p className="text-xs text-lotus-grey-400 mb-3">
               The minimum Jr Net Supply across all senior tranches. This is the actual borrowable amount.
@@ -253,7 +253,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 4: Available Supply */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Available Supply</h4>
             <p className="text-xs text-lotus-grey-400 mb-3">
               Total supply that was available before borrowing at this tranche.
@@ -273,7 +273,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 5: Utilization Metrics */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-3">Utilization Metrics</h4>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -298,7 +298,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 6: Where Lenders Lend To */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Where Lenders Lend To</h4>
             <p className="text-xs text-lotus-grey-400 mb-3">
               Which borrower tranches receive funds from lenders at this tranche.
@@ -358,7 +358,7 @@ export function TrancheConstraintInspector({
           </div>
 
           {/* Section 7: Where Borrowers Borrow From */}
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+          <div className="bg-lotus-grey-700/50 rounded p-4 border border-lotus-grey-600">
             <h4 className="font-medium text-lotus-grey-100 mb-2">Where Borrowers Borrow From</h4>
             <p className="text-xs text-lotus-grey-400 mb-3">
               Which lender tranches supply funds to borrowers at this tranche.

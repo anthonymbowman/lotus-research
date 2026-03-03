@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 /* ============================================
-   Neue Machina Font Face Definitions
+   PP Neue Machina Inktrap - Display Font
    ============================================ */
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainLight.woff2') format('woff2');
+  src: url('/fonts/PPNeueMachina-InktrapLight.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -15,7 +15,7 @@
 
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainRegular.woff2') format('woff2');
+  src: url('/fonts/PPNeueMachina-InktrapRegular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -23,7 +23,7 @@
 
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainMedium.woff2') format('woff2');
+  src: url('/fonts/PPNeueMachina-InktrapMedium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -31,7 +31,42 @@
 
 @font-face {
   font-family: 'Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainUltrabold.woff2') format('woff2');
+  src: url('/fonts/PPNeueMachina-InktrapUltrabold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   PP Neue Montreal - Body Font
+   ============================================ */
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Book.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Regular.woff2') format('woff2');
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/PPNeueMontreal-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -108,8 +143,8 @@
   --purple-bg: #3F1C85;
 
   /* Typography */
-  --font-heading: 'Neue Machina', 'Space Grotesk', 'Roboto', system-ui, sans-serif;
-  --font-body: 'Roboto', system-ui, sans-serif;
+  --font-heading: 'Neue Machina', 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Neue Montreal', 'Inter', system-ui, sans-serif;
 }
 
 /* Base dark theme */
@@ -289,16 +324,16 @@ input[type="range"]:focus::-webkit-slider-thumb {
 
 /* Button styles */
 .btn-primary {
-  @apply bg-lotus-purple-500 hover:bg-lotus-purple-600 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  @apply bg-lotus-purple-500 hover:bg-lotus-purple-600 text-white font-medium py-2 px-4 rounded transition-colors;
 }
 
 .btn-secondary {
-  @apply bg-lotus-grey-700 hover:bg-lotus-grey-600 text-lotus-grey-100 font-medium py-2 px-4 rounded-lg transition-colors border border-lotus-grey-600;
+  @apply bg-lotus-grey-700 hover:bg-lotus-grey-600 text-lotus-grey-100 font-medium py-2 px-4 rounded transition-colors border border-lotus-grey-600;
 }
 
 /* Card styles */
 .card {
-  @apply bg-lotus-grey-800 border border-lotus-grey-700 rounded-lg;
+  @apply bg-lotus-grey-800 border border-lotus-grey-700 rounded;
 }
 
 .card-hover {

@@ -239,7 +239,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
         {/* Tooltip */}
         {hoverInfo && (
           <div
-            className="absolute bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg px-3 py-2 shadow-xl text-sm pointer-events-none z-10"
+            className="absolute bg-lotus-grey-900 border border-lotus-grey-600 rounded px-3 py-2 shadow-xl text-sm pointer-events-none z-10"
             style={{
               left: `${(hoverInfo.x / chartWidth) * 100}%`,
               top: `${(hoverInfo.y / chartHeight) * 100}%`,

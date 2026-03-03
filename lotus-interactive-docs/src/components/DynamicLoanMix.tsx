@@ -98,7 +98,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
   }, [tranches, fundingData]);
 
   return (
-    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded-lg p-4 pb-10">
+    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded p-4 pb-10">
       <ExportButton targetRef={exportRef} filename="dynamic-loan-mix" />
 
       {/* Title for standalone export */}
@@ -110,7 +110,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
       <div className="flex gap-2 justify-center">
         <button
           onClick={() => setViewMode('lender')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
             viewMode === 'lender'
               ? 'bg-lotus-purple-600 text-white'
               : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
@@ -120,7 +120,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
         </button>
         <button
           onClick={() => setViewMode('borrower')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
             viewMode === 'borrower'
               ? 'bg-rating-c-plus text-lotus-grey-900'
               : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
@@ -178,7 +178,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                 <div className="w-20 text-sm font-mono text-lotus-grey-200">{tranche.lltv}%</div>
                 <div className="flex-1">
                   {view.allocated > 0.001 ? (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg overflow-hidden flex">
+                    <div className="h-8 bg-lotus-grey-700 rounded overflow-hidden flex">
                       {view.destinations.map((dest, i) => (
                         <div
                           key={i}
@@ -204,7 +204,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                       )}
                     </div>
                   ) : (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg flex items-center justify-center">
+                    <div className="h-8 bg-lotus-grey-700 rounded flex items-center justify-center">
                       <span className="text-xs text-lotus-grey-500">No supply allocated</span>
                     </div>
                   )}
@@ -225,7 +225,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                 <div className="w-20 text-sm font-mono text-lotus-grey-200">{tranche.lltv}%</div>
                 <div className="flex-1">
                   {view.hasBorrow && view.sources.length > 0 ? (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg overflow-hidden flex">
+                    <div className="h-8 bg-lotus-grey-700 rounded overflow-hidden flex">
                       {view.sources.map((src, i) => (
                         <div
                           key={i}
@@ -240,7 +240,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                       ))}
                     </div>
                   ) : (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg flex items-center justify-center">
+                    <div className="h-8 bg-lotus-grey-700 rounded flex items-center justify-center">
                       <span className="text-xs text-lotus-grey-500">No borrows</span>
                     </div>
                   )}
