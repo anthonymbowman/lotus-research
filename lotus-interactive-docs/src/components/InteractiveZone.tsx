@@ -1,3 +1,5 @@
+import { ResetButton } from './ResetButton';
+
 /**
  * InteractiveZone - Visual wrapper that signals "this content is interactive"
  *
@@ -11,9 +13,13 @@ interface InteractiveZoneProps {
   tryThis?: string;
   /** Optional title for the zone */
   title?: string;
+  /** Optional reset callback - shows reset button when provided */
+  onReset?: () => void;
+  /** Label for reset button */
+  resetLabel?: string;
 }
 
-export function InteractiveZone({ children, tryThis, title }: InteractiveZoneProps) {
+export function InteractiveZone({ children, tryThis, title, onReset, resetLabel }: InteractiveZoneProps) {
   return (
     <div className="relative">
       {/* Try this prompt - directly connected to the interactive content */}
@@ -33,12 +39,17 @@ export function InteractiveZone({ children, tryThis, title }: InteractiveZonePro
 
       {/* Interactive content wrapper with visual affordance - main structural frame = 0px */}
       <div className="bg-lotus-grey-950 rounded-none border border-lotus-grey-700 overflow-hidden">
-        {title && (
-          <div className="px-6 py-3 border-b border-lotus-grey-700 bg-lotus-purple-900/20">
-            <h3 className="text-sm font-medium text-lotus-purple-300 uppercase tracking-wide">{title}</h3>
+        {(title || onReset) && (
+          <div className="px-4 sm:px-6 py-3 border-b border-lotus-grey-700 bg-lotus-purple-900/20 flex items-center justify-between">
+            {title && (
+              <h3 className="text-sm font-medium text-lotus-purple-300 uppercase tracking-wide">{title}</h3>
+            )}
+            {onReset && (
+              <ResetButton onReset={onReset} label={resetLabel} />
+            )}
           </div>
         )}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {children}
         </div>
       </div>

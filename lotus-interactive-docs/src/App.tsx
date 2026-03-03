@@ -262,13 +262,13 @@ function App() {
               <div className="space-y-8">
                 {/* Context Zone */}
                 <ContextZone
-                  context="Simulate how interest and bad debt flow through tranches. Both follow the same cascading mechanism based on supply utilization."
+                  context="See how interest income and bad debt losses distribute across tranches. Both follow the same cascade — senior tranches are protected by junior tranches absorbing losses first."
                   whatYoullLearn={['Interest allocation', 'Bad debt absorption', 'Cascade mechanics']}
                 />
 
                 {/* Interactive Zone - Interest Simulator */}
                 <InteractiveZone
-                  tryThis="Go to Liquidity Flow → increase borrow in junior tranches → return here to see more interest cascade to junior lenders."
+                  tryThis="Adjust supply and borrow amounts in the Liquidity Flow tab to see how the distribution changes."
                   title="Interest Accrual Simulation"
                 >
                   <InterestSimulator tranches={computedTranches} productiveDebtRate={productiveDebtRate} />
@@ -303,7 +303,7 @@ function App() {
 
         {/* Footer */}
         <footer className="border-t border-lotus-grey-800 py-6 px-4 lg:px-8">
-          <div className="max-w-6xl mx-auto text-center text-sm text-lotus-grey-500">
+          <div className="max-w-6xl mx-auto text-center text-sm text-lotus-grey-400">
             <p>
               This is an interactive educational simulator.
               See the{' '}

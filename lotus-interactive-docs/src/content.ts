@@ -191,7 +191,7 @@ export const content = {
   // ------------------------------------------
   productiveDebt: {
     intro: {
-      heading: 'Benefits of Productive Debt',
+      heading: 'Why Productive Debt Matters',
       benefits: [
         {
           title: 'Minimum Rate for Lenders',
@@ -539,7 +539,7 @@ export const content = {
       heading: 'Allocation Strategies',
       description: 'Vault managers choose strategies based on risk tolerance. Click a strategy to see its allocation breakdown.',
       conservative: {
-        name: 'Conservative',
+        name: 'Core',
         description: 'Prioritizes capital preservation with majority allocation to senior tranches.',
       },
       balanced: {
@@ -555,7 +555,7 @@ export const content = {
     breakdownSubtitle: 'Allocation across tranches',
     insights: {
       highRisk: 'High Risk Allocation: With a risk score above 7, this strategy concentrates heavily in junior tranches. While yields are higher, these tranches have higher supply utilization and absorb a proportionally larger share of bad debt when it occurs.',
-      conservative: 'Conservative Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and lower bad debt risk, though they can still absorb bad debt from liquidation shortfalls at their own tranche.',
+      conservative: 'Core Approach: This allocation prioritizes capital preservation. Senior tranches have larger liquidation buffers and lower bad debt risk, though they can still absorb bad debt from liquidation shortfalls at their own tranche.',
     },
     expectedApyLabel: 'Expected APY',
     expectedApyNote: 'Weighted average of tranche supply rates based on your allocation',

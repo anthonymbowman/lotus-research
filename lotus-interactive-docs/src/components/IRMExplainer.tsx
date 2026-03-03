@@ -28,12 +28,12 @@ export function IRMExplainer({ tranches, baseRate }: IRMExplainerProps) {
           <div className="text-xs text-lotus-grey-400 text-center mt-2">
             Base Rate from productive debt | Credit Spread from tranche's borrow utilization
           </div>
-          <div className="text-xs text-lotus-grey-500 text-center mt-1">
+          <div className="text-xs text-lotus-grey-400 text-center mt-1">
             Current base rate: {baseRatePct}% across {trancheCount} tranches
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 text-xs text-lotus-grey-500">
+        <div className="mt-3 flex items-center gap-2 text-xs text-lotus-grey-400">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>

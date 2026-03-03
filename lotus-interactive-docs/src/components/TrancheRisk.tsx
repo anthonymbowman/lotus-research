@@ -61,7 +61,7 @@ function LiquidationsAndRisk() {
         { text: 'text-rating-a', bg: 'bg-rating-a', border: 'border-rating-a' },
         { text: 'text-rating-b', bg: 'bg-rating-b', border: 'border-rating-b' },
         { text: 'text-rating-c-plus', bg: 'bg-rating-c-plus', border: 'border-rating-c-plus' },
-        { text: 'text-rating-d', bg: 'bg-rating-d', border: 'border-rating-d' },
+        { text: 'text-rating-c', bg: 'bg-rating-c', border: 'border-rating-c' },
       ];
 
       return { lltv, buffer, liquidationBonus, badDebtThreshold, riskDots, colors: colorClasses[i], lif };
@@ -88,7 +88,7 @@ function LiquidationsAndRisk() {
       </div>
 
       {/* Risk Chain */}
-      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 mb-6">
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
         <div className="flex items-center justify-center gap-2 flex-wrap text-sm">
           <div className="bg-lotus-purple-900/30 border border-lotus-purple-600 rounded px-3 py-2">
             <span className="text-lotus-purple-300">{lr.riskChain.higherLltv}</span>
@@ -98,13 +98,26 @@ function LiquidationsAndRisk() {
             <span className="text-rating-b">{lr.riskChain.lessBuffer}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
-          <div className="bg-rating-d/20 border border-rating-d rounded px-3 py-2">
-            <span className="text-rating-d">{lr.riskChain.moreRisk}</span>
+          <div className="bg-rating-c/20 border border-rating-c rounded px-3 py-2">
+            <span className="text-rating-c">{lr.riskChain.moreRisk}</span>
           </div>
           <span className="text-lotus-grey-500">→</span>
           <div className="bg-rating-a/15 border border-rating-a rounded px-3 py-2">
             <span className="text-rating-a">{lr.riskChain.higherSpread}</span>
           </div>
+        </div>
+      </div>
+
+      {/* Try this prompt */}
+      <div className="flex items-center gap-3 bg-lotus-purple-900/30 border border-lotus-grey-700 rounded px-4 py-3">
+        <div className="w-8 h-8 bg-lotus-purple-500 rounded-sm flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          </svg>
+        </div>
+        <div>
+          <span className="text-sm font-medium text-lotus-purple-300">Try this</span>
+          <p className="text-lotus-grey-200 text-sm">Click different tranches to see how liquidation bonuses and bad debt thresholds change with LLTV.</p>
         </div>
       </div>
 
@@ -144,7 +157,7 @@ function LiquidationsAndRisk() {
                   </td>
                   <td className="text-center py-2 px-2">
                     <span className={`font-mono font-medium ${
-                      tranche.badDebtThreshold < 10 ? 'text-rating-d' :
+                      tranche.badDebtThreshold < 10 ? 'text-rating-c' :
                       tranche.badDebtThreshold < 15 ? 'text-rating-b' : 'text-rating-a'
                     }`}>
                       {tranche.badDebtThreshold.toFixed(2)}% drop
@@ -200,18 +213,18 @@ function LiquidationsAndRisk() {
               <span className="text-lotus-grey-400">{lr.badDebtFormula.label}</span>
               <span className="font-mono font-medium text-rating-b">{selectedData.badDebtThreshold.toFixed(2)}% price drop</span>
             </div>
-            <div className="text-xs text-lotus-grey-500 space-y-1">
+            <div className="text-xs text-lotus-grey-400 space-y-1">
               <p>
                 <span className="text-lotus-grey-400">Formula:</span>{' '}
                 <span className="font-mono">1 - LLTV × LIF = 1 - {(selectedLLTV / 100).toFixed(2)} × {selectedData.lif.toFixed(4)} = {(selectedData.badDebtThreshold / 100).toFixed(4)}</span>
               </p>
-              <p className="text-lotus-grey-500 mt-2">
+              <p className="text-lotus-grey-400 mt-2">
                 {lr.badDebtFormula.formulaNote}
               </p>
             </div>
           </div>
 
-          <p className="text-xs text-lotus-grey-500 mt-3">
+          <p className="text-xs text-lotus-grey-400 mt-3">
             Liquidators receive a {formatPercent(selectedData.liquidationBonus, 2)} bonus as incentive.
           </p>
         </div>
@@ -227,7 +240,7 @@ function LiquidationsAndRisk() {
             <span>Liquidation Incentive Factor (LIF):</span>
             <span className="font-mono text-lotus-purple-400 ml-2">{selectedData.lif.toFixed(4)}</span>
           </div>
-          <div className="text-lotus-grey-500">
+          <div className="text-lotus-grey-400">
             LIF = min(1.15, 1 / (0.3 × LLTV + 0.7))
           </div>
           <p>
@@ -250,7 +263,7 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
           CONTEXT ZONE - Minimal context above the fold
           ═══════════════════════════════════════════════════════════════════ */}
       <ContextZone
-        context="Understand how risk varies across tranches. Higher LLTV means less collateral buffer, more liquidation risk, but higher yields."
+        context="Understand how risk and reward vary across Lotus tranches. Higher LLTV (loan-to-value) means less collateral buffer and more liquidation risk, but higher yields to compensate."
         whatYoullLearn={['Liquidation mechanics', 'Bad debt thresholds', 'Risk-return tradeoffs']}
       />
 
@@ -258,7 +271,6 @@ export function TrancheRisk({ tranches, baseRate }: TrancheRiskProps) {
           INTERACTIVE ZONE - The main event
           ═══════════════════════════════════════════════════════════════════ */}
       <InteractiveZone
-        tryThis="Click different tranches to see how liquidation bonuses and bad debt thresholds change with LLTV."
         title="Risk & Liquidation Explorer"
       >
         <LiquidationsAndRisk />

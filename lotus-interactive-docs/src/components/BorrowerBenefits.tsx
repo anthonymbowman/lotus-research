@@ -23,14 +23,14 @@ function StepperButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center justify-center w-7 h-7 rounded-sm transition-colors
+      className={`flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-sm transition-colors touch-manipulation
         ${disabled
           ? 'bg-lotus-grey-700 text-lotus-grey-500 cursor-not-allowed'
-          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white'
+          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white active:bg-lotus-purple-700'
         }`}
       aria-label={direction === 'up' ? 'Increase' : 'Decrease'}
     >
-      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         {direction === 'up' ? (
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
         ) : (
@@ -64,7 +64,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
       'text-rating-a',
       'text-rating-b',
       'text-rating-c-plus',
-      'text-rating-d',
+      'text-rating-c',
     ];
     return new Map(sorted.map((lltv, index) => [lltv, colors[Math.min(index, colors.length - 1)]]));
   }, [tranches]);
@@ -92,7 +92,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
           CONTEXT ZONE - Minimal context above the fold
           ═══════════════════════════════════════════════════════════════════ */}
       <ContextZone
-        context="Explore borrowing options across tranches. Higher LLTV means more leverage but higher rates — find your optimal balance."
+        context="Explore borrowing in Lotus. Choose from multiple risk tiers — higher LLTV (loan-to-value) means more leverage but higher rates. Find your optimal balance."
         whatYoullLearn={['Max leverage by LLTV', 'Health factor impact', 'Liquidation thresholds']}
       />
 
@@ -109,13 +109,13 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-xs uppercase tracking-wide text-lotus-grey-400">Collateral (wstETH)</label>
-                <span className="text-xs text-lotus-grey-500">Price: ${WSTETH_PRICE.toLocaleString()}</span>
+                <span className="text-xs text-lotus-grey-400">Price: ${WSTETH_PRICE.toLocaleString()}</span>
               </div>
               <div className="mt-2 w-full bg-lotus-grey-800 border border-lotus-grey-700 rounded px-3 py-2 text-lg font-mono text-lotus-grey-100 flex items-center justify-between">
                 <span>{collateralWstEth}</span>
                 <span className="text-xs text-lotus-grey-400">fixed</span>
               </div>
-              <p className="text-xs text-lotus-grey-500 mt-2">
+              <p className="text-xs text-lotus-grey-400 mt-2">
                 ≈ ${collateralValue.toLocaleString()} available collateral value.
               </p>
             </div>
@@ -139,6 +139,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                     const nextValue = Math.min(Math.max(0, Number(event.target.value)), maxBorrowOverall);
                     setBorrowAmount(nextValue);
                   }}
+                  aria-label="Borrow amount in USDC"
                   className="flex-1 bg-lotus-grey-900 border-2 border-lotus-purple-500/40 rounded-sm px-3 py-2 text-lg font-mono text-lotus-grey-100 text-center
                     hover:border-lotus-purple-400 hover:bg-lotus-grey-800
                     focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
@@ -152,12 +153,12 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                   disabled={borrowAmount >= maxBorrowOverall}
                 />
               </div>
-              <p className={`text-xs mt-2 ${isOverSelectedMax ? 'text-rating-d' : 'text-lotus-grey-500'}`}>
+              <p className={`text-xs mt-2 ${isOverSelectedMax ? 'text-rating-d' : 'text-lotus-grey-400'}`}>
                 {isOverSelectedMax
                   ? bbContent.overMaxMessage(selectedLLTV)
                   : bbContent.maxBorrowMessage(selectedLLTV, selectedMaxBorrow.toLocaleString())}
               </p>
-              <p className="text-xs text-lotus-grey-500 mt-1">
+              <p className="text-xs text-lotus-grey-400 mt-1">
                 {bbContent.loanDenominationNote}
               </p>
             </div>
@@ -188,7 +189,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-[11px] sm:text-xs">
+          <table className="w-full min-w-[700px] text-xs">
             <thead>
               <tr className="border-b border-lotus-grey-700 text-lotus-grey-400 uppercase tracking-wide text-[10px]">
                 <th className="text-left py-2 px-2">LLTV</th>

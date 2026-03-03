@@ -86,11 +86,11 @@ export function TrancheLiquidity({
           CONTEXT ZONE - Minimal context above the fold
           ═══════════════════════════════════════════════════════════════════ */}
       <ContextZone
-        context="See how liquidity flows between tranches. Senior tranches borrow from junior tranches, creating a connected system where every lender's capital contributes to overall market depth."
+        context="See how Lotus connects liquidity across risk levels. Senior tranches can draw from junior tranches, creating a unified market where every lender's capital contributes to overall depth."
         whatYoullLearn={[
           'Supply & borrow cascade',
           'Rate determination',
-          'Tranche constraints'
+          'Tranche interactions'
         ]}
       />
 
@@ -103,7 +103,7 @@ export function TrancheLiquidity({
       >
         <div className="space-y-4">
           {/* Primary interactive element: The Table */}
-          <div className="overflow-x-auto -mx-6 px-6">
+          <div className="overflow-x-auto -mx-4 px-4 sm:-mx-6 sm:px-6">
             <TrancheTable
               tranches={tranches}
               productiveDebtRate={productiveDebtRate}
@@ -138,7 +138,7 @@ export function TrancheLiquidity({
                   ))}
                 </tbody>
               </table>
-              <p className="mt-3 pt-2 border-t border-lotus-grey-700/50 text-lotus-grey-500">
+              <p className="mt-3 pt-2 border-t border-lotus-grey-700/50 text-lotus-grey-400">
                 Click any row to inspect constraints.
               </p>
             </div>

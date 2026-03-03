@@ -11,6 +11,39 @@ import { content } from '../content';
 
 const { productiveDebt: pdContent } = content;
 
+// Stepper button component for increment/decrement
+function StepperButton({
+  direction,
+  onClick,
+  disabled = false
+}: {
+  direction: 'up' | 'down';
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-sm transition-colors touch-manipulation
+        ${disabled
+          ? 'bg-lotus-grey-700 text-lotus-grey-500 cursor-not-allowed'
+          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white active:bg-lotus-purple-700'
+        }`}
+      aria-label={direction === 'up' ? 'Increase' : 'Decrease'}
+    >
+      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        {direction === 'up' ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 interface ProductiveDebtProps {
   baseRate: number;
   spread: number;
@@ -51,7 +84,7 @@ function IntroSection() {
           >
             <div className="flex items-center gap-3 mb-2">
               <div className="text-lotus-purple-400">{icons[i]}</div>
-              <h4 className="font-medium text-lotus-grey-100">{benefit.title}</h4>
+              <h4 className="font-body font-bold text-lotus-grey-100">{benefit.title}</h4>
             </div>
             <p className="text-sm text-lotus-grey-300">{benefit.description}</p>
           </div>
@@ -95,19 +128,34 @@ function RateCompositionSectionContent({ baseRate, spread, onSpreadChange }: Rat
 
         <div className="bg-lotus-purple-900/30 border border-lotus-purple-700 border-l-2 border-l-lotus-purple-500 rounded px-5 py-4 text-center min-w-[140px]">
           <div className="text-xs text-lotus-purple-400 mb-1 font-medium">{rc.creditSpreadLabel}</div>
-          <input
-            type="number"
-            value={spread * 100}
-            onChange={(e) => onSpreadChange(parseFloat(e.target.value) / 100 || 0)}
-            step="0.5"
-            min="0"
-            max="50"
-            className="w-24 text-2xl font-mono font-semibold text-lotus-purple-300 bg-lotus-grey-900 text-center border-2 border-lotus-purple-500/40 rounded-sm
-              hover:border-lotus-purple-400 hover:bg-lotus-grey-800
-              focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
-              transition-colors cursor-text [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
+          <div className="flex items-center justify-center gap-2">
+            <StepperButton
+              direction="down"
+              onClick={() => onSpreadChange(Math.max(0, spread - 0.005))}
+              disabled={spread <= 0}
+            />
+            <div className="flex items-center">
+              <input
+                type="number"
+                value={(spread * 100).toFixed(2)}
+                onChange={(e) => onSpreadChange(Math.min(0.5, Math.max(0, parseFloat(e.target.value) / 100 || 0)))}
+                step="0.5"
+                min="0"
+                max="50"
+                aria-label="Credit spread percentage"
+                className="w-20 text-2xl font-mono font-semibold text-lotus-purple-300 bg-lotus-grey-900 text-center border-2 border-lotus-purple-500/40 rounded-sm
+                  hover:border-lotus-purple-400 hover:bg-lotus-grey-800
+                  focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
+                  transition-colors cursor-text [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
+            </div>
+            <StepperButton
+              direction="up"
+              onClick={() => onSpreadChange(Math.min(0.5, spread + 0.005))}
+              disabled={spread >= 0.5}
+            />
+          </div>
           <div className="text-xs text-lotus-purple-500 mt-1">{rc.creditSpreadSource}</div>
         </div>
 
@@ -171,19 +219,32 @@ function SpreadCompressionSectionContent({
   return (
     <div className="space-y-6">
       {/* What is Spread Compression */}
-      <div className="bg-lotus-purple-900/20 rounded p-4 border border-lotus-purple-700/50">
-        <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whatIs.heading}</h4>
-        <p className="text-sm text-lotus-purple-300 mb-3">
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
+        <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.whatIs.heading}</h4>
+        <p className="text-sm text-lotus-grey-300 mb-3">
           The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
           The <strong>credit spread</strong> is the additional rate set by the Interest Rate Model (IRM) on top of the base rate.
           In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
         </p>
-        <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whyMatters.heading}</h4>
-        <p className="text-sm text-lotus-purple-300">
+        <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.whyMatters.heading}</h4>
+        <p className="text-sm text-lotus-grey-300">
           Productive debt (PD) compresses this spread by ensuring idle liquidity earns the base rate.
           This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
           — especially when utilization is low.
         </p>
+      </div>
+
+      {/* Try this prompt */}
+      <div className="flex items-center gap-3 bg-lotus-purple-900/30 border border-lotus-grey-700 rounded px-4 py-3">
+        <div className="w-8 h-8 bg-lotus-purple-500 rounded-sm flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          </svg>
+        </div>
+        <div>
+          <span className="text-sm font-medium text-lotus-purple-300">Try this</span>
+          <p className="text-lotus-grey-200 text-sm">Drag utilization to 30% and watch how productive debt dramatically improves rates at low utilization.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -211,6 +272,7 @@ function SpreadCompressionSectionContent({
             min="0"
             max="100"
             step="5"
+            aria-label="Utilization percentage"
             className="w-full"
           />
           <p className="text-xs text-lotus-grey-300 mt-2">
@@ -236,6 +298,7 @@ function SpreadCompressionSectionContent({
             min="0"
             max="100"
             step="5"
+            aria-label="Efficiency split between borrowers and lenders"
             className="w-full"
           />
           <p className="text-xs text-lotus-grey-300 mt-2">
@@ -834,7 +897,7 @@ export function ProductiveDebt({
           CONTEXT ZONE - Minimal context above the fold
           ═══════════════════════════════════════════════════════════════════ */}
       <ContextZone
-        context="See how productive debt compresses borrow-lend spreads. Idle capital earns the base rate, improving rates for both borrowers and lenders."
+        context="In Lotus, idle capital earns the base treasury rate instead of sitting unused. This 'productive debt' mechanism compresses the spread between borrow and lend rates, benefiting both sides."
         whatYoullLearn={['Rate composition', 'Spread compression', 'Efficiency gains']}
       />
 
@@ -856,7 +919,6 @@ export function ProductiveDebt({
           INTERACTIVE ZONE - Spread Compression
           ═══════════════════════════════════════════════════════════════════ */}
       <InteractiveZone
-        tryThis="Drag utilization to 30% and watch how productive debt dramatically improves rates at low utilization."
         title="Spread Compression Simulator"
       >
         <SpreadCompressionSectionContent

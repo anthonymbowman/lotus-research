@@ -83,13 +83,13 @@ export function SimplePieChart({ segments, size = 72 }: SimplePieChartProps) {
 }
 
 // Color mapping for tranche LLTVs using credit rating spectrum
-// Lower LLTV = safer (A+/A), Higher LLTV = riskier (C/D)
+// Lower LLTV = safer (A+/A), Higher LLTV = riskier (C)
 export const TRANCHE_COLORS: Record<number, string> = {
   75: '#2FFAE2', // rating-a-plus (safest)
   80: '#6BF4A0', // rating-a
   85: '#EBE283', // rating-b
   90: '#FFA5CD', // rating-c-plus
-  95: '#FE3E38', // rating-d (riskiest)
+  95: '#E764FA', // rating-c (riskiest)
 };
 
 export const TRANCHE_TEXT_COLORS: Record<number, string> = {
@@ -97,7 +97,7 @@ export const TRANCHE_TEXT_COLORS: Record<number, string> = {
   80: 'text-rating-a',
   85: 'text-rating-b',
   90: 'text-rating-c-plus',
-  95: 'text-rating-d',
+  95: 'text-rating-c',
 };
 
 export const IDLE_COLOR = '#4b5563'; // grey-600

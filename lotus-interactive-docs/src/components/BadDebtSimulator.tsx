@@ -75,7 +75,8 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
       </div>
 
       {/* Combined Input + Calculation Table */}
-      <table className="w-full text-xs">
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[640px] text-xs">
         <thead>
           <tr className="border-b border-lotus-grey-600">
             <th className="text-left py-1.5 px-1.5 font-semibold text-lotus-grey-300">LLTV</th>
@@ -83,22 +84,22 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
             <th className="text-right py-1.5 px-1.5 font-semibold text-lotus-grey-400">Borrow</th>
             <th className="text-center py-1.5 px-1.5 font-semibold text-rating-d">Bad Debt</th>
             <th className="py-1.5 px-1 text-center text-lotus-grey-400">+</th>
-            <th className="text-center py-1.5 px-1.5 font-semibold text-rating-c-plus">Cascade In</th>
+            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-grey-400">Cascade In</th>
             <th className="py-1.5 px-1 text-center text-lotus-grey-400">=</th>
-            <th className="text-center py-1.5 px-1.5 font-semibold text-rating-b">Total</th>
+            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-grey-400">Total</th>
             <th className="py-1.5 px-1 text-center text-lotus-grey-400">×</th>
-            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-purple-300">
+            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-grey-400">
               <DefinitionBadge
                 label="Util"
                 formula="Supply / Available Supply"
                 note="Determines what portion of bad debt this tranche absorbs vs cascades to junior"
-                textColor="text-lotus-purple-300"
+                textColor="text-lotus-grey-400"
               />
             </th>
             <th className="py-1.5 px-1 text-center text-lotus-grey-400">=</th>
-            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-purple-300">Absorbed</th>
-            <th className="text-center py-1.5 px-1.5 font-semibold text-rating-c-plus">Cascade Out</th>
-            <th className="text-right py-1.5 px-1.5 font-semibold text-rating-a">Supply Left</th>
+            <th className="text-center py-1.5 px-1.5 font-semibold text-rating-a">Absorbed</th>
+            <th className="text-center py-1.5 px-1.5 font-semibold text-lotus-grey-400">Cascade Out</th>
+            <th className="text-right py-1.5 px-1.5 font-semibold text-lotus-grey-400">Supply Left</th>
           </tr>
         </thead>
         <tbody>
@@ -108,7 +109,6 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
             const isFirst = i === 0;
             const isLast = i === simulation.tranches.length - 1;
             const hasLocalBadDebt = result.badDebtLocal > 0;
-            const supplyUtilHigh = result.supplyUtilization >= 0.99;
 
             return (
               <tr
@@ -131,6 +131,7 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                     max={t.borrowAssets}
                     value={badDebtAmounts[i] || 0}
                     onChange={(e) => updateBadDebt(i, Number(e.target.value))}
+                    aria-label={`Bad debt amount for ${result.lltv}% LLTV tranche`}
                     className={`w-14 px-1 py-0.5 text-xs font-mono border-2 rounded-sm text-right bg-lotus-grey-900 text-lotus-grey-100
                       hover:border-lotus-purple-400 hover:bg-lotus-grey-800 transition-colors cursor-text
                       focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800 ${
@@ -139,26 +140,26 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
                   />
                 </td>
                 <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">+</td>
-                <td className="py-1.5 px-1.5 text-center font-mono text-rating-c-plus">
+                <td className="py-1.5 px-1.5 text-center font-mono text-lotus-grey-300">
                   {isFirst ? <span className="text-lotus-grey-500">—</span> : `$${formatNumber(result.badDebtCascadedIn, 0)}`}
                 </td>
                 <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">=</td>
-                <td className="py-1.5 px-1.5 text-center font-mono text-rating-b">
+                <td className="py-1.5 px-1.5 text-center font-mono text-lotus-grey-300">
                   ${formatNumber(totalBadDebt, 0)}
                 </td>
                 <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">×</td>
-                <td className={`py-1.5 px-1.5 text-center font-mono ${supplyUtilHigh ? 'text-rating-b' : 'text-lotus-purple-400'}`}>
+                <td className="py-1.5 px-1.5 text-center font-mono text-lotus-grey-300">
                   {formatPercent(result.supplyUtilization, 1)}
                 </td>
                 <td className="py-1.5 px-1 text-center text-lotus-grey-300 font-medium">=</td>
-                <td className="py-1.5 px-1.5 text-center font-mono font-medium text-lotus-purple-300">
+                <td className="py-1.5 px-1.5 text-center font-mono font-medium text-rating-a">
                   {result.badDebtAbsorbed > 0 ? `$${formatNumber(result.badDebtAbsorbed, 0)}` : '—'}
                 </td>
-                <td className="py-1.5 px-1.5 text-center font-mono text-rating-c-plus">
+                <td className="py-1.5 px-1.5 text-center font-mono text-lotus-grey-300">
                   {isLast ? <span className="text-lotus-grey-500">—</span> : result.badDebtCascadedOut > 0 ? `$${formatNumber(result.badDebtCascadedOut, 0)}` : '—'}
                 </td>
                 <td className="py-1.5 px-1.5 text-right">
-                  <span className={`font-mono ${result.wipedOut ? 'text-rating-d font-medium' : 'text-rating-a'}`}>
+                  <span className={`font-mono ${result.wipedOut ? 'text-rating-d font-medium' : 'text-lotus-grey-300'}`}>
                     ${formatNumber(result.remainingSupply, 0)}
                   </span>
                   {result.wipedOut && (
@@ -175,6 +176,7 @@ export function BadDebtSimulator({ tranches }: BadDebtSimulatorProps) {
           })}
         </tbody>
       </table>
+      </div>{/* End overflow wrapper */}
       </div>{/* End exportable section */}
 
       {/* How Bad Debt is Absorbed - Collapsible */}

@@ -7,6 +7,7 @@ import { ConstraintTooltip } from './ConstraintTooltip';
 import { TrancheConstraintInspector } from './TrancheConstraintInspector';
 import { DefinitionBadge } from './DefinitionBadge';
 import { ExportButton } from './ExportButton';
+import { ScrollHintWrapper } from './ScrollHintWrapper';
 
 interface TrancheTableProps {
   tranches: TrancheData[];
@@ -29,14 +30,14 @@ function StepperButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`hidden sm:flex items-center justify-center w-5 h-5 rounded-sm transition-colors
+      className={`flex items-center justify-center w-8 h-8 sm:w-6 sm:h-6 rounded-sm transition-colors touch-manipulation
         ${disabled
           ? 'bg-lotus-grey-700 text-lotus-grey-500 cursor-not-allowed'
-          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white'
+          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white active:bg-lotus-purple-700'
         }`}
       aria-label={direction === 'up' ? 'Increase' : 'Decrease'}
     >
-      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <svg className="w-4 h-4 sm:w-3 sm:h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         {direction === 'up' ? (
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
         ) : (
@@ -63,14 +64,13 @@ export function TrancheTable({
         <ExportButton targetRef={exportRef} filename="liquidity-flow-table" />
 
         {/* Title and Toggle */}
-        <div className="flex items-center justify-between mb-4 pr-10">
-          <div /> {/* Spacer for centering */}
-          <h4 className="text-lg font-semibold text-lotus-grey-100 text-center">
+        <div className="relative mb-4">
+          <h4 className="text-lg font-semibold text-lotus-grey-100 text-center pr-10">
             Liquidity Flow by Tranche
           </h4>
           <button
             onClick={() => setShowFullBreakdown(!showFullBreakdown)}
-            className="text-xs text-lotus-grey-400 hover:text-lotus-purple-300 transition-colors flex items-center gap-1"
+            className="absolute right-12 top-1/2 -translate-y-1/2 text-xs text-lotus-grey-400 hover:text-lotus-purple-300 transition-colors flex items-center gap-1"
           >
             {showFullBreakdown ? (
               <>
@@ -91,8 +91,8 @@ export function TrancheTable({
           </button>
         </div>
 
-      <div className="overflow-x-auto">
-        <table className={`w-full text-[11px] sm:text-xs ${showFullBreakdown ? 'min-w-[860px]' : ''}`}>
+      <ScrollHintWrapper>
+        <table className={`w-full text-xs sticky-header ${showFullBreakdown ? 'min-w-[860px]' : ''}`}>
           <thead>
             <tr className="border-b border-lotus-grey-700">
               <th className="text-left py-1 px-1 font-semibold text-lotus-grey-300 bg-lotus-grey-800 border-r border-lotus-grey-700 sticky left-0 z-10 w-1 whitespace-nowrap">
@@ -204,7 +204,7 @@ export function TrancheTable({
 
                   <td className="py-1 px-1 w-1 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
-                      <div className="hidden sm:flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <StepperButton
                           direction="up"
                           onClick={() => onTrancheChange(tranche.id, 'supplyAssets', tranche.supplyAssets + 100)}
@@ -222,7 +222,7 @@ export function TrancheTable({
                         min={0}
                         step={100}
                         aria-label={`Supply for ${tranche.lltv}% LLTV`}
-                        className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono text-lotus-grey-100
+                        className={`w-16 sm:w-20 px-1 sm:px-2 py-1 text-xs sm:text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono text-lotus-grey-100
                           hover:border-lotus-purple-400 hover:bg-lotus-grey-800 transition-colors cursor-text
                           focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800 ${
                           isOverBorrowed ? 'border-rating-d' : 'border-lotus-purple-500/40'
@@ -253,7 +253,7 @@ export function TrancheTable({
                           <span className="w-2 h-2 rounded-sm bg-rating-a" title="B > S" />
                         </ConstraintTooltip>
                       )}
-                      <div className="hidden sm:flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <StepperButton
                           direction="up"
                           onClick={() => onTrancheChange(tranche.id, 'borrowAssets', tranche.borrowAssets + 100)}
@@ -271,7 +271,7 @@ export function TrancheTable({
                         min={0}
                         step={100}
                         aria-label={`Borrow for ${tranche.lltv}% LLTV`}
-                        className={`w-20 px-2 py-1 text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono
+                        className={`w-16 sm:w-20 px-1 sm:px-2 py-1 text-xs sm:text-sm text-right bg-lotus-grey-900 border-2 rounded-sm font-mono
                           hover:border-lotus-purple-400 hover:bg-lotus-grey-800 transition-colors cursor-text
                           focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800 ${
                           isOverBorrowed ? 'border-rating-d text-rating-d' : 'border-lotus-purple-500/40 text-lotus-grey-100'
@@ -346,7 +346,7 @@ export function TrancheTable({
             })}
           </tbody>
         </table>
-      </div>
+      </ScrollHintWrapper>
 
         {/* Productive Debt Rate at bottom */}
         <div className="mt-4 flex items-center justify-center gap-2 text-sm">

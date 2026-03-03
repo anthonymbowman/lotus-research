@@ -24,7 +24,7 @@ const SLICE_COLORS = [
   '#6BF4A0', // rating-a (green)
   '#EBE283', // rating-b (yellow)
   '#FFA5CD', // rating-c-plus (pink)
-  '#FE3E38', // rating-d (red)
+  '#E764FA', // rating-c (magenta)
 ];
 
 /**

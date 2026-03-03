@@ -20,7 +20,7 @@ export function Introduction() {
       <LotusSolution />
 
       {/* The Lotus Difference */}
-      <div className="bg-lotus-purple-900/20 rounded p-6 border border-lotus-purple-700/50">
+      <div className="bg-lotus-grey-900 rounded p-6 border border-lotus-grey-700">
         <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">
           {intro.lotusDifference.heading}
         </h3>

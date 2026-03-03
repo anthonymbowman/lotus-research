@@ -10,13 +10,13 @@ interface DynamicLoanMixProps {
 }
 
 // Colors for bar segments (one per tranche) - using credit rating spectrum
-// Lower LLTV = safer (A+), Higher LLTV = riskier (D)
+// Lower LLTV = safer (A+), Higher LLTV = riskier (C)
 const SEGMENT_COLORS = [
   'bg-rating-a-plus',  // 75% - safest
   'bg-rating-a',       // 80%
   'bg-rating-b',       // 85%
   'bg-rating-c-plus',  // 90%
-  'bg-rating-d',       // 95% - riskiest
+  'bg-rating-c',       // 95% - riskiest
 ];
 
 const SEGMENT_TEXT_COLORS = [
@@ -24,17 +24,17 @@ const SEGMENT_TEXT_COLORS = [
   'text-rating-a',
   'text-rating-b',
   'text-rating-c-plus',
-  'text-rating-d',
+  'text-rating-c',
 ];
 
 // Text colors for use ON the colored bar segments (need contrast)
-// Light backgrounds (a-plus, a, b) need dark text; dark backgrounds (c-plus, d) can use light text
+// Light backgrounds (a-plus, a, b) need dark text; dark backgrounds (c-plus, c) can use light text
 const SEGMENT_OVERLAY_TEXT = [
   'text-lotus-grey-900',  // on a-plus (teal) - dark text
   'text-lotus-grey-900',  // on a (green) - dark text
   'text-lotus-grey-900',  // on b (yellow) - dark text
   'text-lotus-grey-900',  // on c-plus (pink) - dark text
-  'text-white',           // on d (red) - light text
+  'text-white',           // on c (magenta) - light text
 ];
 
 type ViewMode = 'lender' | 'borrower';

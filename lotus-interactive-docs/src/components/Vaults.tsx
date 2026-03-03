@@ -183,7 +183,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                 <div className="mb-3">
                   <div className="flex h-4 rounded overflow-hidden">
                     {strategy.allocations.map((alloc, i) => {
-                      const colors = ['bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b', 'bg-rating-c-plus', 'bg-rating-d'];
+                      const colors = ['bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b', 'bg-rating-c-plus', 'bg-rating-c'];
                       if (alloc.percent === 0) return null;
                       return (
                         <div
@@ -241,7 +241,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               <p className="text-xs text-lotus-grey-300">{vContent.breakdownSubtitle}</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="px-3 py-1.5 rounded text-sm font-mono font-semibold bg-rating-a/15 text-rating-a border border-rating-a">
+              <span className="px-3 py-1.5 rounded text-sm font-mono font-semibold bg-lotus-grey-700 text-lotus-grey-300 border border-lotus-grey-600">
                 100% allocated
               </span>
             </div>
@@ -254,8 +254,8 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
               const supplyRate = tranche?.supplyRate !== null
                 ? (productiveDebtRate + (tranche?.supplyRate || 0)) * 100
                 : 0;
-              const barColors = ['bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b', 'bg-rating-c-plus', 'bg-rating-d'];
-              const textColors = ['text-rating-a-plus', 'text-rating-a', 'text-rating-b', 'text-rating-c-plus', 'text-rating-d'];
+              const barColors = ['bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b', 'bg-rating-c-plus', 'bg-rating-c'];
+              const textColors = ['text-rating-a-plus', 'text-rating-a', 'text-rating-b', 'text-rating-c-plus', 'text-rating-c'];
               const labels = ['Senior', 'Senior', 'Mid', 'Junior', 'Junior'];
 
               return (
@@ -297,7 +297,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
         </DynamicInsight>
 
         <DynamicInsight show={riskScore <= 3 && expectedAPY > 0} variant="success">
-          <strong>Conservative Approach:</strong> {vContent.insights.conservative.replace('Conservative Approach: ', '')}
+          <strong>Core Approach:</strong> {vContent.insights.conservative.replace('Core Approach: ', '')}
         </DynamicInsight>
 
         {/* Results Summary */}
@@ -447,7 +447,7 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
             <div className="w-full">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-rating-a-plus"><TermDefinition term="tranche-seniority">Senior</TermDefinition> {vContent.howVaultsWork.flowDiagram.seniorLabel.replace('Senior ', '')}</span>
-                <span className="text-sm font-medium text-rating-d">{vContent.howVaultsWork.flowDiagram.juniorLabel}</span>
+                <span className="text-sm font-medium text-rating-c">{vContent.howVaultsWork.flowDiagram.juniorLabel}</span>
               </div>
               <div className="flex items-center gap-2">
                 {[75, 80, 85, 90, 95].map((lltv, i) => {
@@ -456,9 +456,9 @@ export function Vaults({ tranches, productiveDebtRate }: VaultsProps) {
                     'bg-rating-a/20 border-rating-a',
                     'bg-rating-b/20 border-rating-b',
                     'bg-rating-c-plus/20 border-rating-c-plus',
-                    'bg-rating-d/20 border-rating-d',
+                    'bg-rating-c/20 border-rating-c',
                   ];
-                  const textColors = ['text-rating-a-plus', 'text-rating-a', 'text-rating-b', 'text-rating-c-plus', 'text-rating-d'];
+                  const textColors = ['text-rating-a-plus', 'text-rating-a', 'text-rating-b', 'text-rating-c-plus', 'text-rating-c'];
                   return (
                     <div key={lltv} className={`flex-1 py-3 rounded border-2 text-center ${colors[i]}`}>
                       <div className={`font-mono font-semibold ${textColors[i]}`}>{lltv}%</div>

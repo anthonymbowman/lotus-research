@@ -69,10 +69,10 @@ export function LotusSolution() {
           <p className="mb-4">
             {solution.overview[2]}
           </p>
-          <details className="bg-lotus-purple-900/20 rounded border border-lotus-purple-700/40 group hover:border-lotus-purple-600/50 transition-colors">
-            <summary className="px-4 py-3 cursor-pointer list-none flex items-center gap-3 text-sm font-medium text-lotus-purple-300 hover:text-lotus-purple-200 transition-colors">
+          <details className="bg-lotus-grey-800 rounded border border-lotus-grey-700 group hover:border-lotus-grey-600 transition-colors">
+            <summary className="px-4 py-3 cursor-pointer list-none flex items-center gap-3 text-sm font-medium text-lotus-grey-300 hover:text-lotus-grey-200 transition-colors">
               <svg
-                className="w-5 h-5 text-lotus-purple-400 flex-shrink-0"
+                className="w-5 h-5 text-lotus-grey-400 flex-shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -81,7 +81,7 @@ export function LotusSolution() {
               </svg>
               <span className="flex-1">{solution.terminologyNote.title}</span>
               <svg
-                className="w-4 h-4 text-lotus-purple-400 transition-transform group-open:rotate-180"
+                className="w-4 h-4 text-lotus-grey-400 transition-transform group-open:rotate-180"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -107,23 +107,23 @@ export function LotusSolution() {
                 { lltv: 80, color: 'bg-rating-a' },
                 { lltv: 85, color: 'bg-rating-b' },
                 { lltv: 90, color: 'bg-rating-c-plus' },
-                { lltv: 95, color: 'bg-rating-d' },
+                { lltv: 95, color: 'bg-rating-c' },
               ].map((t) => (
                 <div key={t.lltv} className={`${t.color} rounded px-2.5 py-1.5`}>
                   <span className="font-mono text-xs font-bold text-lotus-grey-900">{t.lltv}%</span>
                 </div>
               ))}
             </div>
-            <span className="text-xs text-rating-d font-medium whitespace-nowrap text-right">Junior<br/><span className="text-lotus-grey-300 font-normal">Higher LLTV</span></span>
+            <span className="text-xs text-rating-c font-medium whitespace-nowrap text-right">Junior<br/><span className="text-lotus-grey-300 font-normal">Higher LLTV</span></span>
           </div>
           <p className="text-center text-xs text-lotus-grey-300 mt-3">Tranches in a single market · wstETH / LotusUSD</p>
         </div>
 
         {/* LotusUSD Section */}
-        <div className="bg-lotus-purple-900/20 rounded p-6 border border-lotus-purple-700/50">
-          <h4 className="text-sm font-semibold text-lotus-purple-300 mb-3">{solution.lotusUSD.heading}</h4>
-          <p className="text-sm text-lotus-grey-200 leading-relaxed">
-            In USD-denominated Lotus markets, the loan asset is <span className="text-lotus-purple-400 font-medium">LotusUSD</span>. LotusUSD is a vault token backed by USDC and tokenized short-term US Treasuries. Its goal is to earn a rate that is close to the risk-free rate on deployed assets while maintaining onchain liquidity. Using a yield-bearing token as the loan asset is called <span className="text-rating-a font-medium">"productive debt"</span>.
+        <div className="bg-lotus-grey-800 rounded p-6 border border-lotus-grey-700">
+          <h4 className="text-sm font-semibold text-lotus-grey-200 mb-3">{solution.lotusUSD.heading}</h4>
+          <p className="text-sm text-lotus-grey-300 leading-relaxed">
+            In USD-denominated Lotus markets, the loan asset is <span className="text-lotus-grey-100 font-medium">LotusUSD</span>. LotusUSD is a vault token backed by USDC and tokenized short-term US Treasuries. Its goal is to earn a rate that is close to the risk-free rate on deployed assets while maintaining onchain liquidity. Using a yield-bearing token as the loan asset is called <span className="text-lotus-grey-100 font-medium">"productive debt"</span>.
           </p>
         </div>
 

@@ -173,23 +173,42 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 600;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.375rem;
   font-weight: 500;
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 500;
 }
 
 h4 {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 500;
+}
+
+/* Responsive heading sizes for larger screens */
+@media (min-width: 640px) {
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+  }
 }
 
 /* Improved paragraph spacing */
@@ -262,8 +281,9 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
-  height: 24px;
+  height: 44px; /* Larger touch target area */
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -277,19 +297,23 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 20px;
-  width: 20px;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
   background: var(--purple-primary);
   border: 3px solid var(--grey-100);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  margin-top: -7px;
+  margin-top: -11px;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   background: var(--purple-light);
   box-shadow: 0 2px 8px rgba(142, 98, 255, 0.5);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
 }
 
 input[type="range"]::-moz-range-track {
@@ -300,8 +324,8 @@ input[type="range"]::-moz-range-track {
 }
 
 input[type="range"]::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
   background: var(--purple-primary);
   border: 3px solid var(--grey-100);
@@ -312,6 +336,10 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]::-moz-range-thumb:hover {
   background: var(--purple-light);
   box-shadow: 0 2px 8px rgba(142, 98, 255, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(1.1);
 }
 
 input[type="range"]:focus {
@@ -421,4 +449,177 @@ input[type="range"]:focus::-webkit-slider-thumb {
 
 .animate-slideIn {
   animation: slideIn 0.3s ease-out;
+}
+
+/* ============================================
+   Value Change Animation
+   ============================================
+   Highlight values when they change
+   ============================================ */
+@keyframes valueChange {
+  0% { background-color: rgba(142, 98, 255, 0.3); }
+  100% { background-color: transparent; }
+}
+
+.animate-value-change {
+  animation: valueChange 0.6s ease-out;
+}
+
+/* Numeric value tick animation */
+@keyframes numberTick {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-2px); }
+  75% { transform: translateY(1px); }
+}
+
+.animate-number-tick {
+  animation: numberTick 0.2s ease-out;
+}
+
+/* ============================================
+   Mobile Table Scroll Hint
+   ============================================
+   Gradient fade to indicate more content
+   ============================================ */
+.table-scroll-container {
+  position: relative;
+}
+
+.table-scroll-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, transparent, var(--dark-grey-2));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.table-scroll-container.scrolled-right::after {
+  opacity: 0;
+}
+
+/* Hide scroll hint on larger screens where table fits */
+@media (min-width: 1024px) {
+  .table-scroll-container::after {
+    display: none;
+  }
+}
+
+/* ============================================
+   Sticky Table Headers
+   ============================================ */
+.sticky-header thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--dark-grey-2);
+}
+
+.sticky-header thead th {
+  background-color: inherit;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  /* Reset backgrounds for printing */
+  html, body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Hide navigation and interactive elements */
+  aside,
+  .lg\:ml-64,
+  button[aria-label="Open navigation"],
+  button[aria-label="Close navigation"],
+  .fixed,
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  /* Reset main content margin */
+  main {
+    margin-left: 0 !important;
+    padding: 20px !important;
+  }
+
+  /* Make cards visible with borders */
+  .bg-lotus-grey-800,
+  .bg-lotus-grey-900,
+  .bg-lotus-grey-950 {
+    background: white !important;
+    border: 1px solid #ccc !important;
+  }
+
+  /* Ensure text is readable */
+  .text-lotus-grey-100,
+  .text-lotus-grey-200,
+  .text-lotus-grey-300,
+  .text-lotus-grey-400,
+  h1, h2, h3, h4, h5, h6 {
+    color: black !important;
+  }
+
+  /* Style tables for print */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+
+  /* Hide export buttons */
+  .export-button,
+  [class*="ExportButton"] {
+    display: none !important;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  .no-page-break {
+    page-break-inside: avoid;
+  }
+
+  /* Expand all collapsed content */
+  details {
+    display: block !important;
+  }
+
+  details > summary {
+    display: none !important;
+  }
+
+  details > *:not(summary) {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   Reduced Motion Preference
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { RateInput } from './RateInput';
 import { DynamicInsight } from './DynamicInsight';
-import { TermDefinition } from './TermDefinition';
+import { ContextZone } from './ContextZone';
+import { InteractiveZone } from './InteractiveZone';
 import { content } from '../content';
 
 const { lotusUSDAllocation: luContent } = content;
@@ -127,6 +128,7 @@ function AllocationSlider({
         min="0"
         max="100"
         step="1"
+        aria-label="Treasury allocation percentage"
         className="w-full"
       />
       <div className="flex justify-between text-xs text-lotus-grey-300">
@@ -152,48 +154,70 @@ export function LotusUSDAllocation({
 
   return (
     <div className="space-y-8">
-      <div className="bg-rating-a/15 rounded p-4 border border-rating-a/50">
-        <p className="text-sm text-rating-a">
-          <TermDefinition term="lotususd">LotusUSD</TermDefinition> {luContent.intro.replace('LotusUSD is a', 'is a')}
-        </p>
-      </div>
+      {/* ═══════════════════════════════════════════════════════════════════
+          CONTEXT ZONE - Minimal context above the fold
+          ═══════════════════════════════════════════════════════════════════ */}
+      <ContextZone
+        context="LotusUSD is a yield-bearing stablecoin backed by USDC. A portion of reserves are allocated to US Treasuries, creating a base yield that flows to all lenders in the protocol."
+        whatYoullLearn={['Treasury allocation impact', 'Productive debt rate calculation', 'Yield floor mechanics']}
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-lotus-grey-800 rounded p-6 border border-lotus-grey-700 flex items-center justify-center">
-          <AllocationPieChart treasuryAllocation={treasuryAllocation} />
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500">
-            <h3 className="text-sm font-medium text-lotus-grey-200 mb-4">{luContent.inputs.heading}</h3>
-            <div className="space-y-4">
-              <AllocationSlider
-                value={treasuryAllocation}
-                onChange={onTreasuryAllocationChange}
-              />
-              <RateInput
-                label={luContent.inputs.treasuryRate}
-                value={treasuryRate}
-                onChange={onTreasuryRateChange}
-                description={luContent.inputs.treasuryRateDescription}
-              />
-            </div>
+      {/* ═══════════════════════════════════════════════════════════════════
+          INTERACTIVE ZONE - The main event
+          ═══════════════════════════════════════════════════════════════════ */}
+      <InteractiveZone
+        tryThis="Adjust the treasury allocation slider to see how it affects the productive debt rate — this is the yield floor for all lenders."
+        title="LotusUSD Backing"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-lotus-grey-800 rounded p-6 border border-lotus-grey-700 flex items-center justify-center">
+            <AllocationPieChart treasuryAllocation={treasuryAllocation} />
           </div>
 
-          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
-            <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.output.heading}</h3>
-            <div className="p-4 bg-rating-a/15 rounded border border-rating-a">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-rating-a font-medium">{luContent.output.productiveDebtRate}</span>
-                <span className="text-2xl font-mono font-bold text-rating-a">
-                  {formatPercent(productiveDebtRate)}
-                </span>
+          <div className="space-y-6">
+            <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500">
+              <h3 className="text-sm font-medium text-lotus-grey-200 mb-4">{luContent.inputs.heading}</h3>
+              <div className="space-y-4">
+                <AllocationSlider
+                  value={treasuryAllocation}
+                  onChange={onTreasuryAllocationChange}
+                />
+                <RateInput
+                  label={luContent.inputs.treasuryRate}
+                  value={treasuryRate}
+                  onChange={onTreasuryRateChange}
+                  description={luContent.inputs.treasuryRateDescription}
+                  showSteppers
+                  step={0.0025}
+                />
+              </div>
+            </div>
+
+            <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
+              <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.output.heading}</h3>
+              <div className="p-4 bg-rating-a/15 rounded border border-rating-a">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-rating-a font-medium">{luContent.output.productiveDebtRate}</span>
+                  <span className="text-2xl font-mono font-bold text-rating-a">
+                    {formatPercent(productiveDebtRate)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
+        {/* Dynamic insights within interactive zone */}
+        <DynamicInsight show={treasuryAllocation >= 0.95} variant="info">
+          <strong>Maximum Treasury Exposure:</strong> {luContent.insights.maxTreasury.replace('Maximum Treasury Exposure: ', '')}
+        </DynamicInsight>
+
+        <DynamicInsight show={treasuryAllocation <= 0.05} variant="warning">
+          <strong>Minimal Yield:</strong> {luContent.insights.minTreasury.replace('Minimal Yield: ', '')}
+        </DynamicInsight>
+      </InteractiveZone>
+
+      {/* Allocation Strategy Note */}
       <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
         <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">LotusUSD Allocation Strategy</h4>
         <p className="text-sm text-lotus-grey-300">
@@ -201,38 +225,30 @@ export function LotusUSDAllocation({
         </p>
       </div>
 
-      <DynamicInsight show={treasuryAllocation >= 0.95} variant="info">
-        <strong>Maximum Treasury Exposure:</strong> {luContent.insights.maxTreasury.replace('Maximum Treasury Exposure: ', '')}
-      </DynamicInsight>
-
-      <DynamicInsight show={treasuryAllocation <= 0.05} variant="warning">
-        <strong>Minimal Yield:</strong> {luContent.insights.minTreasury.replace('Minimal Yield: ', '')}
-      </DynamicInsight>
-
+      {/* How It Works - Explanatory section */}
       <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
         <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">{luContent.howItWorks.heading}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div className="p-3 bg-lotus-purple-900/30 rounded border border-lotus-purple-700/50">
-            <div className="font-medium text-lotus-purple-300 mb-1">{luContent.howItWorks.usdcReserve.title}</div>
-            <p className="text-lotus-purple-400 text-xs">
+          <div className="p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700">
+            <div className="font-medium text-lotus-grey-200 mb-1">{luContent.howItWorks.usdcReserve.title}</div>
+            <p className="text-lotus-grey-400 text-xs">
               {luContent.howItWorks.usdcReserve.description}
             </p>
           </div>
-          <div className="p-3 bg-rating-a/15 rounded border border-rating-a/50">
-            <div className="font-medium text-rating-a mb-1">{luContent.howItWorks.treasuryHoldings.title}</div>
-            <p className="text-rating-a text-xs">
+          <div className="p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700">
+            <div className="font-medium text-lotus-grey-200 mb-1">{luContent.howItWorks.treasuryHoldings.title}</div>
+            <p className="text-lotus-grey-400 text-xs">
               {luContent.howItWorks.treasuryHoldings.description}
             </p>
           </div>
-          <div className="p-3 bg-lotus-purple-900/30 rounded border border-lotus-purple-700/50">
-            <div className="font-medium text-lotus-purple-300 mb-1">{luContent.howItWorks.productiveDebtRate.title}</div>
-            <p className="text-lotus-purple-400 text-xs">
+          <div className="p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700">
+            <div className="font-medium text-lotus-grey-200 mb-1">{luContent.howItWorks.productiveDebtRate.title}</div>
+            <p className="text-lotus-grey-400 text-xs">
               {luContent.howItWorks.productiveDebtRate.description}
             </p>
           </div>
         </div>
       </div>
-
     </div>
   );
 }

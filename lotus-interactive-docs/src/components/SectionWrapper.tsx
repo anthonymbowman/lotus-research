@@ -55,7 +55,7 @@ export function SectionWrapper({
               />
             </div>
           )}
-          <h2 className="text-3xl font-semibold text-lotus-grey-100 mb-2 font-heading">{headline || title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-lotus-grey-100 mb-2 font-heading">{headline || title}</h2>
           {subtitle && (
             <p className="text-lotus-grey-300 text-lg">{subtitle}</p>
           )}
