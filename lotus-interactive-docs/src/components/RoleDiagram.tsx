@@ -5,7 +5,7 @@ export function RoleDiagram() {
   return (
     <div className="space-y-6">
       {/* Lenders Section */}
-      <div className="bg-rating-a/15 rounded p-5 border border-rating-a/50">
+      <div className="bg-rating-a/15 rounded p-6 border border-rating-a/50">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-8 bg-rating-a/20 rounded flex items-center justify-center">
             <svg className="w-5 h-5 text-rating-a" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +63,7 @@ export function RoleDiagram() {
       </div>
 
       {/* Borrowers Section */}
-      <div className="bg-rating-c-plus/15 rounded p-5 border border-rating-c-plus/50">
+      <div className="bg-rating-c-plus/15 rounded p-6 border border-rating-c-plus/50">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-8 bg-rating-c-plus/20 rounded flex items-center justify-center">
             <svg className="w-5 h-5 text-rating-c-plus" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -182,7 +182,7 @@ export function TrancheLiquidity({
         defaultOpen
       >
         {/* Role Diagram - How lenders and borrowers interact */}
-        <div className="bg-lotus-grey-900 rounded p-5 border border-lotus-grey-700">
+        <div className="bg-lotus-grey-900 rounded p-6 border border-lotus-grey-700">
           <h3 className="text-base font-medium text-lotus-grey-200 mb-4">{tlContent.roleCards.heading}</h3>
           <RoleDiagramCompact />
         </div>
@@ -224,7 +224,7 @@ export function TrancheLiquidity({
             </div>
           </div>
 
-          <h4 className="text-sm font-medium text-lotus-grey-300 mt-5 mb-3">{tlContent.cascadeBenefits.howItWorks.heading}</h4>
+          <h4 className="text-sm font-medium text-lotus-grey-300 mt-6 mb-3">{tlContent.cascadeBenefits.howItWorks.heading}</h4>
           <div className="space-y-3 text-sm text-lotus-grey-400">
             <p><strong className="text-lotus-grey-300">{tlContent.cascadeBenefits.howItWorks.steps[0].label}</strong> {tlContent.cascadeBenefits.howItWorks.steps[0].description}</p>
             <p><strong className="text-lotus-grey-300">{tlContent.cascadeBenefits.howItWorks.steps[1].label}</strong> {tlContent.cascadeBenefits.howItWorks.steps[1].description}</p>
@@ -232,7 +232,7 @@ export function TrancheLiquidity({
           </div>
 
           {/* Important clarification about bad debt - muted */}
-          <div className="mt-5 p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700/50">
+          <div className="mt-6 p-3 bg-lotus-grey-900 rounded border border-lotus-grey-700/50">
             <p className="text-xs text-lotus-grey-400">
               <strong className="text-lotus-grey-300">Note:</strong> {tlContent.cascadeBenefits.badDebtNote}
             </p>

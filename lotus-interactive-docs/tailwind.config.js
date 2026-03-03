@@ -104,6 +104,16 @@ export default {
         'lotus': '0 4px 20px rgba(142, 98, 255, 0.15)',
         'lotus-lg': '0 8px 40px rgba(142, 98, 255, 0.2)',
       },
+      // Semantic spacing tokens (aligns with lotuslabs.net)
+      spacing: {
+        'xs': '4px',    // 0.25rem - tight internal spacing
+        'sm': '8px',    // 0.5rem - small gaps, inline elements
+        'md': '12px',   // 0.75rem - default internal padding
+        'lg': '16px',   // 1rem - card padding, medium gaps
+        'xl': '24px',   // 1.5rem - section spacing
+        '2xl': '32px',  // 2rem - large section gaps
+        '3xl': '48px',  // 3rem - page-level spacing
+      },
     },
   },
   plugins: [],

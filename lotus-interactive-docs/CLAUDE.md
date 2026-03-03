@@ -64,6 +64,29 @@ When unsure, default to 0px.
 
 **Exception:** `rounded-full` is acceptable for small circular indicators (dots, status lights).
 
+### Spacing System
+
+Use consistent spacing values. Both numeric Tailwind values and semantic tokens are available:
+
+| Token | Value | Tailwind | Use Case |
+|-------|-------|----------|----------|
+| xs | 4px | p-1, gap-1 | Tight internal spacing, inline elements |
+| sm | 8px | p-2, gap-2 | Small gaps, badge padding |
+| md | 12px | p-3, gap-3 | Default internal padding, list items |
+| lg | 16px | p-4, gap-4 | Card padding, medium gaps |
+| xl | 24px | p-6, gap-6 | Section spacing, modal padding |
+| 2xl | 32px | p-8, gap-8 | Large section gaps |
+| 3xl | 48px | p-12, gap-12 | Page-level spacing |
+
+**Guidelines:**
+- **Container padding:** `p-4` (cards), `p-6` (sections), `p-8` (main wrappers)
+- **Internal gaps:** `gap-2` (tight), `gap-3` (default), `gap-4` (spacious)
+- **Section spacing:** `space-y-6` or `space-y-8` for vertical rhythm
+- **Inline elements:** `gap-1` or `gap-2` for icons/text combos
+- **Margin between sections:** `mb-6` or `mb-8`
+
+**Avoid:** Non-standard values like `p-7`, `gap-5`, `p-10` unless necessary.
+
 ### Transitions
 
 Use consistent transition timing:

@@ -120,7 +120,7 @@ export function LotusSolution() {
         </div>
 
         {/* LotusUSD Section */}
-        <div className="bg-lotus-purple-900/20 rounded p-5 border border-lotus-purple-700/50">
+        <div className="bg-lotus-purple-900/20 rounded p-6 border border-lotus-purple-700/50">
           <h4 className="text-sm font-semibold text-lotus-purple-300 mb-3">{solution.lotusUSD.heading}</h4>
           <p className="text-sm text-lotus-grey-200 leading-relaxed">
             In USD-denominated Lotus markets, the loan asset is <span className="text-lotus-purple-400 font-medium">LotusUSD</span>. LotusUSD is a vault token backed by USDC and tokenized short-term US Treasuries. Its goal is to earn a rate that is close to the risk-free rate on deployed assets while maintaining onchain liquidity. Using a yield-bearing token as the loan asset is called <span className="text-rating-a font-medium">"productive debt"</span>.

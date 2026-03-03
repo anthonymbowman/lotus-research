@@ -8,7 +8,7 @@ export function PageHeader({ whatYoullLearn, tryThis }: PageHeaderProps) {
     <div className="mb-8">
       {/* Learning objectives */}
       {whatYoullLearn.length > 0 && (
-        <div className="bg-lotus-grey-900 border border-lotus-grey-700 rounded p-5 mb-6">
+        <div className="bg-lotus-grey-900 border border-lotus-grey-700 rounded p-6 mb-6">
           <h4 className="text-sm font-medium text-lotus-purple-400 uppercase tracking-wide mb-3">
             What you'll learn
           </h4>

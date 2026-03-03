@@ -46,7 +46,7 @@ export function Glossary({ focusTerm }: GlossaryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-lotus-grey-900 rounded p-5 border border-lotus-grey-700">
+      <div className="bg-lotus-grey-900 rounded p-6 border border-lotus-grey-700">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <label className="block text-sm font-medium text-lotus-grey-200 mb-2" htmlFor="glossary-search">
