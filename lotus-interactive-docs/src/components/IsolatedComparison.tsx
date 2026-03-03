@@ -105,7 +105,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
   return (
     <div className="space-y-6">
       {/* Explanation */}
-      <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
         <h4 className="font-medium text-lotus-grey-200 mb-3">What This Comparison Shows</h4>
         <div className="text-sm text-lotus-grey-300 space-y-2">
           <p>
@@ -121,7 +121,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
             <div className="font-mono text-xs mt-2 space-y-1 text-lotus-grey-300">
               <p>Lotus liquidity = freeSupply ÷ supply</p>
               <p>Isolated liquidity = (supply − borrow) ÷ supply</p>
-              <p className="text-emerald-400">∴ isoBorrow = min(demand, supply × (1 − freeSupply ÷ supply))</p>
+              <p className="text-rating-a">∴ isoBorrow = min(demand, supply × (1 − freeSupply ÷ supply))</p>
             </div>
           </div>
           <p className="font-medium text-lotus-grey-200">Result:</p>
@@ -134,25 +134,25 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-lotus-purple-900/30 rounded-lg p-4 border border-lotus-purple-700/50">
+        <div className="bg-lotus-purple-900/30 rounded p-4 border border-lotus-purple-700/50">
           <div className="text-xs text-lotus-purple-300">Lotus Total Borrow</div>
           <div className="text-xl font-mono font-semibold text-lotus-purple-300">
             ${formatNumber(totals.lotusTotalBorrow, 0)}
           </div>
         </div>
-        <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+        <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
           <div className="text-xs text-lotus-grey-300">Isolated Total Borrow</div>
           <div className="text-xl font-mono font-semibold text-lotus-grey-300">
             ${formatNumber(totals.isoTotalBorrow, 0)}
           </div>
         </div>
-        <div className="bg-emerald-900/30 rounded-lg p-4 border border-emerald-700/50">
-          <div className="text-xs text-emerald-400">Lotus Avg Supply Rate</div>
-          <div className="text-xl font-mono font-semibold text-emerald-300">
+        <div className="bg-rating-a/15 rounded p-4 border border-rating-a/50">
+          <div className="text-xs text-rating-a">Lotus Avg Supply Rate</div>
+          <div className="text-xl font-mono font-semibold text-rating-a">
             {formatPercent(totals.lotusAvgSupplyRate, 2)}
           </div>
         </div>
-        <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
+        <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
           <div className="text-xs text-lotus-grey-300">Isolated Avg Supply Rate</div>
           <div className="text-xl font-mono font-semibold text-lotus-grey-300">
             {formatPercent(totals.isoAvgSupplyRate, 2)}
@@ -162,15 +162,15 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
 
       {/* Benefits summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-lotus-purple-900/20 rounded-lg p-3 border border-lotus-purple-700/50">
+        <div className="bg-lotus-purple-900/20 rounded p-3 border border-lotus-purple-700/50">
           <div className="text-sm text-lotus-purple-300">
             <strong>More Borrowing:</strong> Lotus enables{' '}
             <span className="font-mono">${formatNumber(totals.borrowDiff, 0)}</span>{' '}
             ({formatPercent(totals.borrowDiffPercent, 0)}) more borrowing at the same liquidity level
           </div>
         </div>
-        <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50">
-          <div className="text-sm text-emerald-300">
+        <div className="bg-rating-a/15 rounded p-3 border border-rating-a/50">
+          <div className="text-sm text-rating-a">
             <strong>Higher Yield:</strong> Lenders earn{' '}
             <span className="font-mono">{formatPercent(totals.supplyRateDiff, 2)}</span>{' '}
             more on average due to higher utilization
@@ -179,13 +179,13 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
       </div>
 
       {/* Line Chart */}
-      <div className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700">
+      <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
         <h4 className="font-medium text-lotus-grey-200 mb-4">Rates by LLTV</h4>
         <RateComparisonChart data={comparison} />
       </div>
 
       {/* Data Table */}
-      <div className="bg-lotus-grey-800 rounded-lg border border-lotus-grey-700 overflow-x-auto">
+      <div className="bg-lotus-grey-800 rounded border border-lotus-grey-700 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-lotus-grey-700 bg-lotus-grey-800">
@@ -195,7 +195,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
               <th className="text-right py-2 px-3 font-semibold text-lotus-purple-300">Lotus Borrow</th>
               <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Iso Borrow</th>
               <th className="text-right py-2 px-3 font-semibold text-lotus-purple-300">Liquidity %</th>
-              <th className="text-right py-2 px-3 font-semibold text-emerald-400">Lotus Supply Rate</th>
+              <th className="text-right py-2 px-3 font-semibold text-rating-a">Lotus Supply Rate</th>
               <th className="text-right py-2 px-3 font-semibold text-lotus-grey-300">Iso Supply Rate</th>
             </tr>
           </thead>
@@ -218,7 +218,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
                 <td className="py-2 px-3 text-right font-mono text-lotus-purple-300">
                   {formatPercent(c.lotusLiquidityPercent, 0)}
                 </td>
-                <td className="py-2 px-3 text-right font-mono text-emerald-400">
+                <td className="py-2 px-3 text-right font-mono text-rating-a">
                   {formatPercent(c.lotusSupplyRate, 2)}
                 </td>
                 <td className="py-2 px-3 text-right font-mono text-lotus-grey-300">
@@ -231,7 +231,7 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
       </div>
 
       {/* Formula explanation */}
-      <div className="bg-lotus-grey-700/50 rounded-lg p-3 text-sm text-lotus-grey-300">
+      <div className="bg-lotus-grey-900 rounded p-3 text-sm text-lotus-grey-300">
         <div className="font-mono text-xs space-y-1">
           <p><strong className="text-lotus-grey-300">Borrow Rate:</strong> baseRate + spread (constant for both)</p>
           <p><strong className="text-lotus-grey-300">Iso Borrow:</strong> min(lotusBorrow, supply × (1 − freeSupply ÷ supply))</p>
@@ -241,30 +241,30 @@ export function IsolatedComparison({ tranches, productiveDebtRate }: IsolatedCom
       </div>
 
       {/* Why isolated markets can't serve high-risk borrowers */}
-      <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-700/50">
-        <h4 className="font-medium text-amber-300 mb-3">
+      <div className="bg-rating-b/10 rounded p-4 border border-rating-b/50">
+        <h4 className="font-medium text-rating-b mb-3">
           Why Isolated Markets Can't Efficiently Serve High-Risk Borrowers
         </h4>
-        <div className="text-sm text-amber-200/80 space-y-3">
+        <div className="text-sm text-rating-b/80 space-y-3">
           <p>
-            In practice, isolated lending markets converge toward a <strong className="text-amber-300">single equilibrium LLTV per asset pair</strong>.
+            In practice, isolated lending markets converge toward a <strong className="text-rating-b">single equilibrium LLTV per asset pair</strong>.
             This is a game-theoretical result:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2">
             <li>
-              <strong className="text-amber-300">Lenders concentrate in the safest market</strong> — Given a choice between isolated markets
+              <strong className="text-rating-b">Lenders concentrate in the safest market</strong> — Given a choice between isolated markets
               at 75%, 80%, 85%, etc., risk-averse lenders prefer the lower LLTV for less default exposure.
             </li>
             <li>
-              <strong className="text-amber-300">Liquidity fragments and dries up</strong> — With lenders concentrated in safe tranches,
+              <strong className="text-rating-b">Liquidity fragments and dries up</strong> — With lenders concentrated in safe tranches,
               higher-LLTV markets have insufficient supply, driving up rates until borrowing becomes uneconomical.
             </li>
             <li>
-              <strong className="text-amber-300">Equilibrium: one market wins</strong> — The market converges to a single LLTV that balances
+              <strong className="text-rating-b">Equilibrium: one market wins</strong> — The market converges to a single LLTV that balances
               lender risk appetite with borrower demand. Higher-risk tranches simply don't exist in equilibrium.
             </li>
           </ul>
-          <p className="font-medium text-amber-300 mt-3">
+          <p className="font-medium text-rating-b mt-3">
             Lotus solves this by connecting liquidity across tranches. Lenders at any LLTV benefit from the full
             stack's liquidity, enabling sustainable markets at higher LLTVs (85%, 90%, 95%) that would be
             impossible with isolated markets.
@@ -339,15 +339,15 @@ function RateComparisonChart({ data }: { data: ComparisonPoint[] }) {
         <path
           d={generatePath((p) => p.borrowRate)}
           fill="none"
-          stroke="#f97316"
+          stroke="#FFA5CD"
           strokeWidth="2.5"
         />
 
-        {/* Lotus Supply Rate (solid emerald) */}
+        {/* Lotus Supply Rate (solid rating-a) */}
         <path
           d={generatePath((p) => p.lotusSupplyRate)}
           fill="none"
-          stroke="#10b981"
+          stroke="#6BF4A0"
           strokeWidth="2.5"
         />
 
@@ -363,8 +363,8 @@ function RateComparisonChart({ data }: { data: ComparisonPoint[] }) {
         {/* Data points */}
         {data.map((point) => (
           <g key={point.lltv}>
-            <circle cx={xScale(point.lltv)} cy={yScale(point.borrowRate)} r="4" fill="#f97316" />
-            <circle cx={xScale(point.lltv)} cy={yScale(point.lotusSupplyRate)} r="4" fill="#10b981" />
+            <circle cx={xScale(point.lltv)} cy={yScale(point.borrowRate)} r="4" fill="#FFA5CD" />
+            <circle cx={xScale(point.lltv)} cy={yScale(point.lotusSupplyRate)} r="4" fill="#6BF4A0" />
             <circle cx={xScale(point.lltv)} cy={yScale(point.isoSupplyRate)} r="3" fill="#736D7F" />
           </g>
         ))}
@@ -438,13 +438,13 @@ function RateComparisonChart({ data }: { data: ComparisonPoint[] }) {
         {/* Legend on right side */}
         <g transform={`translate(${width - padding.right + 10}, ${padding.top + 20})`}>
           <g>
-            <line x1="0" y1="0" x2="20" y2="0" stroke="#f97316" strokeWidth="2.5" />
-            <circle cx="10" cy="0" r="3" fill="#f97316" />
+            <line x1="0" y1="0" x2="20" y2="0" stroke="#FFA5CD" strokeWidth="2.5" />
+            <circle cx="10" cy="0" r="3" fill="#FFA5CD" />
             <text x="28" y="0" dominantBaseline="middle" className="text-xs fill-lotus-grey-300">Borrow Rate</text>
           </g>
           <g transform="translate(0, 24)">
-            <line x1="0" y1="0" x2="20" y2="0" stroke="#10b981" strokeWidth="2.5" />
-            <circle cx="10" cy="0" r="3" fill="#10b981" />
+            <line x1="0" y1="0" x2="20" y2="0" stroke="#6BF4A0" strokeWidth="2.5" />
+            <circle cx="10" cy="0" r="3" fill="#6BF4A0" />
             <text x="28" y="0" dominantBaseline="middle" className="text-xs fill-lotus-grey-300">Lotus Supply</text>
           </g>
           <g transform="translate(0, 48)">

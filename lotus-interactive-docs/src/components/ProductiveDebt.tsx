@@ -4,9 +4,45 @@ import type { ChartPoint } from '../types';
 import { DefinitionBadge } from './DefinitionBadge';
 import { ExportButton } from './ExportButton';
 import { TeachingPrompt } from './TeachingPrompt';
+import { ContextZone } from './ContextZone';
+import { InteractiveZone } from './InteractiveZone';
+import { DetailZone } from './DetailZone';
 import { content } from '../content';
 
 const { productiveDebt: pdContent } = content;
+
+// Stepper button component for increment/decrement
+function StepperButton({
+  direction,
+  onClick,
+  disabled = false
+}: {
+  direction: 'up' | 'down';
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-sm transition-colors touch-manipulation
+        ${disabled
+          ? 'bg-lotus-grey-700 text-lotus-grey-500 cursor-not-allowed'
+          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white active:bg-lotus-purple-700'
+        }`}
+      aria-label={direction === 'up' ? 'Increase' : 'Decrease'}
+    >
+      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        {direction === 'up' ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        )}
+      </svg>
+    </button>
+  );
+}
 
 interface ProductiveDebtProps {
   baseRate: number;
@@ -44,11 +80,11 @@ function IntroSection() {
         {pdContent.intro.benefits.map((benefit, i) => (
           <div
             key={i}
-            className="bg-lotus-grey-800 rounded-lg p-4 border border-lotus-grey-700 hover:border-lotus-purple-500/50 transition-colors"
+            className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700 hover:border-lotus-purple-500/50 transition-colors"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className="text-lotus-purple-400">{icons[i]}</div>
-              <h4 className="font-medium text-lotus-grey-100">{benefit.title}</h4>
+              <h4 className="font-body font-bold text-lotus-grey-100">{benefit.title}</h4>
             </div>
             <p className="text-sm text-lotus-grey-300">{benefit.description}</p>
           </div>
@@ -68,53 +104,69 @@ interface RateCompositionSectionProps {
   onSpreadChange: (value: number) => void;
 }
 
-function RateCompositionSection({ baseRate, spread, onSpreadChange }: RateCompositionSectionProps) {
+// Content-only version for use inside InteractiveZone
+function RateCompositionSectionContent({ baseRate, spread, onSpreadChange }: RateCompositionSectionProps) {
   const borrowRate = baseRate + spread;
   const rc = pdContent.rateComposition;
 
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{rc.heading}</h3>
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <p className="text-sm text-lotus-grey-300 mb-6 text-center max-w-xl mx-auto">
-          {rc.description}
-        </p>
+    <div className="space-y-6">
+      <p className="text-sm text-lotus-grey-300 text-center max-w-xl mx-auto">
+        {rc.description}
+      </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <div className="bg-emerald-900/30 border border-emerald-700 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-emerald-400 mb-1 font-medium">{rc.baseRateLabel}</div>
-            <div className="text-2xl font-mono font-semibold text-emerald-300">
-              {formatPercent(baseRate)}
-            </div>
-            <div className="text-xs text-emerald-500 mt-1">{rc.baseRateSource}</div>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="bg-rating-a/15 border border-rating-a rounded px-5 py-4 text-center min-w-[140px]">
+          <div className="text-xs text-rating-a mb-1 font-medium">{rc.baseRateLabel}</div>
+          <div className="text-2xl font-mono font-semibold text-rating-a">
+            {formatPercent(baseRate)}
           </div>
+          <div className="text-xs text-rating-a/70 mt-1">{rc.baseRateSource}</div>
+        </div>
 
-          <div className="text-3xl font-light text-lotus-grey-600">+</div>
+        <div className="text-3xl font-light text-lotus-grey-600">+</div>
 
-          <div className="bg-lotus-purple-900/30 border border-lotus-purple-700 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-purple-400 mb-1 font-medium">{rc.creditSpreadLabel}</div>
-            <input
-              type="number"
-              value={spread * 100}
-              onChange={(e) => onSpreadChange(parseFloat(e.target.value) / 100 || 0)}
-              step="0.5"
-              min="0"
-              max="50"
-              className="w-24 text-2xl font-mono font-semibold text-lotus-purple-300 bg-transparent text-center border-b-2 border-lotus-purple-500 focus:border-lotus-purple-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        <div className="bg-lotus-purple-900/30 border border-lotus-purple-700 border-l-2 border-l-lotus-purple-500 rounded px-5 py-4 text-center min-w-[140px]">
+          <div className="text-xs text-lotus-purple-400 mb-1 font-medium">{rc.creditSpreadLabel}</div>
+          <div className="flex items-center justify-center gap-2">
+            <StepperButton
+              direction="down"
+              onClick={() => onSpreadChange(Math.max(0, spread - 0.005))}
+              disabled={spread <= 0}
             />
-            <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
-            <div className="text-xs text-lotus-purple-500 mt-1">{rc.creditSpreadSource}</div>
-          </div>
-
-          <div className="text-3xl font-light text-lotus-grey-600">=</div>
-
-          <div className="bg-lotus-grey-700 border border-lotus-grey-600 rounded-lg px-5 py-4 text-center min-w-[140px]">
-            <div className="text-xs text-lotus-grey-300 mb-1 font-medium">{rc.borrowRateLabel}</div>
-            <div className="text-2xl font-mono font-semibold text-lotus-grey-100">
-              {formatPercent(borrowRate)}
+            <div className="flex items-center">
+              <input
+                type="number"
+                value={(spread * 100).toFixed(2)}
+                onChange={(e) => onSpreadChange(Math.min(0.5, Math.max(0, parseFloat(e.target.value) / 100 || 0)))}
+                step="0.5"
+                min="0"
+                max="50"
+                aria-label="Credit spread percentage"
+                className="w-20 text-2xl font-mono font-semibold text-lotus-purple-300 bg-lotus-grey-900 text-center border-2 border-lotus-purple-500/40 rounded-sm
+                  hover:border-lotus-purple-400 hover:bg-lotus-grey-800
+                  focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
+                  transition-colors cursor-text [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <span className="text-2xl font-mono font-semibold text-lotus-purple-300">%</span>
             </div>
-            <div className="text-xs text-lotus-grey-300 mt-1">{rc.borrowRateSource}</div>
+            <StepperButton
+              direction="up"
+              onClick={() => onSpreadChange(Math.min(0.5, spread + 0.005))}
+              disabled={spread >= 0.5}
+            />
           </div>
+          <div className="text-xs text-lotus-purple-500 mt-1">{rc.creditSpreadSource}</div>
+        </div>
+
+        <div className="text-3xl font-light text-lotus-grey-600">=</div>
+
+        <div className="bg-lotus-grey-700 border border-lotus-grey-700 rounded px-5 py-4 text-center min-w-[140px]">
+          <div className="text-xs text-lotus-grey-300 mb-1 font-medium">{rc.borrowRateLabel}</div>
+          <div className="text-2xl font-mono font-semibold text-lotus-grey-100">
+            {formatPercent(borrowRate)}
+          </div>
+          <div className="text-xs text-lotus-grey-300 mt-1">{rc.borrowRateSource}</div>
         </div>
       </div>
     </div>
@@ -132,14 +184,14 @@ interface SpreadCompressionSectionProps {
   onUtilizationChange: (value: number) => void;
 }
 
-function SpreadCompressionSection({
+// Content-only version for use inside InteractiveZone
+function SpreadCompressionSectionContent({
   baseRate,
   spread,
   utilization,
   onUtilizationChange,
 }: SpreadCompressionSectionProps) {
   const [lenderShare, setLenderShare] = useState(0.5);
-  const [showFormulas, setShowFormulas] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
   const sc = pdContent.spreadCompression;
 
@@ -165,347 +217,344 @@ function SpreadCompressionSection({
   const borrowerShare = 1 - lenderShare;
 
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{sc.heading}</h3>
+    <div className="space-y-6">
+      {/* What is Spread Compression */}
+      <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
+        <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.whatIs.heading}</h4>
+        <p className="text-sm text-lotus-grey-300 mb-3">
+          The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
+          The <strong>credit spread</strong> is the additional rate set by the Interest Rate Model (IRM) on top of the base rate.
+          In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
+        </p>
+        <h4 className="text-sm font-medium text-lotus-grey-200 mb-2">{sc.whyMatters.heading}</h4>
+        <p className="text-sm text-lotus-grey-300">
+          Productive debt (PD) compresses this spread by ensuring idle liquidity earns the base rate.
+          This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
+          — especially when utilization is low.
+        </p>
+      </div>
 
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        {/* Section 1: Controls (NOT exported) */}
-        <div className="controls-section">
-          {/* What is Spread Compression */}
-          <div className="bg-lotus-purple-900/20 rounded-lg p-4 border border-lotus-purple-700/50 mb-6">
-            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whatIs.heading}</h4>
-            <p className="text-sm text-lotus-purple-300 mb-3">
-              The <strong>borrow-lend spread</strong> is the gap between what borrowers pay and what lenders earn.
-              The <strong>credit spread</strong> is the additional rate set by the Interest Rate Model (IRM) on top of the base rate.
-              In traditional markets, when utilization is low, this gap is large because idle capital earns nothing.
-            </p>
-            <h4 className="text-sm font-medium text-lotus-purple-200 mb-2">{sc.whyMatters.heading}</h4>
-            <p className="text-sm text-lotus-purple-300">
-              Productive debt (PD) compresses this spread by ensuring idle liquidity earns the base rate.
-              This means <strong>better rates for both sides</strong>: borrowers pay less, and lenders earn more
-              — especially when utilization is low.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <div className="flex justify-between items-center mb-2">
-                <DefinitionBadge
-                  label="Utilization"
-                  formula="1 - (Free Supply / Jr Supply)"
-                  note="This is the utilization that drives IRM rates. Higher utilization = higher borrow rates."
-                  textColor="text-lotus-grey-300"
-                  className="text-sm font-medium"
-                />
-                <span className="text-lg font-mono font-semibold text-lotus-grey-100">
-                  {(utilization * 100).toFixed(0)}%
-                </span>
-              </div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-medium text-emerald-400">No Utilization</span>
-                <span className="text-xs font-medium text-orange-400">Full Utilization</span>
-              </div>
-              <input
-                type="range"
-                value={utilization * 100}
-                onChange={(e) => onUtilizationChange(parseFloat(e.target.value) / 100)}
-                min="0"
-                max="100"
-                step="5"
-                className="w-full"
-              />
-              <p className="text-xs text-lotus-grey-300 mt-2">
-                {sc.utilizationNote}
-              </p>
-            </div>
-
-            <div className="bg-lotus-grey-700/50 rounded-lg p-4 border border-lotus-grey-600">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-lotus-grey-300">{sc.efficiencySplitLabel}</span>
-                <span className="text-lg font-mono font-semibold text-lotus-grey-100">
-                  {((1 - lenderShare) * 100).toFixed(0)}% / {(lenderShare * 100).toFixed(0)}%
-                </span>
-              </div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-medium text-blue-400">Borrowers</span>
-                <span className="text-xs font-medium text-emerald-400">Lenders</span>
-              </div>
-              <input
-                type="range"
-                value={lenderShare * 100}
-                onChange={(e) => setLenderShare(parseFloat(e.target.value) / 100)}
-                min="0"
-                max="100"
-                step="5"
-                className="w-full"
-              />
-              <p className="text-xs text-lotus-grey-300 mt-2">
-                {sc.efficiencySplitNote}
-              </p>
-            </div>
-          </div>
-
-          {/* 0% Utilization Explanation */}
-          {utilization === 0 && (
-            <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-700/50 mb-4">
-              <p className="text-sm text-emerald-300">
-                {sc.zeroUtilizationNote}
-              </p>
-            </div>
-          )}
+      {/* Try this prompt */}
+      <div className="flex items-center gap-3 bg-lotus-purple-900/30 border border-lotus-grey-700 rounded px-4 py-3">
+        <div className="w-8 h-8 bg-lotus-purple-500 rounded-sm flex items-center justify-center flex-shrink-0">
+          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          </svg>
         </div>
-
-        {/* Section 2: Exportable Visual */}
-        <div ref={exportRef} className="export-section bg-lotus-grey-800 rounded-lg p-6 pb-8 relative">
-          {/* Export Button - top right */}
-          <ExportButton targetRef={exportRef} filename="spread-compression-comparison" />
-
-          {/* Export Title */}
-          <h4 className="text-lg font-semibold text-lotus-grey-100 mb-3 text-center pr-10">
-            {sc.chartTitle}
-          </h4>
-
-          {/* Input Summary Line */}
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-lotus-grey-300 mb-6 pb-4 border-b border-lotus-grey-700">
-            <span>
-              Utilization: <span className="font-mono font-medium text-lotus-grey-100">{(utilization * 100).toFixed(0)}%</span>
-            </span>
-            <span className="text-lotus-grey-600">|</span>
-            <span>
-              Borrow Rate: <span className="font-mono font-medium text-lotus-grey-100">{formatPercent(borrowRate)}</span>
-            </span>
-            <span className="text-lotus-grey-600">|</span>
-            <span>
-              Base Rate: <span className="font-mono font-medium text-lotus-grey-100">{formatPercent(baseRate)}</span>
-            </span>
-            <span className="text-lotus-grey-600">|</span>
-            <span>
-              Efficiency Split: <span className="text-lotus-grey-400">Borrowers </span><span className="font-mono font-medium text-emerald-400">{(borrowerShare * 100).toFixed(0)}%</span>
-              <span className="text-lotus-grey-400"> / Lenders </span>
-              <span className="font-mono font-medium text-emerald-400">{(lenderShare * 100).toFixed(0)}%</span>
-            </span>
-          </div>
-
-          <div className="space-y-6">
-            {/* Borrow Rate Comparison */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-lotus-grey-300">Borrow Rate</span>
-                {borrowImprovement > 0.00005 && (
-                  <span className="text-xs font-medium text-emerald-400 bg-emerald-900/30 px-2 py-0.5 rounded">
-                    {formatPercent(borrowImprovement)} savings
-                  </span>
-                )}
-              </div>
-              <div className="space-y-2">
-                {/* No PD bar */}
-                {(() => {
-                  const widthPercent = (borrowRateNoPD / maxRate) * 100;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
-                      <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(borrowRateNoPD)}</span>
-                      <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
-                        <div
-                          className="h-full bg-lotus-grey-500 rounded-lg"
-                          style={{ width: `${widthPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })()}
-                {/* With PD bar - Split into Base Rate + Credit Spread segments */}
-                {(() => {
-                  const totalWidthPercent = (borrowRatePD / maxRate) * 100;
-                  const baseRateProportion = baseRate / borrowRatePD;
-                  const spreadProportion = spreadAdj / borrowRatePD;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
-                      <span className="text-xs font-mono text-emerald-400 font-medium w-14 text-right">{formatPercent(borrowRatePD)}</span>
-                      <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-visible relative">
-                        <div className="h-full flex" style={{ width: `${totalWidthPercent}%` }}>
-                          {/* Base Rate segment */}
-                          <div
-                            className="h-full bg-emerald-600 rounded-l-lg flex items-center justify-center"
-                            style={{ width: `${baseRateProportion * 100}%` }}
-                          >
-                            <span className="text-[10px] font-mono text-white font-medium px-1 truncate">
-                              {formatPercent(baseRate)}
-                            </span>
-                          </div>
-                          {/* Credit Spread segment */}
-                          {spreadAdj > 0 && (
-                            <div
-                              className="h-full bg-teal-400 rounded-r-lg flex items-center justify-center"
-                              style={{ width: `${spreadProportion * 100}%` }}
-                            >
-                              <span className="text-[10px] font-mono text-teal-900 font-medium px-1 truncate">
-                                {formatPercent(spreadAdj)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-              {/* Legend for split bar */}
-              <div className="flex gap-4 mt-2 ml-[124px] text-[10px]">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-emerald-600 rounded"></div>
-                  <span className="text-lotus-grey-300">Base Rate</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-teal-400 rounded"></div>
-                  <span className="text-lotus-grey-300">Credit Spread</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Supply Rate Comparison */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-lotus-grey-300">Supply Rate</span>
-                {supplyImprovement > 0.00005 && (
-                  <span className="text-xs font-medium text-emerald-400 bg-emerald-900/30 px-2 py-0.5 rounded">
-                    +{formatPercent(supplyImprovement)} yield
-                  </span>
-                )}
-              </div>
-              <div className="space-y-2">
-                {/* No PD bar */}
-                {(() => {
-                  const widthPercent = (supplyRateNoPD / maxRate) * 100;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
-                      <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(supplyRateNoPD)}</span>
-                      <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
-                        <div
-                          className="h-full bg-lotus-grey-500 rounded-lg"
-                          style={{ width: `${widthPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })()}
-                {/* With PD bar */}
-                {(() => {
-                  const widthPercent = (supplyRatePD / maxRate) * 100;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
-                      <span className="text-xs font-mono text-emerald-400 font-medium w-14 text-right">{formatPercent(supplyRatePD)}</span>
-                      <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-visible relative">
-                        <div
-                          className="h-full bg-emerald-500 rounded-lg"
-                          style={{ width: `${widthPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Borrow-Lend Spread Comparison */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-lotus-grey-300">Borrow-Lend Spread</span>
-                <span className="text-xs text-lotus-grey-300">(inefficiency in the market)</span>
-              </div>
-              <div className="space-y-2">
-                {/* No PD bar */}
-                {(() => {
-                  const widthPercent = (blSpreadNoPD / maxRate) * 100;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
-                      <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(blSpreadNoPD)}</span>
-                      <div className="flex-1 h-8 bg-lotus-grey-700 rounded-lg overflow-visible relative">
-                        <div
-                          className="h-full bg-lotus-grey-500 rounded-lg"
-                          style={{ width: `${widthPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })()}
-                {/* With PD bar */}
-                {(() => {
-                  const widthPercent = (blSpreadPD / maxRate) * 100;
-                  return (
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-emerald-400 w-16 font-medium">With PD</span>
-                      <span className="text-xs font-mono text-emerald-400 font-medium w-14 text-right">{formatPercent(blSpreadPD)}</span>
-                      <div className="flex-1 h-8 bg-emerald-900/30 rounded-lg overflow-visible relative">
-                        <div
-                          className="h-full bg-emerald-500 rounded-lg"
-                          style={{ width: `${widthPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-          </div>
-
-          {/* Efficiency Multiple */}
-          {blSpreadNoPD > 0 && (
-            <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-700/50 mt-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-sm font-medium text-emerald-300">{sc.spreadEfficiency.label}</span>
-                  <p className="text-xs text-emerald-200/70 mt-0.5">{sc.spreadEfficiency.description}</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-2xl font-mono font-bold text-emerald-400">
-                    {blSpreadPD > 0 ? `${(blSpreadNoPD / blSpreadPD).toFixed(1)}x` : '∞'}
-                  </span>
-                  <span className="text-sm text-emerald-300 ml-2">tighter</span>
-                  <div className="text-xs text-emerald-400 mt-1">
-                    ↓ {formatPercent(blSpreadNoPD - blSpreadPD)} spread reduction
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Formulas toggle (outside exportable section) */}
-        <div className="mt-6 border-t border-lotus-grey-700 pt-4">
-          <button
-            onClick={() => setShowFormulas(!showFormulas)}
-            className="flex items-center gap-2 text-sm text-lotus-grey-400 hover:text-lotus-grey-200 transition-colors"
-          >
-            <svg
-              className={`w-4 h-4 transition-transform ${showFormulas ? 'rotate-90' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            {showFormulas ? 'Hide formulas' : 'Show formulas'}
-          </button>
-          {showFormulas && (
-            <div className="mt-3 p-3 bg-lotus-grey-900 rounded-lg text-sm font-mono">
-              <p className="text-emerald-400">
-                <span className="text-emerald-300">Supply Rate (with PD)</span> = Base Rate + (Spread × Utilization)
-              </p>
-              <p className="text-lotus-grey-300 mt-1">
-                <span className="text-lotus-grey-300">Supply Rate (no PD)</span> = Borrow Rate × Utilization
-              </p>
-              <p className="text-lotus-grey-300 mt-2">
-                <span className="text-lotus-grey-300">B-L Spread</span> = Borrow Rate − Supply Rate
-              </p>
-            </div>
-          )}
+        <div>
+          <span className="text-sm font-medium text-lotus-purple-300">Try this</span>
+          <p className="text-lotus-grey-200 text-sm">Drag utilization to 30% and watch how productive debt dramatically improves rates at low utilization.</p>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500">
+          <div className="flex justify-between items-center mb-2">
+            <DefinitionBadge
+              label="Utilization"
+              formula="1 - (Free Supply / Jr Supply)"
+              note="This is the utilization that drives IRM rates. Higher utilization = higher borrow rates."
+              textColor="text-lotus-grey-300"
+              className="text-sm font-medium"
+            />
+            <span className="text-lg font-mono font-semibold text-lotus-grey-100">
+              {(utilization * 100).toFixed(0)}%
+            </span>
+          </div>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-medium text-rating-a">No Utilization</span>
+            <span className="text-xs font-medium text-rating-c-plus">Full Utilization</span>
+          </div>
+          <input
+            type="range"
+            value={utilization * 100}
+            onChange={(e) => onUtilizationChange(parseFloat(e.target.value) / 100)}
+            min="0"
+            max="100"
+            step="5"
+            aria-label="Utilization percentage"
+            className="w-full"
+          />
+          <p className="text-xs text-lotus-grey-300 mt-2">
+            {sc.utilizationNote}
+          </p>
+        </div>
+
+        <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-lotus-grey-300">{sc.efficiencySplitLabel}</span>
+            <span className="text-lg font-mono font-semibold text-lotus-grey-100">
+              {((1 - lenderShare) * 100).toFixed(0)}% / {(lenderShare * 100).toFixed(0)}%
+            </span>
+          </div>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-medium text-rating-c-plus">Borrowers</span>
+            <span className="text-xs font-medium text-rating-a">Lenders</span>
+          </div>
+          <input
+            type="range"
+            value={lenderShare * 100}
+            onChange={(e) => setLenderShare(parseFloat(e.target.value) / 100)}
+            min="0"
+            max="100"
+            step="5"
+            aria-label="Efficiency split between borrowers and lenders"
+            className="w-full"
+          />
+          <p className="text-xs text-lotus-grey-300 mt-2">
+            {sc.efficiencySplitNote}
+          </p>
+        </div>
+      </div>
+
+      {/* 0% Utilization Explanation */}
+      {utilization === 0 && (
+        <div className="bg-rating-a/15 rounded p-3 border border-rating-a/50">
+          <p className="text-sm text-rating-a">
+            {sc.zeroUtilizationNote}
+          </p>
+        </div>
+      )}
+
+      {/* Exportable Visual */}
+      <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded p-6 pb-8 relative border border-lotus-grey-700">
+        {/* Export Button - top right */}
+        <ExportButton targetRef={exportRef} filename="spread-compression-comparison" />
+
+        {/* Export Title */}
+        <h4 className="text-lg font-semibold text-lotus-grey-100 mb-3 text-center pr-10">
+          {sc.chartTitle}
+        </h4>
+
+        {/* Input Summary Line */}
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-lotus-grey-300 mb-6 pb-4 border-b border-lotus-grey-700">
+          <span>
+            Utilization: <span className="font-mono font-medium text-lotus-grey-100">{(utilization * 100).toFixed(0)}%</span>
+          </span>
+          <span className="text-lotus-grey-600">|</span>
+          <span>
+            Borrow Rate: <span className="font-mono font-medium text-lotus-grey-100">{formatPercent(borrowRate)}</span>
+          </span>
+          <span className="text-lotus-grey-600">|</span>
+          <span>
+            Base Rate: <span className="font-mono font-medium text-lotus-grey-100">{formatPercent(baseRate)}</span>
+          </span>
+          <span className="text-lotus-grey-600">|</span>
+          <span>
+            Efficiency Split: <span className="text-lotus-grey-400">Borrowers </span><span className="font-mono font-medium text-rating-a">{(borrowerShare * 100).toFixed(0)}%</span>
+            <span className="text-lotus-grey-400"> / Lenders </span>
+            <span className="font-mono font-medium text-rating-a">{(lenderShare * 100).toFixed(0)}%</span>
+          </span>
+        </div>
+
+        <div className="space-y-6">
+          {/* Borrow Rate Comparison */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-lotus-grey-300">Borrow Rate</span>
+              {borrowImprovement > 0.00005 && (
+                <span className="text-xs font-medium text-rating-a bg-rating-a/15 px-2 py-0.5 rounded-sm">
+                  {formatPercent(borrowImprovement)} savings
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (borrowRateNoPD / maxRate) * 100;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
+                    <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(borrowRateNoPD)}</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
+                      <div
+                        className="h-full bg-lotus-grey-500 rounded"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+              {/* With PD bar - Split into Base Rate + Credit Spread segments */}
+              {(() => {
+                const totalWidthPercent = (borrowRatePD / maxRate) * 100;
+                const baseRateProportion = baseRate / borrowRatePD;
+                const spreadProportion = spreadAdj / borrowRatePD;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-rating-a w-16 font-medium">With PD</span>
+                    <span className="text-xs font-mono text-rating-a font-medium w-14 text-right">{formatPercent(borrowRatePD)}</span>
+                    <div className="flex-1 h-8 bg-rating-a/15 rounded overflow-visible relative">
+                      <div className="h-full flex" style={{ width: `${totalWidthPercent}%` }}>
+                        {/* Base Rate segment */}
+                        <div
+                          className="h-full bg-rating-a rounded-l flex items-center justify-center"
+                          style={{ width: `${baseRateProportion * 100}%` }}
+                        >
+                          <span className="text-[10px] font-mono text-lotus-grey-900 font-medium px-1 truncate">
+                            {formatPercent(baseRate)}
+                          </span>
+                        </div>
+                        {/* Credit Spread segment */}
+                        {spreadAdj > 0 && (
+                          <div
+                            className="h-full bg-rating-a-plus rounded-r flex items-center justify-center"
+                            style={{ width: `${spreadProportion * 100}%` }}
+                          >
+                            <span className="text-[10px] font-mono text-lotus-grey-900 font-medium px-1 truncate">
+                              {formatPercent(spreadAdj)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+            {/* Legend for split bar */}
+            <div className="flex gap-4 mt-2 ml-[124px] text-[10px]">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-rating-a rounded"></div>
+                <span className="text-lotus-grey-300">Base Rate</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-rating-a-plus rounded"></div>
+                <span className="text-lotus-grey-300">Credit Spread</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Supply Rate Comparison */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-lotus-grey-300">Supply Rate</span>
+              {supplyImprovement > 0.00005 && (
+                <span className="text-xs font-medium text-rating-a bg-rating-a/15 px-2 py-0.5 rounded-sm">
+                  +{formatPercent(supplyImprovement)} yield
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (supplyRateNoPD / maxRate) * 100;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
+                    <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(supplyRateNoPD)}</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
+                      <div
+                        className="h-full bg-lotus-grey-500 rounded"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+              {/* With PD bar */}
+              {(() => {
+                const widthPercent = (supplyRatePD / maxRate) * 100;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-rating-a w-16 font-medium">With PD</span>
+                    <span className="text-xs font-mono text-rating-a font-medium w-14 text-right">{formatPercent(supplyRatePD)}</span>
+                    <div className="flex-1 h-8 bg-rating-a/15 rounded overflow-visible relative">
+                      <div
+                        className="h-full bg-rating-a rounded"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Borrow-Lend Spread Comparison */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-lotus-grey-300">Borrow-Lend Spread</span>
+              <span className="text-xs text-lotus-grey-300">(inefficiency in the market)</span>
+            </div>
+            <div className="space-y-2">
+              {/* No PD bar */}
+              {(() => {
+                const widthPercent = (blSpreadNoPD / maxRate) * 100;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-lotus-grey-400 w-16">No PD</span>
+                    <span className="text-xs font-mono text-lotus-grey-300 font-medium w-14 text-right">{formatPercent(blSpreadNoPD)}</span>
+                    <div className="flex-1 h-8 bg-lotus-grey-700 rounded overflow-visible relative">
+                      <div
+                        className="h-full bg-lotus-grey-500 rounded"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+              {/* With PD bar */}
+              {(() => {
+                const widthPercent = (blSpreadPD / maxRate) * 100;
+                return (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-rating-a w-16 font-medium">With PD</span>
+                    <span className="text-xs font-mono text-rating-a font-medium w-14 text-right">{formatPercent(blSpreadPD)}</span>
+                    <div className="flex-1 h-8 bg-rating-a/15 rounded overflow-visible relative">
+                      <div
+                        className="h-full bg-rating-a rounded"
+                        style={{ width: `${widthPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+
+        {/* Efficiency Multiple */}
+        {blSpreadNoPD > 0 && (
+          <div className="bg-rating-a/15 rounded p-4 border border-rating-a/50 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-sm font-medium text-rating-a">{sc.spreadEfficiency.label}</span>
+                <p className="text-xs text-rating-a/70 mt-0.5">{sc.spreadEfficiency.description}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-mono font-bold text-rating-a">
+                  {blSpreadPD > 0 ? `${(blSpreadNoPD / blSpreadPD).toFixed(1)}x` : '∞'}
+                </span>
+                <span className="text-sm text-rating-a ml-2">tighter</span>
+                <div className="text-xs text-rating-a mt-1">
+                  ↓ {formatPercent(blSpreadNoPD - blSpreadPD)} spread reduction
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Formulas toggle */}
+      <details className="bg-lotus-grey-900 rounded border border-lotus-grey-700">
+        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-400 hover:text-lotus-grey-200">
+          Show formulas
+        </summary>
+        <div className="px-4 pb-4">
+          <div className="p-3 bg-lotus-grey-900 rounded text-sm font-mono">
+            <p className="text-rating-a">
+              <span className="text-rating-a">Supply Rate (with PD)</span> = Base Rate + (Spread × Utilization)
+            </p>
+            <p className="text-lotus-grey-300 mt-1">
+              <span className="text-lotus-grey-300">Supply Rate (no PD)</span> = Borrow Rate × Utilization
+            </p>
+            <p className="text-lotus-grey-300 mt-2">
+              <span className="text-lotus-grey-300">B-L Spread</span> = Borrow Rate − Supply Rate
+            </p>
+          </div>
+        </div>
+      </details>
     </div>
   );
 }
@@ -548,8 +597,8 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
     <div className="mb-8">
       <h3 className="text-lg font-medium text-lotus-grey-100 mb-4">{vr.heading}</h3>
 
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700">
-        <div className="bg-lotus-purple-900/20 rounded-lg p-3 border border-lotus-purple-700/50 mb-6">
+      <div className="bg-lotus-grey-800 rounded p-6 border border-lotus-grey-700">
+        <div className="bg-lotus-purple-900/20 rounded p-3 border border-lotus-purple-700/50 mb-6">
           <p className="text-sm text-lotus-purple-200">
             {vr.description}
           </p>
@@ -558,44 +607,44 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
         <BorrowRateChart data={chartData} baseRate={baseRate} spread={spread} />
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-lotus-grey-700/50 rounded-lg p-4 text-center border border-lotus-grey-600">
+          <div className="bg-lotus-grey-900 rounded p-4 text-center border border-lotus-grey-700">
             <div className="text-xs text-lotus-grey-300 uppercase tracking-wide mb-1">{vr.withoutPdRange}</div>
             <div className="text-xl font-mono font-semibold text-lotus-grey-300">
               {formatPercent(withoutPD.u0)} — {formatPercent(withoutPD.u100)}
             </div>
             <div className="text-xs text-lotus-grey-300 mt-1">Δ {formatPercent(noPdRange)}</div>
           </div>
-          <div className="bg-orange-900/30 rounded-lg p-4 text-center border border-orange-700">
-            <div className="text-xs text-orange-400 uppercase tracking-wide mb-1">{vr.withPdRange}</div>
-            <div className="text-xl font-mono font-semibold text-orange-300">
+          <div className="bg-rating-c-plus/15 rounded p-4 text-center border border-rating-c-plus">
+            <div className="text-xs text-rating-c-plus uppercase tracking-wide mb-1">{vr.withPdRange}</div>
+            <div className="text-xl font-mono font-semibold text-rating-c-plus">
               {formatPercent(withPD.u0)} — {formatPercent(withPD.u100)}
             </div>
-            <div className="text-xs text-orange-500 mt-1">Δ {formatPercent(pdRange)}</div>
+            <div className="text-xs text-rating-c-plus/70 mt-1">Δ {formatPercent(pdRange)}</div>
           </div>
-          <div className="bg-emerald-900/30 rounded-lg p-4 text-center border border-emerald-700">
-            <div className="text-xs text-emerald-400 uppercase tracking-wide mb-1">{vr.volatilityReduced}</div>
-            <div className="text-xl font-mono font-semibold text-emerald-300">
+          <div className="bg-rating-a/15 rounded p-4 text-center border border-rating-a">
+            <div className="text-xs text-rating-a uppercase tracking-wide mb-1">{vr.volatilityReduced}</div>
+            <div className="text-xl font-mono font-semibold text-rating-a">
               {volatilityReduction.toFixed(0)}%
             </div>
-            <div className="text-xs text-emerald-500 mt-1">{vr.volatilityReducedNote}</div>
+            <div className="text-xs text-rating-a/70 mt-1">{vr.volatilityReducedNote}</div>
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
           <div className="flex items-center gap-2">
             <span className="text-lotus-grey-300">0% util:</span>
-            <span className="font-mono text-orange-400">{formatPercent(withPD.u0)}</span>
+            <span className="font-mono text-rating-c-plus">{formatPercent(withPD.u0)}</span>
             <span className="text-lotus-grey-600">vs</span>
             <span className="font-mono text-lotus-grey-300">{formatPercent(withoutPD.u0)}</span>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1 bg-lotus-grey-700 rounded-full">
+          <div className="flex items-center gap-2 px-3 py-1 bg-lotus-grey-700 rounded">
             <span className="text-lotus-grey-300 font-medium">90% util:</span>
             <span className="font-mono text-lotus-grey-100">{formatPercent(borrowRate)}</span>
             <span className="text-xs text-lotus-grey-300">(equal)</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lotus-grey-300">100% util:</span>
-            <span className="font-mono text-orange-400">{formatPercent(withPD.u100)}</span>
+            <span className="font-mono text-rating-c-plus">{formatPercent(withPD.u100)}</span>
             <span className="text-lotus-grey-600">vs</span>
             <span className="font-mono text-lotus-grey-300">{formatPercent(withoutPD.u100)}</span>
           </div>
@@ -617,8 +666,8 @@ export function VolatilityReductionSection({ baseRate, spread }: VolatilityReduc
             {showFormulas ? 'Hide formulas' : 'Show formulas'}
           </button>
           {showFormulas && (
-            <div className="mt-3 p-3 bg-lotus-grey-900 rounded-lg text-sm font-mono space-y-2">
-              <p className="text-orange-400">
+            <div className="mt-3 p-3 bg-lotus-grey-900 rounded text-sm font-mono space-y-2">
+              <p className="text-rating-c-plus">
                 With PD: Rate = Base + Spread × factor(u) = {formatPercent(baseRate)} + {formatPercent(spread)} × factor
               </p>
               <p className="text-lotus-grey-300">
@@ -676,7 +725,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
   const borrowRateAt90 = baseRate + spread;
 
   return (
-    <div className="bg-lotus-grey-900 rounded-xl p-4 border border-lotus-grey-700">
+    <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto max-w-[680px] mx-auto block overflow-visible"
@@ -718,7 +767,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
           y={yScale(baseRate)}
           width={chartWidth}
           height={chartHeight - (chartHeight - (baseRate / maxRate) * chartHeight)}
-          fill="#10b981"
+          fill="#6BF4A0"
           opacity="0.1"
         />
         <line
@@ -726,7 +775,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
           y1={yScale(baseRate)}
           x2={width - padding.right}
           y2={yScale(baseRate)}
-          stroke="#10b981"
+          stroke="#6BF4A0"
           strokeWidth="1.5"
           strokeDasharray="3,3"
           opacity="0.6"
@@ -743,7 +792,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
         <path
           d={generatePath((p) => p.borrowPD)}
           fill="none"
-          stroke="#f97316"
+          stroke="#FFA5CD"
           strokeWidth="2.5"
         />
 
@@ -751,7 +800,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
           cx={xScale(0.9)}
           cy={yScale(borrowRateAt90)}
           r="4"
-          fill="#f97316"
+          fill="#FFA5CD"
           stroke="#191621"
           strokeWidth="2"
         />
@@ -803,7 +852,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
           x={width - padding.right - 4}
           y={yScale(baseRate) - 6}
           textAnchor="end"
-          className="text-xs fill-emerald-400 font-medium"
+          className="text-xs fill-rating-a font-medium"
         >
           Base {formatPercent(baseRate)}
         </text>
@@ -811,7 +860,7 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
 
       <div className="flex flex-wrap justify-center gap-6 mt-3 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-0.5 bg-orange-500 rounded"></div>
+          <div className="w-5 h-0.5 bg-rating-c-plus rounded"></div>
           <span className="text-lotus-grey-300">With PD</span>
         </div>
         <div className="flex items-center gap-2">
@@ -822,9 +871,9 @@ function BorrowRateChart({ data, baseRate, spread }: BorrowRateChartProps) {
         </div>
         <div className="flex items-center gap-2">
           <svg width="20" height="2">
-            <line x1="0" y1="1" x2="20" y2="1" stroke="#10b981" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.6" />
+            <line x1="0" y1="1" x2="20" y2="1" stroke="#6BF4A0" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.6" />
           </svg>
-          <span className="text-emerald-400">Base Rate</span>
+          <span className="text-rating-a">Base Rate</span>
         </div>
       </div>
     </div>
@@ -844,21 +893,55 @@ export function ProductiveDebt({
 }: ProductiveDebtProps) {
   return (
     <div className="space-y-8">
-      <IntroSection />
-      <RateCompositionSection
-        baseRate={baseRate}
-        spread={spread}
-        onSpreadChange={onSpreadChange}
+      {/* ═══════════════════════════════════════════════════════════════════
+          CONTEXT ZONE - Minimal context above the fold
+          ═══════════════════════════════════════════════════════════════════ */}
+      <ContextZone
+        context="In Lotus, idle capital earns the base treasury rate instead of sitting unused. This 'productive debt' mechanism compresses the spread between borrow and lend rates, benefiting both sides."
+        whatYoullLearn={['Rate composition', 'Spread compression', 'Efficiency gains']}
       />
-      <SpreadCompressionSection
-        baseRate={baseRate}
-        spread={spread}
-        utilization={utilization}
-        onUtilizationChange={onUtilizationChange}
-      />
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          INTERACTIVE ZONE - Rate Composition
+          ═══════════════════════════════════════════════════════════════════ */}
+      <InteractiveZone
+        tryThis="Adjust the credit spread to see how the total borrow rate changes."
+        title="Rate Composition"
+      >
+        <RateCompositionSectionContent
+          baseRate={baseRate}
+          spread={spread}
+          onSpreadChange={onSpreadChange}
+        />
+      </InteractiveZone>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          INTERACTIVE ZONE - Spread Compression
+          ═══════════════════════════════════════════════════════════════════ */}
+      <InteractiveZone
+        title="Spread Compression Simulator"
+      >
+        <SpreadCompressionSectionContent
+          baseRate={baseRate}
+          spread={spread}
+          utilization={utilization}
+          onUtilizationChange={onUtilizationChange}
+        />
+      </InteractiveZone>
+
       <TeachingPrompt title="Key takeaway:">
         {pdContent.keyTakeaway}
       </TeachingPrompt>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          DETAIL ZONE - Benefits and deeper explanation
+          ═══════════════════════════════════════════════════════════════════ */}
+      <DetailZone
+        title="Why Productive Debt Matters"
+        teaserItems={['Key Benefits', 'How It Works']}
+      >
+        <IntroSection />
+      </DetailZone>
     </div>
   );
 }

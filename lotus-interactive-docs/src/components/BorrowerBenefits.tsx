@@ -1,11 +1,45 @@
 import { useMemo, useState, useEffect } from 'react';
 import type { TrancheData } from '../types';
 import { formatPercent } from '../math/lotusAccounting';
-import { PageHeader } from './PageHeader';
+import { ContextZone } from './ContextZone';
+import { InteractiveZone } from './InteractiveZone';
 import { TeachingPrompt } from './TeachingPrompt';
 import { content } from '../content';
 
 const { borrowerBenefits: bbContent } = content;
+
+// Stepper button component for increment/decrement
+function StepperButton({
+  direction,
+  onClick,
+  disabled = false
+}: {
+  direction: 'up' | 'down';
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-sm transition-colors touch-manipulation
+        ${disabled
+          ? 'bg-lotus-grey-700 text-lotus-grey-500 cursor-not-allowed'
+          : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-purple-600 hover:text-white active:bg-lotus-purple-700'
+        }`}
+      aria-label={direction === 'up' ? 'Increase' : 'Decrease'}
+    >
+      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        {direction === 'up' ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        )}
+      </svg>
+    </button>
+  );
+}
 
 interface BorrowerBenefitsProps {
   tranches: TrancheData[];
@@ -26,11 +60,11 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
   const rateColorMap = useMemo(() => {
     const sorted = [...new Set(tranches.map((t) => t.lltv))].sort((a, b) => a - b);
     const colors = [
-      'text-emerald-300',
-      'text-emerald-400',
-      'text-amber-400',
-      'text-orange-400',
-      'text-red-400',
+      'text-rating-a-plus',
+      'text-rating-a',
+      'text-rating-b',
+      'text-rating-c-plus',
+      'text-rating-c',
     ];
     return new Map(sorted.map((lltv, index) => [lltv, colors[Math.min(index, colors.length - 1)]]));
   }, [tranches]);
@@ -46,39 +80,42 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
 
   const hfClass = (hf: number) => {
     if (!Number.isFinite(hf)) return 'text-lotus-grey-400';
-    if (hf < 1.05) return 'text-red-400';
-    if (hf < 1.25) return 'text-orange-400';
-    if (hf < 1.5) return 'text-amber-300';
-    return 'text-emerald-300';
+    if (hf < 1.05) return 'text-rating-d';
+    if (hf < 1.25) return 'text-rating-c-plus';
+    if (hf < 1.5) return 'text-rating-b';
+    return 'text-rating-a';
   };
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        whatYoullLearn={bbContent.pageHeader.whatYoullLearn}
-        tryThis={bbContent.pageHeader.tryThis}
+      {/* ═══════════════════════════════════════════════════════════════════
+          CONTEXT ZONE - Minimal context above the fold
+          ═══════════════════════════════════════════════════════════════════ */}
+      <ContextZone
+        context="Explore borrowing in Lotus. Choose from multiple risk tiers — higher LLTV (loan-to-value) means more leverage but higher rates. Find your optimal balance."
+        whatYoullLearn={['Max leverage by LLTV', 'Health factor impact', 'Liquidation thresholds']}
       />
 
-      <div className="bg-lotus-grey-800 rounded-lg p-6 border border-lotus-grey-700 space-y-6">
-        <div>
-          <h3 className="text-lg font-medium text-lotus-grey-100 mb-2">{bbContent.borrowExperience.heading}</h3>
-          <p className="text-sm text-lotus-grey-300">
-            {bbContent.borrowExperience.description}
-          </p>
-        </div>
+      {/* ═══════════════════════════════════════════════════════════════════
+          INTERACTIVE ZONE - The main event
+          ═══════════════════════════════════════════════════════════════════ */}
+      <InteractiveZone
+        tryThis={bbContent.pageHeader.tryThis}
+        title="Borrowing Calculator"
+      >
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-lotus-grey-900/60 rounded-lg p-4 border border-lotus-grey-700 space-y-4">
+          <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 border-l-2 border-l-lotus-purple-500 space-y-4">
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-xs uppercase tracking-wide text-lotus-grey-400">Collateral (wstETH)</label>
-                <span className="text-xs text-lotus-grey-500">Price: ${WSTETH_PRICE.toLocaleString()}</span>
+                <span className="text-xs text-lotus-grey-400">Price: ${WSTETH_PRICE.toLocaleString()}</span>
               </div>
-              <div className="mt-2 w-full bg-lotus-grey-800 border border-lotus-grey-600 rounded-lg px-3 py-2 text-lg font-mono text-lotus-grey-100 flex items-center justify-between">
+              <div className="mt-2 w-full bg-lotus-grey-800 border border-lotus-grey-700 rounded px-3 py-2 text-lg font-mono text-lotus-grey-100 flex items-center justify-between">
                 <span>{collateralWstEth}</span>
                 <span className="text-xs text-lotus-grey-400">fixed</span>
               </div>
-              <p className="text-xs text-lotus-grey-500 mt-2">
+              <p className="text-xs text-lotus-grey-400 mt-2">
                 ≈ ${collateralValue.toLocaleString()} available collateral value.
               </p>
             </div>
@@ -89,29 +126,45 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
                   Borrow Amount (USDC received)
                 </label>
               </div>
-              <input
-                type="number"
-                value={borrowAmount}
-                onChange={(event) => {
-                  const nextValue = Math.min(Math.max(0, Number(event.target.value)), maxBorrowOverall);
-                  setBorrowAmount(nextValue);
-                }}
-                className="mt-2 w-full bg-lotus-grey-800 border border-lotus-grey-600 rounded-lg px-3 py-2 text-lg font-mono text-lotus-grey-100"
-                min={0}
-                step={100}
-              />
-              <p className={`text-xs mt-2 ${isOverSelectedMax ? 'text-red-400' : 'text-lotus-grey-500'}`}>
+              <div className="mt-2 flex items-center gap-2">
+                <StepperButton
+                  direction="down"
+                  onClick={() => setBorrowAmount(Math.max(0, borrowAmount - 100))}
+                  disabled={borrowAmount <= 0}
+                />
+                <input
+                  type="number"
+                  value={borrowAmount}
+                  onChange={(event) => {
+                    const nextValue = Math.min(Math.max(0, Number(event.target.value)), maxBorrowOverall);
+                    setBorrowAmount(nextValue);
+                  }}
+                  aria-label="Borrow amount in USDC"
+                  className="flex-1 bg-lotus-grey-900 border-2 border-lotus-purple-500/40 rounded-sm px-3 py-2 text-lg font-mono text-lotus-grey-100 text-center
+                    hover:border-lotus-purple-400 hover:bg-lotus-grey-800
+                    focus:outline-none focus:ring-2 focus:ring-lotus-purple-500/50 focus:border-lotus-purple-500 focus:bg-lotus-grey-800
+                    transition-colors cursor-text"
+                  min={0}
+                  step={100}
+                />
+                <StepperButton
+                  direction="up"
+                  onClick={() => setBorrowAmount(Math.min(maxBorrowOverall, borrowAmount + 100))}
+                  disabled={borrowAmount >= maxBorrowOverall}
+                />
+              </div>
+              <p className={`text-xs mt-2 ${isOverSelectedMax ? 'text-rating-d' : 'text-lotus-grey-400'}`}>
                 {isOverSelectedMax
                   ? bbContent.overMaxMessage(selectedLLTV)
                   : bbContent.maxBorrowMessage(selectedLLTV, selectedMaxBorrow.toLocaleString())}
               </p>
-              <p className="text-xs text-lotus-grey-500 mt-1">
+              <p className="text-xs text-lotus-grey-400 mt-1">
                 {bbContent.loanDenominationNote}
               </p>
             </div>
           </div>
 
-          <div className="bg-lotus-grey-900/60 rounded-lg p-4 border border-lotus-grey-700 space-y-3">
+          <div className="bg-lotus-grey-900 rounded p-4 border border-lotus-grey-700 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wide text-lotus-grey-400">Current LTV</span>
               <span className="text-lg font-mono text-lotus-grey-100">
@@ -124,7 +177,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wide text-lotus-grey-400">Max Borrow (Selected)</span>
-              <span className="text-lg font-mono text-emerald-300">${selectedMaxBorrow.toLocaleString()}</span>
+              <span className="text-lg font-mono text-rating-a">${selectedMaxBorrow.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wide text-lotus-grey-400">Leverage at Max</span>
@@ -136,7 +189,7 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-[11px] sm:text-xs">
+          <table className="w-full min-w-[700px] text-xs">
             <thead>
               <tr className="border-b border-lotus-grey-700 text-lotus-grey-400 uppercase tracking-wide text-[10px]">
                 <th className="text-left py-2 px-2">LLTV</th>
@@ -206,12 +259,12 @@ export function BorrowerBenefits({ tranches, productiveDebtRate }: BorrowerBenef
           </table>
         </div>
 
-        <div className="text-xs text-lotus-grey-400">
+        <div className="text-xs text-lotus-grey-400 mt-4">
           {bbContent.healthFactorNote}
         </div>
+      </InteractiveZone>
 
-      </div>
-
+      {/* Key takeaway - visible after interactive zone */}
       <TeachingPrompt title="Key takeaway:">
         {bbContent.keyTakeaway}
       </TeachingPrompt>

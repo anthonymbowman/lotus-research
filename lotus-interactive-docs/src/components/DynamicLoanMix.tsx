@@ -9,21 +9,32 @@ interface DynamicLoanMixProps {
   defaultView?: ViewMode;
 }
 
-// Colors for bar segments (one per tranche)
+// Colors for bar segments (one per tranche) - using credit rating spectrum
+// Lower LLTV = safer (A+), Higher LLTV = riskier (C)
 const SEGMENT_COLORS = [
-  'bg-emerald-500',
-  'bg-teal-500',
-  'bg-amber-500',
-  'bg-orange-500',
-  'bg-red-500',
+  'bg-rating-a-plus',  // 75% - safest
+  'bg-rating-a',       // 80%
+  'bg-rating-b',       // 85%
+  'bg-rating-c-plus',  // 90%
+  'bg-rating-c',       // 95% - riskiest
 ];
 
 const SEGMENT_TEXT_COLORS = [
-  'text-emerald-400',
-  'text-teal-400',
-  'text-amber-400',
-  'text-orange-400',
-  'text-red-400',
+  'text-rating-a-plus',
+  'text-rating-a',
+  'text-rating-b',
+  'text-rating-c-plus',
+  'text-rating-c',
+];
+
+// Text colors for use ON the colored bar segments (need contrast)
+// Light backgrounds (a-plus, a, b) need dark text; dark backgrounds (c-plus, c) can use light text
+const SEGMENT_OVERLAY_TEXT = [
+  'text-lotus-grey-900',  // on a-plus (teal) - dark text
+  'text-lotus-grey-900',  // on a (green) - dark text
+  'text-lotus-grey-900',  // on b (yellow) - dark text
+  'text-lotus-grey-900',  // on c-plus (pink) - dark text
+  'text-white',           // on c (magenta) - light text
 ];
 
 type ViewMode = 'lender' | 'borrower';
@@ -87,7 +98,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
   }, [tranches, fundingData]);
 
   return (
-    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded-lg p-4 pb-10">
+    <div ref={exportRef} className="export-section space-y-4 relative bg-lotus-grey-800 rounded p-4 pb-10">
       <ExportButton targetRef={exportRef} filename="dynamic-loan-mix" />
 
       {/* Title for standalone export */}
@@ -99,7 +110,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
       <div className="flex gap-2 justify-center">
         <button
           onClick={() => setViewMode('lender')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
             viewMode === 'lender'
               ? 'bg-lotus-purple-600 text-white'
               : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
@@ -109,9 +120,9 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
         </button>
         <button
           onClick={() => setViewMode('borrower')}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-4 py-2 text-sm font-medium rounded transition-colors ${
             viewMode === 'borrower'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-rating-c-plus text-lotus-grey-900'
               : 'bg-lotus-grey-700 text-lotus-grey-300 hover:bg-lotus-grey-600'
           }`}
         >
@@ -167,7 +178,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                 <div className="w-20 text-sm font-mono text-lotus-grey-200">{tranche.lltv}%</div>
                 <div className="flex-1">
                   {view.allocated > 0.001 ? (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg overflow-hidden flex">
+                    <div className="h-8 bg-lotus-grey-700 rounded overflow-hidden flex">
                       {view.destinations.map((dest, i) => (
                         <div
                           key={i}
@@ -176,7 +187,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                           title={`${dest.lltv}% tranche: ${formatPercent(dest.percent)}`}
                         >
                           {dest.percent > 0.1 && (
-                            <span className="text-xs font-mono text-white/90">{formatPercent(dest.percent)}</span>
+                            <span className={`text-xs font-mono ${SEGMENT_OVERLAY_TEXT[dest.trancheIdx]}`}>{formatPercent(dest.percent)}</span>
                           )}
                         </div>
                       ))}
@@ -193,12 +204,12 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                       )}
                     </div>
                   ) : (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg flex items-center justify-center">
+                    <div className="h-8 bg-lotus-grey-700 rounded flex items-center justify-center">
                       <span className="text-xs text-lotus-grey-500">No supply allocated</span>
                     </div>
                   )}
                 </div>
-                <div className="w-24 text-right text-xs font-mono text-emerald-400">
+                <div className="w-24 text-right text-xs font-mono text-rating-a">
                   {formatPercent(view.allocated)}
                 </div>
               </div>
@@ -214,7 +225,7 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                 <div className="w-20 text-sm font-mono text-lotus-grey-200">{tranche.lltv}%</div>
                 <div className="flex-1">
                   {view.hasBorrow && view.sources.length > 0 ? (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg overflow-hidden flex">
+                    <div className="h-8 bg-lotus-grey-700 rounded overflow-hidden flex">
                       {view.sources.map((src, i) => (
                         <div
                           key={i}
@@ -223,18 +234,18 @@ export function DynamicLoanMix({ tranches, defaultView = 'lender' }: DynamicLoan
                           title={`From ${src.lltv}% lenders: ${formatPercent(src.percent)}`}
                         >
                           {src.percent > 0.1 && (
-                            <span className="text-xs font-mono text-white/90">{formatPercent(src.percent)}</span>
+                            <span className={`text-xs font-mono ${SEGMENT_OVERLAY_TEXT[src.trancheIdx]}`}>{formatPercent(src.percent)}</span>
                           )}
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="h-8 bg-lotus-grey-700 rounded-lg flex items-center justify-center">
+                    <div className="h-8 bg-lotus-grey-700 rounded flex items-center justify-center">
                       <span className="text-xs text-lotus-grey-500">No borrows</span>
                     </div>
                   )}
                 </div>
-                <div className="w-24 text-right text-xs font-mono text-blue-400">
+                <div className="w-24 text-right text-xs font-mono text-rating-a">
                   {formatPercent(supplyUtil)}
                 </div>
               </div>

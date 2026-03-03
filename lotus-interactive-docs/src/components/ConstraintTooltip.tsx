@@ -105,7 +105,7 @@ export function ConstraintTooltip({
   const tooltip = isVisible && (
     <div
       ref={tooltipRef}
-      className="fixed z-[9999] p-4 text-sm bg-lotus-grey-900 rounded-lg shadow-xl border border-amber-600/50 max-w-sm"
+      className="fixed z-[9999] p-4 text-sm bg-lotus-grey-900 rounded shadow-xl border border-amber-600/50 max-w-sm"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,

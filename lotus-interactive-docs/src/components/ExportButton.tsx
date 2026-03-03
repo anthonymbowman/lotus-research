@@ -73,7 +73,7 @@ export function ExportButton({ targetRef, filename = 'chart-export' }: ExportBut
       <button
         onClick={handleExport}
         disabled={isExporting}
-        className="export-button absolute top-3 right-3 p-2 bg-lotus-grey-700 hover:bg-lotus-grey-600 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="export-button absolute top-3 right-3 p-2 bg-lotus-grey-700 hover:bg-lotus-grey-600 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Export as PNG"
       >
         {isExporting ? (

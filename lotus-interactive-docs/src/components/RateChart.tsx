@@ -70,7 +70,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => f * chartData.maxRate);
 
   return (
-    <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded-xl p-4 pb-6 border border-lotus-grey-700 relative">
+    <div ref={exportRef} className="export-section bg-lotus-grey-900 rounded p-4 pb-6 border border-lotus-grey-700 relative">
       <ExportButton targetRef={exportRef} filename="rates-by-lltv" />
 
       {/* Title for standalone export */}
@@ -81,11 +81,11 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
       {/* Legend at top */}
       <div className="flex gap-6 items-center justify-center mb-4 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 bg-orange-500 rounded"></div>
+          <div className="w-6 h-0.5 bg-rating-c-plus rounded"></div>
           <span className="text-lotus-grey-300">Total Borrow Rate</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 bg-teal-500 rounded"></div>
+          <div className="w-6 h-0.5 bg-lotus-purple-500 rounded"></div>
           <span className="text-lotus-grey-300">Total Supply Rate</span>
         </div>
         <div className="text-lotus-grey-400 text-[10px]">
@@ -162,7 +162,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
           <path
             d={buildPath(borrowPoints)}
             fill="none"
-            stroke="#f97316"
+            stroke="#FFA5CD"
             strokeWidth={2.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -173,7 +173,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
             <path
               d={buildPath(supplyPoints)}
               fill="none"
-              stroke="#14b8a6"
+              stroke="#8E62FF"
               strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -190,7 +190,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
                   cx={p.x}
                   cy={p.y}
                   r={hoverInfo?.lltv === t.lltv ? 8 : 5}
-                  fill="#f97316"
+                  fill="#FFA5CD"
                   className="cursor-pointer transition-all"
                   onMouseEnter={() => setHoverInfo({
                     x: p.x,
@@ -219,7 +219,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
                   cx={p.x}
                   cy={p.y}
                   r={hoverInfo?.lltv === t.lltv ? 8 : 5}
-                  fill="#14b8a6"
+                  fill="#8E62FF"
                   className="cursor-pointer transition-all"
                   onMouseEnter={() => setHoverInfo({
                     x: p.x,
@@ -239,7 +239,7 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
         {/* Tooltip */}
         {hoverInfo && (
           <div
-            className="absolute bg-lotus-grey-900 border border-lotus-grey-600 rounded-lg px-3 py-2 shadow-xl text-sm pointer-events-none z-10"
+            className="absolute bg-lotus-grey-900 border border-lotus-grey-600 rounded px-3 py-2 shadow-xl text-sm pointer-events-none z-10"
             style={{
               left: `${(hoverInfo.x / chartWidth) * 100}%`,
               top: `${(hoverInfo.y / chartHeight) * 100}%`,
@@ -248,15 +248,15 @@ export function RateChart({ tranches, productiveDebtRate }: RateChartProps) {
           >
             <div className="font-medium text-lotus-grey-100 mb-1">{hoverInfo.lltv}% LLTV</div>
             <div className="flex items-center gap-2 text-xs">
-              <span className="w-2 h-2 rounded-full bg-orange-500" />
+              <span className="w-2 h-2 rounded-full bg-rating-c-plus" />
               <span className="text-lotus-grey-300">Borrow:</span>
-              <span className="font-mono text-orange-400">{formatPercent(hoverInfo.borrowRate)}</span>
+              <span className="font-mono text-rating-c-plus">{formatPercent(hoverInfo.borrowRate)}</span>
             </div>
             {hoverInfo.supplyRate !== null && (
               <div className="flex items-center gap-2 text-xs">
-                <span className="w-2 h-2 rounded-full bg-teal-500" />
+                <span className="w-2 h-2 rounded-full bg-lotus-purple-500" />
                 <span className="text-lotus-grey-300">Supply:</span>
-                <span className="font-mono text-teal-400">{formatPercent(hoverInfo.supplyRate)}</span>
+                <span className="font-mono text-lotus-purple-400">{formatPercent(hoverInfo.supplyRate)}</span>
               </div>
             )}
           </div>

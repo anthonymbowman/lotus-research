@@ -39,8 +39,8 @@ export function Scenario1({
   return (
     <div className="space-y-6">
       {/* Explanation */}
-      <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
-        <p className="text-sm text-indigo-800">
+      <div className="bg-lotus-purple-900/20 rounded p-4 border border-lotus-purple-700/50">
+        <p className="text-sm text-lotus-purple-200">
           Borrowers pay a fixed borrow rate. Productive debt lets idle liquidity earn the base rate,
           so lenders don't rely entirely on utilization to earn yield. This compresses the wedge
           between borrower and lender rates.
@@ -49,8 +49,8 @@ export function Scenario1({
 
       {/* Warning for edge case */}
       {result.baseExceedsBorrow && (
-        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-          <p className="text-sm text-amber-800">
+        <div className="bg-rating-b/10 rounded p-4 border border-rating-b/50">
+          <p className="text-sm text-rating-b">
             <strong>Note:</strong> Base rate exceeds borrow rate — spread is clamped to 0.
             Supply rate with PD equals the base rate.
           </p>
@@ -60,8 +60,8 @@ export function Scenario1({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-6">
-          <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-4">Inputs</h3>
+          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
+            <h3 className="text-sm font-medium text-lotus-grey-300 mb-4">Inputs</h3>
             <div className="space-y-4">
               <RateInput
                 label="Borrow Rate (R)"
@@ -80,8 +80,8 @@ export function Scenario1({
           </div>
 
           {/* Derived values */}
-          <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">Derived Values</h3>
+          <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
+            <h3 className="text-sm font-medium text-lotus-grey-300 mb-3">Derived Values</h3>
             <SingleValueRow
               label="Spread (S)"
               value={formatPercent(result.spread)}
@@ -102,8 +102,8 @@ export function Scenario1({
       </div>
 
       {/* Output Table */}
-      <div className="bg-white rounded-lg p-4 border border-gray-200">
-        <h3 className="text-sm font-medium text-gray-700 mb-4">Comparison</h3>
+      <div className="bg-lotus-grey-800 rounded p-4 border border-lotus-grey-700">
+        <h3 className="text-sm font-medium text-lotus-grey-300 mb-4">Comparison</h3>
         <OutputTable
           rows={[
             {
@@ -125,25 +125,25 @@ export function Scenario1({
           ]}
         />
 
-        <div className="mt-4 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+        <div className="mt-4 p-3 bg-rating-a/15 rounded border border-rating-a/50">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-emerald-800">Wedge Reduction (Benefit)</span>
-            <span className="text-lg font-mono font-semibold text-emerald-700">
+            <span className="text-sm text-rating-a">Wedge Reduction (Benefit)</span>
+            <span className="text-lg font-mono font-semibold text-rating-a">
               {formatPercent(result.wedgeReduction)}
             </span>
           </div>
-          <p className="text-xs text-emerald-600 mt-1">
+          <p className="text-xs text-rating-a mt-1">
             = Rb × (1 - u) = {formatPercent(baseRate)} × {(1 - utilization).toFixed(2)}
           </p>
         </div>
       </div>
 
       {/* Formulas */}
-      <details className="bg-gray-50 rounded-lg border border-gray-200">
-        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-100">
+      <details className="bg-lotus-grey-800/50 rounded border border-lotus-grey-700">
+        <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-lotus-grey-300 hover:bg-lotus-grey-800">
           Show Formulas
         </summary>
-        <div className="px-4 pb-4 text-sm text-gray-600 font-mono space-y-2">
+        <div className="px-4 pb-4 text-sm text-lotus-grey-400 font-mono space-y-2">
           <p>S = max(R - Rb, 0) = max({formatPercent(borrowRate)} - {formatPercent(baseRate)}, 0) = {formatPercent(result.spread)}</p>
           <p>Supply_PD = Rb + S × u = {formatPercent(baseRate)} + {formatPercent(result.spread)} × {utilization.toFixed(2)} = {formatPercent(result.supplyRatePD)}</p>
           <p>Supply_noPD = R × u = {formatPercent(borrowRate)} × {utilization.toFixed(2)} = {formatPercent(result.supplyRateNoPD)}</p>

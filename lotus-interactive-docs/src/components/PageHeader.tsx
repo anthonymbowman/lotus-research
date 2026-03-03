@@ -8,7 +8,7 @@ export function PageHeader({ whatYoullLearn, tryThis }: PageHeaderProps) {
     <div className="mb-8">
       {/* Learning objectives */}
       {whatYoullLearn.length > 0 && (
-        <div className="bg-lotus-grey-800/50 border border-lotus-grey-700 rounded-lg p-5 mb-6">
+        <div className="bg-lotus-grey-900 border border-lotus-grey-700 rounded p-6 mb-6">
           <h4 className="text-sm font-medium text-lotus-purple-400 uppercase tracking-wide mb-3">
             What you'll learn
           </h4>
@@ -27,8 +27,8 @@ export function PageHeader({ whatYoullLearn, tryThis }: PageHeaderProps) {
 
       {/* Try this prompt */}
       {tryThis && (
-        <div className="flex items-start gap-3 bg-lotus-purple-900/20 border border-lotus-purple-800/50 rounded-lg p-4">
-          <div className="w-8 h-8 bg-lotus-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+        <div className="flex items-start gap-3 bg-lotus-purple-900/20 border border-lotus-purple-800/50 rounded p-4">
+          <div className="w-8 h-8 bg-lotus-purple-500 rounded flex items-center justify-center flex-shrink-0">
             <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>

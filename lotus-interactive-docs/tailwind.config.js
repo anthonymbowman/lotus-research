@@ -5,6 +5,21 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
+  safelist: [
+    // Rating colors - base classes
+    'text-rating-a-plus', 'text-rating-a', 'text-rating-b-plus', 'text-rating-b',
+    'text-rating-c-plus', 'text-rating-c', 'text-rating-d',
+    'bg-rating-a-plus', 'bg-rating-a', 'bg-rating-b-plus', 'bg-rating-b',
+    'bg-rating-c-plus', 'bg-rating-c', 'bg-rating-d',
+    'border-rating-a-plus', 'border-rating-a', 'border-rating-b-plus', 'border-rating-b',
+    'border-rating-c-plus', 'border-rating-c', 'border-rating-d',
+    // Rating colors - with opacity modifiers used in the codebase
+    'bg-rating-a/15', 'bg-rating-a/20', 'bg-rating-a/60',
+    'bg-rating-a-plus/15', 'bg-rating-a-plus/20',
+    'bg-rating-b/10', 'bg-rating-b/20',
+    'bg-rating-c-plus/15', 'bg-rating-c-plus/20',
+    'border-rating-b/30', 'border-rating-b/50',
+  ],
   theme: {
     extend: {
       colors: {
@@ -16,8 +31,19 @@ export default {
           bg: 'rgba(245, 158, 11, 0.1)',  // amber with low opacity for backgrounds
           'bg-hover': 'rgba(245, 158, 11, 0.2)',
         },
+        // Credit Rating Colors (risk spectrum: safest → riskiest)
+        'rating': {
+          'a-plus': '#2FFAE2',  // A+ - safest (teal)
+          'a': '#6BF4A0',       // A (green)
+          'b-plus': '#B0ED83',  // B+ (lime)
+          'b': '#EBE283',       // B (yellow)
+          'c-plus': '#FFA5CD',  // C+ (pink)
+          'c': '#E764FA',       // C (magenta)
+          'd': '#FE3E38',       // D - default/riskiest (red)
+        },
         // Lotus Brand Colors
         'lotus-grey': {
+          950: '#08060C', // darker than 900 for container fills
           900: '#0D0A14', // --dark-grey (main background)
           800: '#191621', // --dark-grey-2
           700: '#27232F', // --dark-grey-3
@@ -57,8 +83,9 @@ export default {
         },
       },
       fontFamily: {
-        'heading': ['"Space Grotesk"', 'Roboto', 'system-ui', 'sans-serif'],
-        'body': ['Roboto', 'system-ui', 'sans-serif'],
+        'heading': ['"Neue Machina"', '"Space Grotesk"', 'system-ui', 'sans-serif'],
+        'body': ['"Neue Montreal"', 'Inter', 'system-ui', 'sans-serif'],
+        'mono': ['"Roboto Mono"', 'ui-monospace', 'monospace'],
       },
       lineHeight: {
         'tight': '1.3',
@@ -76,6 +103,16 @@ export default {
       boxShadow: {
         'lotus': '0 4px 20px rgba(142, 98, 255, 0.15)',
         'lotus-lg': '0 8px 40px rgba(142, 98, 255, 0.2)',
+      },
+      // Semantic spacing tokens (aligns with lotuslabs.net)
+      spacing: {
+        'xs': '4px',    // 0.25rem - tight internal spacing
+        'sm': '8px',    // 0.5rem - small gaps, inline elements
+        'md': '12px',   // 0.75rem - default internal padding
+        'lg': '16px',   // 1rem - card padding, medium gaps
+        'xl': '24px',   // 1.5rem - section spacing
+        '2xl': '32px',  // 2rem - large section gaps
+        '3xl': '48px',  // 3rem - page-level spacing
       },
     },
   },

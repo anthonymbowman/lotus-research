@@ -83,7 +83,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections, onRes
       {/* Mobile toggle button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-lotus-grey-800 border border-lotus-grey-700 rounded-xl text-lotus-grey-100 hover:bg-lotus-grey-700 transition-colors shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-lotus-grey-800 border border-lotus-grey-700 rounded text-lotus-grey-100 hover:bg-lotus-grey-700 transition-colors shadow-lg"
         aria-label={isCollapsed ? 'Open navigation' : 'Close navigation'}
       >
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -130,7 +130,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections, onRes
                     onSectionChange(section.id);
                     setIsCollapsed(true);
                   }}
-                  className={`w-full text-left px-3 py-3 rounded-lg transition-all group ${
+                  className={`w-full text-left px-3 py-3 rounded transition-all group ${
                     isActive
                       ? 'bg-lotus-purple-900/50 border border-lotus-purple-500'
                       : 'hover:bg-lotus-grey-700 border border-transparent'
@@ -140,7 +140,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections, onRes
                   <div className="flex items-start gap-3">
                     {/* Section icon / checkmark */}
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 ${
                         isActive
                           ? 'bg-lotus-purple-500 text-white'
                           : isVisited
@@ -188,7 +188,7 @@ export function Sidebar({ activeSection, onSectionChange, visitedSections, onRes
               </button>
               <button
                 onClick={onResetProgress}
-                className="text-left text-xs text-lotus-grey-300 hover:text-red-300 transition-colors"
+                className="text-left text-xs text-lotus-grey-300 hover:text-rating-d transition-colors"
               >
                 Reset progress
               </button>

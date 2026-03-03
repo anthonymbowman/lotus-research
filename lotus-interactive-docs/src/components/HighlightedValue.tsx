@@ -84,13 +84,13 @@ export function HighlightedValue({
 
     if (delta > 0) {
       return (
-        <span className="text-emerald-400 text-xs ml-1 animate-pulse">
+        <span className="text-rating-a text-xs ml-1 animate-pulse">
           ▲
         </span>
       );
     } else if (delta < 0) {
       return (
-        <span className="text-red-400 text-xs ml-1 animate-pulse">
+        <span className="text-rating-d text-xs ml-1 animate-pulse">
           ▼
         </span>
       );

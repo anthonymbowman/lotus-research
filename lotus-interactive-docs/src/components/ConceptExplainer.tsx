@@ -20,7 +20,7 @@ export function ConceptExplainer({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
-    <div className="border border-lotus-grey-700 rounded-lg overflow-hidden">
+    <div className="border border-lotus-grey-700 rounded overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between bg-lotus-grey-800 hover:bg-lotus-grey-700 transition-colors text-left"
@@ -41,14 +41,14 @@ export function ConceptExplainer({
           <p className="text-sm text-lotus-grey-300">{description}</p>
 
           {formula && (
-            <div className="bg-lotus-grey-900 rounded-lg px-4 py-2">
+            <div className="bg-lotus-grey-900 rounded px-4 py-2">
               <code className="text-sm font-mono text-lotus-purple-300">{formula}</code>
             </div>
           )}
 
           {insight && (
-            <div className="bg-amber-900/20 border border-amber-700/50 rounded-lg px-4 py-2">
-              <p className="text-sm text-amber-300">
+            <div className="bg-rating-b/10 border border-rating-b/50 rounded px-4 py-2">
+              <p className="text-sm text-rating-b">
                 <span className="font-medium">Key insight:</span> {insight}
               </p>
             </div>
@@ -79,7 +79,7 @@ export function CollapsibleSection({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
-    <div className="bg-lotus-grey-800 rounded-lg border border-lotus-grey-700 overflow-hidden">
+    <div className="bg-lotus-grey-800 rounded border border-lotus-grey-700 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between hover:bg-lotus-grey-700 transition-colors text-left"

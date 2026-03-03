@@ -48,7 +48,7 @@ export function DefinitionBadge({
     <div
       id={tooltipId}
       role="tooltip"
-      className="fixed z-[9999] px-3 py-2 bg-lotus-grey-900 rounded-lg shadow-xl border border-lotus-grey-700 max-w-xs"
+      className="fixed z-[9999] px-3 py-2 bg-lotus-grey-900 rounded shadow-xl border border-lotus-grey-700 max-w-xs"
       style={{
         top: tooltipPosition.top,
         left: tooltipPosition.left,
